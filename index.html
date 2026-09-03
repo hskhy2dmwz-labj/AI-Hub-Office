@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070b14" />
+
   <title>AI Office</title>
 
   <style>
@@ -12,196 +14,620 @@
       padding: 0;
     }
 
+    :root {
+      --bg: #070b14;
+      --panel: rgba(17, 24, 39, 0.72);
+      --panel-strong: #111827;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --muted: #7f8ba3;
+      --purple: #7c6cff;
+      --blue: #5a8cff;
+      --green: #49d89a;
+    }
+
     body {
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--text);
+
       background:
-        radial-gradient(circle at 50% 15%, #18213d 0%, transparent 35%),
-        #080b12;
-      color: white;
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(92, 104, 255, 0.18),
+          transparent 38%
+        ),
+        radial-gradient(
+          circle at 10% 40%,
+          rgba(63, 101, 255, 0.07),
+          transparent 28%
+        ),
+        var(--bg);
+
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+
+      background-image:
+        linear-gradient(
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        );
+
+      background-size: 40px 40px;
+
+      pointer-events: none;
     }
 
     .app {
-      min-height: 100vh;
-      padding: 22px 18px 120px;
+      width: 100%;
+      max-width: 1050px;
+      margin: auto;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        18px
+        120px;
     }
 
-    header {
+    /* HEADER */
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      max-width: 900px;
-      margin: auto;
+      gap: 11px;
     }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 17px;
+      font-weight: 800;
+
+      background:
+        linear-gradient(145deg, #7280ff, #6650e8);
+
+      box-shadow:
+        0 0 30px rgba(102, 112, 255, 0.25);
     }
 
-    .online {
+    .brand-text h1 {
+      font-size: 19px;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-text p {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 8px 11px;
+
+      border-radius: 999px;
+      border: 1px solid rgba(73,216,154,0.15);
+
+      background: rgba(73,216,154,0.06);
+
+      font-size: 10px;
+      color: #8de9bf;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 10px rgba(73,216,154,0.8);
+    }
+
+    /* INTRO */
+
+    .intro {
+      text-align: center;
+      margin: 45px auto 15px;
+      max-width: 520px;
+    }
+
+    .intro-label {
+      font-size: 10px;
+      color: #91a0bc;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: 11px;
+    }
+
+    .intro h2 {
+      font-size: clamp(27px, 6vw, 42px);
+      letter-spacing: -1.7px;
+      line-height: 1.05;
+    }
+
+    .intro h2 span {
+      background:
+        linear-gradient(90deg,#8da1ff,#a881ff);
+
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .intro p {
+      margin-top: 12px;
       font-size: 12px;
-      color: #7ee2ad;
-      background: rgba(74, 222, 128, 0.08);
-      border: 1px solid rgba(74, 222, 128, 0.18);
-      padding: 7px 11px;
-      border-radius: 20px;
+      line-height: 1.6;
+      color: var(--muted);
     }
+
+    /* OFFICE */
 
     .office {
       position: relative;
-      max-width: 700px;
-      height: 570px;
-      margin: 35px auto 0;
+
+      width: 100%;
+      max-width: 760px;
+      height: 565px;
+
+      margin: 18px auto 0;
     }
+
+    /* CONNECTION LINES */
+
+    .connection {
+      position: absolute;
+      z-index: 0;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(108,120,255,0.45),
+          transparent
+        );
+
+      opacity: 0.55;
+    }
+
+    .vertical-top {
+      width: 1px;
+      height: 110px;
+
+      left: 50%;
+      top: 105px;
+
+      background:
+        linear-gradient(
+          transparent,
+          rgba(108,120,255,0.5)
+        );
+    }
+
+    .vertical-bottom {
+      width: 1px;
+      height: 105px;
+
+      left: 50%;
+      bottom: 105px;
+
+      background:
+        linear-gradient(
+          rgba(108,120,255,0.5),
+          transparent
+        );
+    }
+
+    .horizontal {
+      height: 1px;
+      width: 60%;
+
+      top: 277px;
+      left: 20%;
+    }
+
+    /* AGENTS */
 
     .agent {
       position: absolute;
-      width: 140px;
-      padding: 16px 12px;
+      z-index: 2;
+
+      width: 145px;
+      min-height: 108px;
+
+      padding: 15px 12px;
+
+      border-radius: 21px;
+      border: 1px solid var(--border);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,0.055),
+          rgba(255,255,255,0.025)
+        );
+
+      backdrop-filter: blur(18px);
+
+      box-shadow:
+        0 15px 35px rgba(0,0,0,0.26);
+    }
+
+    .agent-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
       text-align: center;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 20px;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 15px 35px rgba(0,0,0,.25);
     }
 
     .agent-icon {
       width: 42px;
       height: 42px;
-      margin: 0 auto 10px;
+
       display: grid;
       place-items: center;
+
+      margin-bottom: 9px;
+
       border-radius: 13px;
-      background: rgba(115,130,255,.12);
-      font-size: 20px;
+
+      background:
+        rgba(104,119,255,0.09);
+
+      border:
+        1px solid rgba(104,119,255,0.12);
+
+      font-size: 17px;
     }
 
-    .agent h3 {
-      font-size: 14px;
-      margin-bottom: 5px;
+    .agent-name {
+      font-size: 13px;
+      font-weight: 650;
     }
 
-    .agent span {
-      color: #78839b;
-      font-size: 10px;
+    .agent-role {
+      margin-top: 4px;
+
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .agent-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      margin-top: 8px;
+
+      font-size: 8px;
+      color: #718097;
+    }
+
+    .agent-state-dot {
+      width: 4px;
+      height: 4px;
+
+      background: #667085;
+      border-radius: 50%;
     }
 
     .coder {
-      top: 0;
       left: 50%;
+      top: 0;
+
       transform: translateX(-50%);
     }
 
     .research {
       left: 0;
-      top: 215px;
+      top: 220px;
     }
 
     .tester {
       right: 0;
-      top: 215px;
+      top: 220px;
     }
 
     .design {
-      bottom: 0;
       left: 50%;
+      bottom: 0;
+
       transform: translateX(-50%);
     }
 
+    /* MANAGER */
+
     .manager {
-      width: 190px;
-      min-height: 175px;
-      top: 180px;
+      width: 205px;
+      min-height: 185px;
+
       left: 50%;
+      top: 185px;
+
       transform: translateX(-50%);
+
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
+
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(105,119,255,0.22),
+          rgba(30,35,57,0.72) 55%
+        );
+
+      border:
+        1px solid rgba(120,133,255,0.28);
+
+      box-shadow:
+        0 0 65px rgba(92,105,255,0.12),
+        0 20px 40px rgba(0,0,0,0.34);
+    }
+
+    .manager::before {
+      content: "";
+
+      position: absolute;
+      inset: -1px;
+
+      border-radius: inherit;
+
       background:
         linear-gradient(
           145deg,
-          rgba(91,108,255,.17),
-          rgba(108,75,255,.07)
+          rgba(139,151,255,0.18),
+          transparent 45%
         );
-      border: 1px solid rgba(112,125,255,.32);
-      box-shadow:
-        0 0 65px rgba(74,91,255,.13),
-        0 20px 45px rgba(0,0,0,.3);
+
+      pointer-events: none;
     }
 
     .manager .agent-icon {
-      width: 52px;
-      height: 52px;
-      font-size: 25px;
-      border-radius: 16px;
-    }
+      width: 57px;
+      height: 57px;
 
-    .manager h3 {
-      font-size: 19px;
-    }
+      font-size: 22px;
 
-    .manager span {
-      line-height: 1.5;
-      padding: 0 8px;
-    }
-
-    .composer {
-      max-width: 700px;
-      margin: 30px auto 0;
-      padding: 10px;
-      display: flex;
-      gap: 8px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.09);
       border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(111,125,255,0.22),
+          rgba(121,83,255,0.1)
+        );
+
+      box-shadow:
+        0 0 28px rgba(102,116,255,0.15);
     }
 
-    .composer input {
+    .manager .agent-name {
+      font-size: 18px;
+    }
+
+    .manager .agent-role {
+      max-width: 150px;
+
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .manager .agent-state {
+      color: #8de9bf;
+    }
+
+    .manager .agent-state-dot {
+      background: var(--green);
+
+      box-shadow:
+        0 0 8px rgba(73,216,154,.75);
+    }
+
+    /* TASK COMPOSER */
+
+    .task-area {
+      max-width: 760px;
+      margin: 35px auto 0;
+    }
+
+    .task-card {
+      padding: 7px;
+
+      border-radius: 21px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,0.06),
+          rgba(255,255,255,0.025)
+        );
+
+      border: 1px solid var(--border);
+
+      box-shadow:
+        0 18px 45px rgba(0,0,0,0.23);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-input {
       flex: 1;
       min-width: 0;
-      background: transparent;
+
       border: none;
       outline: none;
+
+      padding: 15px 14px;
+
+      font-size: 13px;
+
+      background: transparent;
       color: white;
-      padding: 10px;
-      font-size: 14px;
     }
 
-    .composer input::placeholder {
-      color: #657087;
+    .task-input::placeholder {
+      color: #59657c;
     }
 
-    .composer button {
+    .send-button {
+      width: 44px;
+      height: 44px;
+
+      flex-shrink: 0;
+
       border: none;
-      border-radius: 12px;
-      padding: 0 17px;
-      font-weight: 600;
+      border-radius: 14px;
+
+      display: grid;
+      place-items: center;
+
       color: white;
-      background: linear-gradient(135deg,#6675ff,#865cff);
+      font-size: 17px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #7180ff,
+          #7658e8
+        );
+
+      box-shadow:
+        0 8px 20px rgba(99,84,230,0.25);
+
+      cursor: pointer;
     }
 
-    .workspace {
+    .task-footer {
+      display: flex;
+      justify-content: space-between;
+
+      padding: 3px 9px 7px;
+
+      font-size: 8px;
+      color: #59657c;
+    }
+
+    /* WORKSPACE TAB */
+
+    .workspace-tab {
       position: fixed;
+
       right: 0;
-      top: 45%;
-      padding: 18px 10px;
-      border-radius: 14px 0 0 14px;
-      background: #111725;
-      border: 1px solid rgba(255,255,255,.08);
-      color: #9ba5bb;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      width: 43px;
+      height: 82px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 15px 0 0 15px;
+
+      background:
+        rgba(15,22,36,0.94);
+
+      border:
+        1px solid rgba(255,255,255,0.08);
+
+      border-right: none;
+
+      color: #8e9ab2;
+      font-size: 19px;
+
+      backdrop-filter: blur(15px);
+
+      cursor: pointer;
     }
 
-    @media(max-width:600px) {
+    /* MOBILE */
+
+    @media (max-width: 620px) {
+
+      .app {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .intro {
+        margin-top: 35px;
+      }
+
+      .intro p {
+        padding: 0 15px;
+      }
+
       .office {
         height: 500px;
+        margin-top: 25px;
       }
 
       .agent {
-        width: 112px;
-        padding: 13px 8px;
+        width: 108px;
+        min-height: 94px;
+        padding: 12px 8px;
+        border-radius: 18px;
+      }
+
+      .agent-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+      }
+
+      .agent-name {
+        font-size: 11px;
+      }
+
+      .agent-role {
+        font-size: 8px;
+      }
+
+      .agent-state {
+        display: none;
+      }
+
+      .coder {
+        top: 0;
       }
 
       .research,
@@ -210,13 +636,44 @@
       }
 
       .manager {
-        top: 155px;
-        width: 155px;
-        min-height: 160px;
+        width: 160px;
+        min-height: 158px;
+        top: 165px;
+        padding: 13px;
       }
 
-      .agent span {
+      .manager .agent-icon {
+        width: 49px;
+        height: 49px;
+      }
+
+      .manager .agent-name {
+        font-size: 16px;
+      }
+
+      .manager .agent-role {
         font-size: 9px;
+      }
+
+      .vertical-top {
+        height: 80px;
+        top: 94px;
+      }
+
+      .vertical-bottom {
+        height: 80px;
+        bottom: 92px;
+      }
+
+      .horizontal {
+        top: 242px;
+        left: 13%;
+        width: 74%;
+      }
+
+      .workspace-tab {
+        width: 36px;
+        height: 70px;
       }
     }
   </style>
@@ -224,58 +681,262 @@
 
 <body>
 
-<div class="app">
+  <div class="app">
 
-  <header>
-    <div class="logo">AI Office</div>
-    <div class="online">● Online</div>
-  </header>
+    <header class="topbar">
 
-  <div class="office">
+      <div class="brand">
+        <div class="brand-logo">A</div>
 
-    <div class="agent coder">
-      <div class="agent-icon">⌨</div>
-      <h3>Coder</h3>
-      <span>Build & automate</span>
-    </div>
+        <div class="brand-text">
+          <h1>AI Office</h1>
+          <p>Personal AI workforce</p>
+        </div>
+      </div>
 
-    <div class="agent research">
-      <div class="agent-icon">⌕</div>
-      <h3>Research</h3>
-      <span>Search & investigate</span>
-    </div>
+      <div class="system-status">
+        <div class="status-dot"></div>
+        System online
+      </div>
 
-    <div class="agent manager">
-      <div class="agent-icon">◆</div>
-      <h3>Manager</h3>
-      <span>Plans, delegates and coordinates your AI workforce</span>
-    </div>
+    </header>
 
-    <div class="agent tester">
-      <div class="agent-icon">✓</div>
-      <h3>Tester</h3>
-      <span>Test & verify</span>
-    </div>
+    <section class="intro">
 
-    <div class="agent design">
-      <div class="agent-icon">✦</div>
-      <h3>Design</h3>
-      <span>Design & present</span>
-    </div>
+      <div class="intro-label">
+        AI Command Centre
+      </div>
+
+      <h2>
+        Give your team a goal.<br>
+        <span>Let them handle the rest.</span>
+      </h2>
+
+      <p>
+        Your Manager plans the job, delegates the work,
+        coordinates your agents and delivers the finished result.
+      </p>
+
+    </section>
+
+    <main class="office">
+
+      <div class="connection vertical-top"></div>
+      <div class="connection horizontal"></div>
+      <div class="connection vertical-bottom"></div>
+
+      <div class="agent coder">
+
+        <div class="agent-inner">
+
+          <div class="agent-icon">
+            &lt;/&gt;
+          </div>
+
+          <div class="agent-name">
+            Coder
+          </div>
+
+          <div class="agent-role">
+            Build & automate
+          </div>
+
+          <div class="agent-state">
+            <div class="agent-state-dot"></div>
+            Idle
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="agent research">
+
+        <div class="agent-inner">
+
+          <div class="agent-icon">
+            ⌕
+          </div>
+
+          <div class="agent-name">
+            Research
+          </div>
+
+          <div class="agent-role">
+            Search & analyse
+          </div>
+
+          <div class="agent-state">
+            <div class="agent-state-dot"></div>
+            Idle
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="agent manager">
+
+        <div class="agent-inner">
+
+          <div class="agent-icon">
+            ◆
+          </div>
+
+          <div class="agent-name">
+            Manager
+          </div>
+
+          <div class="agent-role">
+            Plans, delegates and coordinates your AI workforce.
+          </div>
+
+          <div class="agent-state">
+            <div class="agent-state-dot"></div>
+            Ready
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="agent tester">
+
+        <div class="agent-inner">
+
+          <div class="agent-icon">
+            ✓
+          </div>
+
+          <div class="agent-name">
+            Tester
+          </div>
+
+          <div class="agent-role">
+            Test & verify
+          </div>
+
+          <div class="agent-state">
+            <div class="agent-state-dot"></div>
+            Idle
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="agent design">
+
+        <div class="agent-inner">
+
+          <div class="agent-icon">
+            ✦
+          </div>
+
+          <div class="agent-name">
+            Design
+          </div>
+
+          <div class="agent-role">
+            Design & present
+          </div>
+
+          <div class="agent-state">
+            <div class="agent-state-dot"></div>
+            Idle
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <section class="task-area">
+
+      <div class="task-card">
+
+        <div class="task-row">
+
+          <input
+            id="taskInput"
+            class="task-input"
+            type="text"
+            placeholder="What do you want your AI Office to do?"
+          />
+
+          <button
+            id="sendButton"
+            class="send-button"
+          >
+            ↑
+          </button>
+
+        </div>
+
+        <div class="task-footer">
+
+          <span id="taskStatus">
+            Manager ready
+          </span>
+
+          <span>
+            AI OFFICE
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
 
   </div>
 
-  <div class="composer">
-    <input
-      type="text"
-      placeholder="Give your Manager a task..."
-    >
-    <button>Send</button>
-  </div>
+  <button class="workspace-tab">
+    ‹
+  </button>
 
-</div>
+  <script>
 
-<div class="workspace">‹</div>
+    const taskInput =
+      document.getElementById("taskInput");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+    const taskStatus =
+      document.getElementById("taskStatus");
+
+    sendButton.addEventListener("click", () => {
+
+      const task =
+        taskInput.value.trim();
+
+      if (!task) {
+
+        taskStatus.textContent =
+          "Enter a task first";
+
+        return;
+      }
+
+      taskStatus.textContent =
+        "Task sent to Manager";
+
+    });
+
+    taskInput.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (event.key === "Enter") {
+          sendButton.click();
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
