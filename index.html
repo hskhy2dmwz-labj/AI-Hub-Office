@@ -13,21 +13,20 @@
 }
 
 :root{
-  --bg:#070b12;
-  --floor:#0c1420;
-  --room:#111b2a;
-  --room2:#152133;
-  --wall:#293a55;
-  --wall2:#354967;
+  --void:#020407;
+  --floor:#0d1521;
+  --floor2:#111b29;
+  --wall:#2b3a50;
+  --wall2:#3b4e69;
   --text:#edf3ff;
-  --muted:#8b99b0;
-  --green:#5ee0a5;
-  --purple:#726cff;
+  --muted:#8e9bb1;
+  --purple:#746cff;
+  --green:#54d99b;
 }
 
 body{
   min-height:100vh;
-  background:var(--bg);
+  background:var(--void);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   overflow-x:hidden;
@@ -39,12 +38,12 @@ body{
 }
 
 .topbar{
+  max-width:650px;
+  margin:0 auto 10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  max-width:650px;
-  margin:0 auto 10px;
-  padding:0 5px;
+  padding:0 4px;
 }
 
 .topbar h1{
@@ -56,7 +55,7 @@ body{
   display:flex;
   align-items:center;
   gap:7px;
-  color:#9cebc5;
+  color:#a0edc8;
   font-size:12px;
 }
 
@@ -65,479 +64,562 @@ body{
   height:8px;
   border-radius:50%;
   background:var(--green);
-  box-shadow:0 0 10px rgba(94,224,165,.85);
-  animation:pulse 1.8s infinite;
+  box-shadow:0 0 10px rgba(84,217,155,.8);
+  animation:pulse 1.6s infinite;
 }
 
 @keyframes pulse{
   50%{
-    opacity:.45;
     transform:scale(1.3);
+    opacity:.45;
   }
 }
 
 .map-wrap{
+  width:100%;
   display:flex;
   justify-content:center;
-  width:100%;
 }
 
 .office{
   position:relative;
   width:100%;
   max-width:620px;
-  aspect-ratio:.84;
-  overflow:hidden;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.07);
-  background:
-    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
-    #09111d;
-  background-size:16px 16px;
+  aspect-ratio:.78;
+  background:transparent;
+}
+
+/* BUILDING FLOOR */
+
+.building{
+  position:absolute;
+  inset:2%;
+  background:#080d14;
+  clip-path:polygon(
+    18% 0,
+    72% 0,
+    72% 7%,
+    93% 7%,
+    93% 21%,
+    100% 21%,
+    100% 50%,
+    92% 50%,
+    92% 76%,
+    72% 76%,
+    72% 100%,
+    28% 100%,
+    28% 91%,
+    8% 91%,
+    8% 73%,
+    0 73%,
+    0 37%,
+    9% 37%,
+    9% 15%,
+    18% 15%
+  );
+  border-radius:20px;
 }
 
 /* ROOMS */
 
 .room{
   position:absolute;
-  background:var(--room);
+  background:var(--floor2);
   border:2px solid var(--wall);
-  border-radius:11px;
   overflow:hidden;
-  transition:.25s;
 }
 
 .room.active{
   border-color:var(--purple);
-  box-shadow:0 0 18px rgba(114,108,255,.2);
+  box-shadow:
+    inset 0 0 18px rgba(116,108,255,.08),
+    0 0 10px rgba(116,108,255,.16);
 }
 
 .room-title{
   position:absolute;
-  left:7px;
   top:5px;
-  font-size:6px;
-  font-weight:900;
-  color:#adbbd0;
+  left:7px;
+  font-size:5.5px;
   letter-spacing:.7px;
+  color:#aeb9ca;
+  font-weight:900;
 }
 
-/* MAP */
+/* ROOM POSITIONS */
 
 .coding{
-  left:34%;
+  left:28%;
   top:3%;
-  width:32%;
-  height:15%;
+  width:44%;
+  height:17%;
+  border-radius:12px 12px 5px 5px;
 }
 
 .research{
-  left:3%;
-  top:25%;
-  width:25%;
-  height:18%;
+  left:4%;
+  top:19%;
+  width:31%;
+  height:23%;
+  border-radius:12px 5px 5px 12px;
 }
 
 .manager{
-  left:36%;
-  top:27%;
-  width:28%;
-  height:18%;
+  left:35%;
+  top:20%;
+  width:30%;
+  height:21%;
+  border-radius:5px;
 }
 
 .testing{
-  right:3%;
-  top:25%;
-  width:25%;
-  height:18%;
-}
-
-.design{
-  left:3%;
-  top:57%;
-  width:25%;
-  height:18%;
-}
-
-.analytics{
-  right:3%;
-  top:57%;
-  width:25%;
-  height:18%;
-}
-
-.archives{
-  left:36%;
-  bottom:3%;
-  width:28%;
-  height:16%;
+  right:4%;
+  top:19%;
+  width:31%;
+  height:23%;
+  border-radius:5px 12px 12px 5px;
 }
 
 .canteen{
-  left:34%;
-  top:51%;
-  width:32%;
-  height:16%;
-}
-
-/* CORRIDORS */
-
-.corridor{
-  position:absolute;
-  background:#121d2c;
-  border:1px solid #223149;
-}
-
-.vertical-top{
-  left:47%;
-  top:18%;
-  width:6%;
-  height:9%;
-}
-
-.left-upper{
   left:28%;
-  top:32%;
-  width:8%;
-  height:5%;
+  top:42%;
+  width:44%;
+  height:19%;
+  border-radius:5px;
 }
 
-.right-upper{
-  right:28%;
-  top:32%;
-  width:8%;
-  height:5%;
+.design{
+  left:4%;
+  top:47%;
+  width:31%;
+  height:23%;
+  border-radius:12px 5px 5px 12px;
 }
 
-.vertical-middle{
+.analytics{
+  right:4%;
+  top:47%;
+  width:31%;
+  height:23%;
+  border-radius:5px 12px 12px 5px;
+}
+
+.archives{
+  left:27%;
+  top:69%;
+  width:46%;
+  height:25%;
+  border-radius:5px 5px 12px 12px;
+}
+
+/* HALLWAYS */
+
+.hall{
+  position:absolute;
+  background:#0f1825;
+  border:1px solid #26364d;
+}
+
+.h-top{
   left:47%;
-  top:45%;
+  top:19%;
   width:6%;
+  height:3%;
+}
+
+.h-left1{
+  left:33%;
+  top:30%;
+  width:4%;
   height:6%;
 }
 
-.left-lower{
-  left:28%;
-  top:62%;
-  width:6%;
-  height:5%;
+.h-right1{
+  right:33%;
+  top:30%;
+  width:4%;
+  height:6%;
 }
 
-.right-lower{
-  right:28%;
-  top:62%;
-  width:6%;
-  height:5%;
-}
-
-.vertical-bottom{
+.h-mid{
   left:47%;
-  top:67%;
+  top:40%;
   width:6%;
-  height:14%;
+  height:3%;
 }
 
-/* DECOR */
+.h-left2{
+  left:33%;
+  top:54%;
+  width:4%;
+  height:6%;
+}
+
+.h-right2{
+  right:33%;
+  top:54%;
+  width:4%;
+  height:6%;
+}
+
+.h-bottom{
+  left:47%;
+  top:60%;
+  width:6%;
+  height:10%;
+}
+
+/* DOORS */
+
+.door{
+  position:absolute;
+  z-index:4;
+  background:#131d2a;
+}
+
+.door.v{
+  width:8px;
+  height:16px;
+}
+
+.door.h{
+  width:16px;
+  height:8px;
+}
+
+/* GENERIC DECOR */
 
 .desk{
   position:absolute;
-  width:28px;
+  width:26px;
   height:10px;
+  background:#3b4c64;
+  border:1px solid #58708d;
   border-radius:2px;
-  background:#354861;
-  border:1px solid #526985;
 }
 
 .screen{
   position:absolute;
   width:11px;
   height:8px;
+  background:#0e2039;
+  border:1px solid #667fa0;
   border-radius:2px;
-  background:#10223d;
-  border:1px solid #60789a;
 }
 
 .room.active .screen{
-  background:#7279ff;
-  box-shadow:0 0 8px rgba(114,121,255,.9);
+  background:#6d74ff;
+  box-shadow:0 0 8px rgba(109,116,255,.8);
 }
 
 .chair{
   position:absolute;
-  width:9px;
-  height:9px;
+  width:8px;
+  height:8px;
   border-radius:3px;
-  background:#26354b;
-  border:1px solid #3c4e69;
-}
-
-.plant{
-  position:absolute;
-  width:9px;
-  height:12px;
-}
-
-.plant::before{
-  content:"";
-  position:absolute;
-  width:9px;
-  height:7px;
-  top:0;
-  border-radius:50%;
-  background:#3d9c72;
-  box-shadow:
-    -3px 2px #397f63,
-    3px 2px #4eaa7e;
-}
-
-.plant::after{
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:2px;
-  width:6px;
-  height:5px;
-  background:#87613f;
-  border-radius:1px;
+  background:#26364e;
+  border:1px solid #43556f;
 }
 
 .rug{
   position:absolute;
-  border-radius:4px;
-  background:#1d2941;
-  border:1px solid #293b59;
+  background:#1b2840;
+  border:1px solid #293b58;
+  border-radius:5px;
 }
 
-.shelf{
+.plant{
   position:absolute;
-  width:11px;
-  height:35px;
-  background:#4b3b34;
-  border:1px solid #665046;
+  width:10px;
+  height:13px;
 }
 
-.shelf::before{
+.plant:before{
   content:"";
   position:absolute;
+  top:0;
   left:2px;
-  top:5px;
   width:7px;
-  height:3px;
-  background:#7688b0;
+  height:7px;
+  border-radius:50%;
+  background:#42a476;
   box-shadow:
-    0 7px #c48e5c,
-    0 14px #6e9b76,
-    0 21px #9f71aa;
+    -3px 2px #347d60,
+    3px 2px #4bb283,
+    0 -2px #3c906c;
+}
+
+.plant:after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:3px;
+  width:6px;
+  height:5px;
+  background:#865c3b;
 }
 
 .server{
   position:absolute;
   width:11px;
-  height:30px;
-  background:#202c3f;
-  border:1px solid #43536e;
-  border-radius:2px;
+  height:31px;
+  background:#1d293a;
+  border:1px solid #52637b;
 }
 
-.server::after{
+.server:after{
   content:"";
   position:absolute;
-  left:3px;
+  left:2px;
   top:5px;
   width:2px;
   height:2px;
-  background:#65e69c;
+  background:#5fe09e;
   box-shadow:
-    4px 0 #6f8cff,
-    0 6px #65e69c,
-    4px 6px #ffca67,
-    0 12px #6f8cff,
-    4px 12px #65e69c,
-    0 18px #ffca67;
+    4px 0 #7588ff,
+    0 5px #e7bb58,
+    4px 5px #5fe09e,
+    0 10px #7588ff,
+    4px 10px #e26b6b,
+    0 15px #5fe09e,
+    4px 15px #7588ff;
 }
 
-.whiteboard{
-  position:absolute;
-  width:34px;
-  height:14px;
-  border:1px solid #8292ab;
-  background:#d9e0e8;
-  border-radius:2px;
-}
-
-.whiteboard::after{
-  content:"↗  +  ?";
-  position:absolute;
-  font-size:4px;
-  color:#526175;
-  left:5px;
-  top:4px;
-}
-
-.coffee{
+.shelf{
   position:absolute;
   width:12px;
-  height:13px;
-  background:#4a596b;
-  border-radius:2px;
-  border:1px solid #6c7c90;
+  height:35px;
+  background:#4b3a31;
+  border:1px solid #6e5547;
 }
 
-.coffee::after{
+.shelf:after{
   content:"";
   position:absolute;
-  width:4px;
-  height:5px;
-  background:#d5d9df;
-  left:4px;
-  bottom:1px;
+  left:2px;
+  top:4px;
+  width:8px;
+  height:4px;
+  background:#7386ad;
+  box-shadow:
+    0 7px #bc895d,
+    0 14px #6fa17c,
+    0 21px #9d74aa;
+}
+
+.board{
+  position:absolute;
+  width:32px;
+  height:13px;
+  background:#dce3eb;
+  border:1px solid #8d9caf;
+  border-radius:2px;
+}
+
+.board:after{
+  content:"AI ↗ ?";
+  position:absolute;
+  left:5px;
+  top:3px;
+  color:#58687b;
+  font-size:4px;
+}
+
+.sofa{
+  position:absolute;
+  width:30px;
+  height:12px;
+  background:#3d4d6b;
+  border:1px solid #5e7191;
+  border-radius:5px;
+}
+
+.table{
+  position:absolute;
+  width:17px;
+  height:11px;
+  background:#6b5040;
+  border:1px solid #8a6c58;
+  border-radius:50%;
 }
 
 .vending{
   position:absolute;
   width:15px;
   height:31px;
-  border-radius:2px;
-  background:#32445c;
-  border:1px solid #5b7191;
+  background:#34485e;
+  border:1px solid #617995;
 }
 
-.vending::before{
+.vending:before{
   content:"";
   position:absolute;
   left:3px;
   top:4px;
   width:9px;
-  height:15px;
+  height:16px;
   background:
     linear-gradient(
-      #d36d6d 0 20%,
-      #6fa8e2 20% 40%,
-      #64be8f 40% 60%,
-      #d9b85e 60% 80%,
-      #9b79d5 80%
+      #e36d6d 0 20%,
+      #6d9cda 20% 40%,
+      #63b98a 40% 60%,
+      #e6ba57 60% 80%,
+      #9a74d6 80%
     );
-}
-
-.sofa{
-  position:absolute;
-  width:31px;
-  height:13px;
-  background:#384766;
-  border:1px solid #566988;
-  border-radius:5px;
-}
-
-.table{
-  position:absolute;
-  width:18px;
-  height:12px;
-  border-radius:50%;
-  background:#665143;
-  border:1px solid #806856;
 }
 
 .fridge{
   position:absolute;
   width:13px;
-  height:27px;
-  background:#69798d;
-  border:1px solid #8798ad;
-  border-radius:2px;
+  height:28px;
+  background:#7f8da0;
+  border:1px solid #9ba8b8;
 }
 
-.fridge::after{
-  content:"";
-  position:absolute;
-  width:2px;
-  height:7px;
-  background:#303c4a;
-  right:2px;
-  top:4px;
-}
-
-.filecabinet{
+.coffee{
   position:absolute;
   width:12px;
-  height:25px;
-  background:#3d4d62;
-  border:1px solid #5c708a;
+  height:14px;
+  background:#45566b;
+  border:1px solid #697c92;
 }
 
-.filecabinet::before{
+.coffee:after{
   content:"";
   position:absolute;
-  width:6px;
-  height:1px;
-  background:#9daabc;
-  left:2px;
-  top:6px;
-  box-shadow:0 7px #9daabc,0 14px #9daabc;
+  bottom:2px;
+  left:4px;
+  width:4px;
+  height:4px;
+  background:#eee;
 }
 
-/* CHARACTERS */
+.cabinet{
+  position:absolute;
+  width:11px;
+  height:26px;
+  background:#415064;
+  border:1px solid #66788d;
+}
+
+.cabinet:after{
+  content:"";
+  position:absolute;
+  left:2px;
+  top:6px;
+  width:6px;
+  height:1px;
+  background:#a8b4c2;
+  box-shadow:
+    0 7px #a8b4c2,
+    0 14px #a8b4c2;
+}
+
+.poster{
+  position:absolute;
+  width:12px;
+  height:16px;
+  background:#1c3358;
+  border:1px solid #4d6486;
+}
+
+.poster:after{
+  content:"★";
+  position:absolute;
+  left:3px;
+  top:2px;
+  font-size:6px;
+  color:#c6d5ff;
+}
+
+.bin{
+  position:absolute;
+  width:7px;
+  height:8px;
+  background:#344356;
+  border-radius:1px 1px 2px 2px;
+}
+
+.lamp{
+  position:absolute;
+  width:4px;
+  height:11px;
+  background:#54647a;
+}
+
+.lamp:before{
+  content:"";
+  position:absolute;
+  top:-3px;
+  left:-3px;
+  width:10px;
+  height:5px;
+  background:#d7bd6a;
+  border-radius:50% 50% 2px 2px;
+}
+
+/* PEOPLE */
 
 .agent{
   position:absolute;
-  width:13px;
-  height:18px;
+  width:11px;
+  height:16px;
   z-index:50;
   pointer-events:none;
-  transition:left .55s linear,top .55s linear;
+  transition:
+    left 1.2s linear,
+    top 1.2s linear;
 }
 
 .agent-name{
   position:absolute;
-  bottom:21px;
+  bottom:19px;
   left:50%;
   transform:translateX(-50%);
-  font-size:5px;
+  font-size:4.7px;
   font-weight:800;
   white-space:nowrap;
   color:white;
   text-shadow:
     0 1px 2px #000,
-    0 0 4px #000;
+    0 0 3px #000;
 }
 
-.head{
+.face{
   position:absolute;
   left:3px;
-  top:2px;
-  width:7px;
-  height:6px;
-  border-radius:2px;
-  background:#ecad71;
+  top:3px;
+  width:6px;
+  height:5px;
+  background:#efb06d;
+  border-radius:1px;
 }
 
 .hair{
   position:absolute;
   left:3px;
-  top:0;
-  width:7px;
+  top:1px;
+  width:6px;
   height:3px;
-  background:#322720;
   z-index:2;
-  border-radius:2px 2px 0 0;
+  background:#362a22;
 }
 
-.body{
+.shirt{
   position:absolute;
   left:2px;
   top:8px;
-  width:9px;
-  height:7px;
-  border-radius:2px;
-  background:#6978ff;
+  width:8px;
+  height:6px;
+  border-radius:1px;
 }
 
 .leg{
   position:absolute;
-  width:3px;
-  height:4px;
-  top:14px;
-  background:#3f4c64;
+  top:13px;
+  width:2px;
+  height:3px;
+  background:#48556d;
 }
 
 .leg.left{
@@ -549,102 +631,84 @@ body{
 }
 
 .walking .leg.left{
-  animation:leg1 .18s alternate infinite;
+  animation:walkL .3s infinite alternate;
 }
 
 .walking .leg.right{
-  animation:leg2 .18s alternate infinite;
+  animation:walkR .3s infinite alternate;
 }
 
-@keyframes leg1{
-  to{transform:translateY(-1.5px)}
-}
-
-@keyframes leg2{
-  to{transform:translateY(1.5px)}
-}
-
-.working{
-  animation:work .45s alternate infinite;
-}
-
-@keyframes work{
+@keyframes walkL{
   to{transform:translateY(-1px)}
 }
 
-/* PERSON STYLES */
-
-.max .body{
-  background:#e05a8d;
+@keyframes walkR{
+  to{transform:translateY(1px)}
 }
 
+.sitting{
+  transform:translateY(2px) scaleY(.9);
+}
+
+.working{
+  animation:workBob .65s infinite alternate;
+}
+
+@keyframes workBob{
+  to{transform:translateY(-1px)}
+}
+
+/* UNIQUE PEOPLE */
+
+.max .shirt{background:#dc5a8b;}
 .max .hair{
-  background:#32251f;
-  border-radius:4px 4px 1px 1px;
+  background:#33241f;
+  border-radius:3px 3px 0 0;
 }
 
-.calvin .body{
-  background:#6178ff;
-}
-
+.calvin .shirt{background:#6678ff;}
 .calvin .hair{
-  background:#442f22;
+  background:#423023;
   height:2px;
 }
 
-.rico .body{
-  background:#3fb38b;
-}
-
+.rico .shirt{background:#3faf88;}
 .rico .hair{
-  background:#161b20;
-  border-radius:5px 5px 1px 1px;
+  background:#14171a;
+  border-radius:4px 4px 1px 1px;
 }
 
-.trent .body{
-  background:#df6868;
-}
-
+.trent .shirt{background:#dc6565;}
 .trent .hair{
-  background:#d2a05a;
+  background:#d7a657;
   height:3px;
 }
 
-.draymond .head{
-  background:#744b34;
+.draymond .face{
+  background:#71482f;
 }
 
-.draymond .body{
-  background:#9d65f6;
-}
-
+.draymond .shirt{background:#9c66ed;}
 .draymond .hair{
-  background:#151414;
-  height:3px;
+  background:#101112;
+  border-radius:4px 4px 1px 1px;
 }
 
-.axel .body{
-  background:#dda947;
-}
+.axel .shirt{background:#dfa948;}
+.axel .hair{background:#bd7e43;}
 
-.axel .hair{
-  background:#c78644;
-}
-
-.adam .body{
-  background:#6294bd;
-}
-
+.adam .shirt{background:#6491b8;}
 .adam .hair{
-  background:#3f332a;
+  background:#3d332c;
+  height:2px;
 }
 
-/* STATUS */
+/* UI */
 
-.task-status{
+.status{
   position:fixed;
   left:50%;
-  bottom:77px;
+  bottom:78px;
   transform:translateX(-50%);
   color:var(--muted);
   font-size:10px;
@@ -659,10 +723,10 @@ body{
   width:calc(100% - 24px);
   max-width:620px;
   height:56px;
-  padding:6px;
   display:flex;
+  padding:6px;
   gap:6px;
-  background:rgba(11,16,26,.96);
+  background:rgba(7,11,18,.96);
   border:1px solid rgba(255,255,255,.1);
   border-radius:18px;
   backdrop-filter:blur(16px);
@@ -672,27 +736,21 @@ body{
 .taskbar input{
   flex:1;
   min-width:0;
-  border:0;
-  outline:0;
+  border:none;
+  outline:none;
   background:transparent;
   color:white;
-  font-size:14px;
   padding:0 10px;
+  font-size:14px;
 }
 
 .taskbar button{
   width:46px;
-  border:0;
+  border:none;
   border-radius:12px;
-  background:#7067ef;
+  background:var(--purple);
   color:white;
   font-size:20px;
-}
-
-@media(max-width:600px){
-  .office{
-    width:100%;
-  }
 }
 </style>
 </head>
@@ -712,160 +770,176 @@ body{
 
 <div class="map-wrap">
 
-<div class="office" id="office">
+<div class="office">
 
-<!-- corridors -->
+<div class="building"></div>
 
-<div class="corridor vertical-top"></div>
-<div class="corridor left-upper"></div>
-<div class="corridor right-upper"></div>
-<div class="corridor vertical-middle"></div>
-<div class="corridor left-lower"></div>
-<div class="corridor right-lower"></div>
-<div class="corridor vertical-bottom"></div>
+<!-- HALLWAYS -->
+<div class="hall h-top"></div>
+<div class="hall h-left1"></div>
+<div class="hall h-right1"></div>
+<div class="hall h-mid"></div>
+<div class="hall h-left2"></div>
+<div class="hall h-right2"></div>
+<div class="hall h-bottom"></div>
 
 <!-- CODING -->
-
 <div class="room coding" id="coderRoom">
   <div class="room-title">CODING LAB</div>
 
-  <div class="desk" style="left:19%;top:39%"></div>
-  <div class="screen" style="left:26%;top:29%"></div>
-  <div class="chair" style="left:27%;top:55%"></div>
+  <div class="desk" style="left:17%;top:35%"></div>
+  <div class="screen" style="left:23%;top:25%"></div>
+  <div class="chair" style="left:25%;top:51%"></div>
 
-  <div class="desk" style="right:17%;top:39%"></div>
-  <div class="screen" style="right:25%;top:29%"></div>
-  <div class="chair" style="right:27%;top:55%"></div>
+  <div class="desk" style="left:42%;top:35%"></div>
+  <div class="screen" style="left:48%;top:25%"></div>
+  <div class="chair" style="left:50%;top:51%"></div>
 
-  <div class="server" style="left:6%;bottom:8%"></div>
-  <div class="server" style="left:14%;bottom:8%"></div>
+  <div class="desk" style="right:10%;top:35%"></div>
+  <div class="screen" style="right:17%;top:25%"></div>
+  <div class="chair" style="right:18%;top:51%"></div>
 
-  <div class="plant" style="right:7%;bottom:8%"></div>
+  <div class="server" style="left:5%;bottom:7%"></div>
+  <div class="server" style="left:12%;bottom:7%"></div>
 
-  <div class="whiteboard" style="left:41%;top:12%"></div>
+  <div class="board" style="left:43%;top:6%"></div>
+
+  <div class="plant" style="right:5%;bottom:7%"></div>
+  <div class="bin" style="right:15%;bottom:8%"></div>
 </div>
 
 <!-- RESEARCH -->
-
 <div class="room research" id="researchRoom">
   <div class="room-title">RESEARCH</div>
 
-  <div class="rug" style="left:14%;top:31%;width:69%;height:47%"></div>
+  <div class="rug" style="left:10%;top:28%;width:58%;height:53%"></div>
 
-  <div class="desk" style="left:13%;top:40%"></div>
+  <div class="desk" style="left:12%;top:39%"></div>
   <div class="screen" style="left:20%;top:30%"></div>
-  <div class="chair" style="left:23%;top:53%"></div>
+  <div class="chair" style="left:23%;top:52%"></div>
 
-  <div class="shelf" style="right:8%;top:27%"></div>
-  <div class="shelf" style="right:18%;top:27%"></div>
+  <div class="shelf" style="right:6%;top:22%"></div>
+  <div class="shelf" style="right:14%;top:22%"></div>
+  <div class="shelf" style="right:22%;top:22%"></div>
 
-  <div class="plant" style="left:8%;bottom:8%"></div>
+  <div class="poster" style="left:9%;bottom:7%"></div>
+  <div class="plant" style="right:8%;bottom:6%"></div>
+  <div class="lamp" style="left:49%;bottom:9%"></div>
 </div>
 
 <!-- MANAGER -->
-
 <div class="room manager" id="managerRoom">
   <div class="room-title">MANAGER</div>
 
-  <div class="rug" style="left:18%;top:30%;width:64%;height:48%"></div>
+  <div class="rug" style="left:12%;top:28%;width:76%;height:57%"></div>
 
-  <div class="desk" style="left:34%;top:42%;width:32%"></div>
+  <div class="desk" style="left:32%;top:42%;width:37%"></div>
   <div class="screen" style="left:45%;top:31%"></div>
-  <div class="chair" style="left:46%;top:57%"></div>
+  <div class="chair" style="left:47%;top:56%"></div>
 
-  <div class="plant" style="left:7%;bottom:9%"></div>
-  <div class="plant" style="right:7%;bottom:9%"></div>
+  <div class="board" style="right:7%;top:8%"></div>
 
-  <div class="whiteboard" style="right:8%;top:12%"></div>
+  <div class="plant" style="left:5%;bottom:7%"></div>
+  <div class="plant" style="right:5%;bottom:7%"></div>
+
+  <div class="sofa" style="left:8%;top:66%"></div>
+  <div class="lamp" style="right:20%;bottom:10%"></div>
 </div>
 
-<!-- TEST -->
-
+<!-- TEST LAB -->
 <div class="room testing" id="testerRoom">
   <div class="room-title">TEST LAB</div>
 
-  <div class="desk" style="left:20%;top:38%"></div>
-  <div class="screen" style="left:27%;top:28%"></div>
-  <div class="chair" style="left:29%;top:53%"></div>
+  <div class="desk" style="left:11%;top:38%"></div>
+  <div class="screen" style="left:18%;top:29%"></div>
+  <div class="chair" style="left:22%;top:52%"></div>
 
-  <div class="server" style="right:9%;top:27%"></div>
-  <div class="server" style="right:19%;top:27%"></div>
+  <div class="server" style="right:5%;top:23%"></div>
+  <div class="server" style="right:13%;top:23%"></div>
+  <div class="server" style="right:21%;top:23%"></div>
 
-  <div class="whiteboard" style="left:17%;bottom:11%"></div>
+  <div class="board" style="left:15%;bottom:8%"></div>
+
+  <div class="bin" style="right:8%;bottom:8%"></div>
 </div>
 
 <!-- CANTEEN -->
-
 <div class="room canteen" id="canteenRoom">
   <div class="room-title">CANTEEN + LOUNGE</div>
 
-  <div class="table" style="left:35%;top:42%"></div>
-  <div class="chair" style="left:30%;top:39%"></div>
-  <div class="chair" style="left:46%;top:39%"></div>
-  <div class="chair" style="left:38%;top:58%"></div>
+  <div class="vending" style="left:5%;top:25%"></div>
+  <div class="fridge" style="left:13%;top:25%"></div>
+  <div class="coffee" style="left:22%;top:30%"></div>
 
-  <div class="table" style="right:16%;top:42%"></div>
-  <div class="chair" style="right:28%;top:39%"></div>
-  <div class="chair" style="right:10%;top:39%"></div>
+  <div class="table" style="left:38%;top:40%"></div>
+  <div class="chair" style="left:32%;top:37%"></div>
+  <div class="chair" style="left:47%;top:37%"></div>
+  <div class="chair" style="left:39%;top:55%"></div>
 
-  <div class="vending" style="left:5%;top:27%"></div>
-  <div class="coffee" style="left:15%;top:29%"></div>
+  <div class="table" style="right:20%;top:40%"></div>
+  <div class="chair" style="right:30%;top:37%"></div>
+  <div class="chair" style="right:12%;top:37%"></div>
 
-  <div class="fridge" style="left:5%;bottom:7%"></div>
-
-  <div class="sofa" style="right:6%;bottom:8%"></div>
-
-  <div class="plant" style="right:6%;top:12%"></div>
+  <div class="sofa" style="right:5%;bottom:8%"></div>
+  <div class="plant" style="right:5%;top:9%"></div>
+  <div class="poster" style="left:29%;bottom:8%"></div>
 </div>
 
 <!-- DESIGN -->
-
 <div class="room design" id="designerRoom">
   <div class="room-title">DESIGN</div>
 
-  <div class="rug" style="left:15%;top:32%;width:66%;height:45%"></div>
+  <div class="rug" style="left:10%;top:29%;width:60%;height:52%"></div>
 
-  <div class="desk" style="left:22%;top:42%"></div>
-  <div class="screen" style="left:29%;top:31%"></div>
-  <div class="chair" style="left:31%;top:56%"></div>
+  <div class="desk" style="left:13%;top:41%"></div>
+  <div class="screen" style="left:20%;top:31%"></div>
+  <div class="chair" style="left:23%;top:54%"></div>
 
-  <div class="whiteboard" style="right:10%;top:19%"></div>
+  <div class="board" style="right:8%;top:15%"></div>
 
-  <div class="plant" style="right:9%;bottom:8%"></div>
+  <div class="poster" style="right:10%;bottom:8%"></div>
+  <div class="plant" style="left:8%;bottom:7%"></div>
+
+  <div class="shelf" style="right:7%;top:49%"></div>
 </div>
 
 <!-- ANALYTICS -->
-
 <div class="room analytics" id="analystRoom">
   <div class="room-title">ANALYTICS</div>
 
-  <div class="desk" style="left:22%;top:41%"></div>
-  <div class="screen" style="left:29%;top:30%"></div>
-  <div class="chair" style="left:31%;top:55%"></div>
+  <div class="desk" style="left:12%;top:39%"></div>
+  <div class="screen" style="left:19%;top:29%"></div>
+  <div class="chair" style="left:22%;top:53%"></div>
 
-  <div class="whiteboard" style="right:10%;top:18%"></div>
+  <div class="board" style="right:8%;top:14%"></div>
 
-  <div class="shelf" style="right:9%;bottom:10%"></div>
+  <div class="shelf" style="right:8%;bottom:9%"></div>
+  <div class="shelf" style="right:17%;bottom:9%"></div>
 
-  <div class="plant" style="left:7%;bottom:8%"></div>
+  <div class="plant" style="left:7%;bottom:7%"></div>
+  <div class="lamp" style="left:49%;bottom:8%"></div>
 </div>
 
 <!-- ARCHIVES -->
-
 <div class="room archives" id="adminRoom">
-  <div class="room-title">ARCHIVES</div>
+  <div class="room-title">ARCHIVES + WORKSPACE</div>
 
-  <div class="filecabinet" style="left:8%;top:27%"></div>
-  <div class="filecabinet" style="left:17%;top:27%"></div>
-  <div class="filecabinet" style="left:26%;top:27%"></div>
+  <div class="cabinet" style="left:6%;top:24%"></div>
+  <div class="cabinet" style="left:13%;top:24%"></div>
+  <div class="cabinet" style="left:20%;top:24%"></div>
 
-  <div class="shelf" style="right:10%;top:27%"></div>
-  <div class="shelf" style="right:20%;top:27%"></div>
+  <div class="shelf" style="right:7%;top:24%"></div>
+  <div class="shelf" style="right:15%;top:24%"></div>
+  <div class="shelf" style="right:23%;top:24%"></div>
 
-  <div class="desk" style="left:39%;bottom:13%"></div>
-  <div class="screen" style="left:47%;bottom:26%"></div>
+  <div class="desk" style="left:39%;bottom:12%"></div>
+  <div class="screen" style="left:46%;bottom:22%"></div>
+  <div class="chair" style="left:48%;bottom:6%"></div>
 
-  <div class="plant" style="right:6%;bottom:8%"></div>
+  <div class="server" style="left:31%;top:24%"></div>
+
+  <div class="plant" style="right:6%;bottom:6%"></div>
+  <div class="poster" style="left:6%;bottom:7%"></div>
 </div>
 
 <!-- AGENTS -->
@@ -873,8 +947,8 @@ body{
 <div class="agent max" id="max">
   <div class="agent-name">Max</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -882,8 +956,8 @@ body{
 <div class="agent calvin" id="calvin">
   <div class="agent-name">Calvin</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -891,8 +965,8 @@ body{
 <div class="agent rico" id="rico">
   <div class="agent-name">Rico</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -900,8 +974,8 @@ body{
 <div class="agent trent" id="trent">
   <div class="agent-name">Trent</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -909,8 +983,8 @@ body{
 <div class="agent draymond" id="draymond">
   <div class="agent-name">Draymond</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -918,8 +992,8 @@ body{
 <div class="agent axel" id="axel">
   <div class="agent-name">Axel</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -927,8 +1001,8 @@ body{
 <div class="agent adam" id="adam">
   <div class="agent-name">Adam</div>
   <div class="hair"></div>
-  <div class="head"></div>
-  <div class="body"></div>
+  <div class="face"></div>
+  <div class="shirt"></div>
   <div class="leg left"></div>
   <div class="leg right"></div>
 </div>
@@ -937,7 +1011,7 @@ body{
 </div>
 </div>
 
-<div class="task-status" id="taskStatus">
+<div class="status" id="status">
 Office idle
 </div>
 
@@ -972,277 +1046,268 @@ const rooms = {
   adam: document.getElementById("adminRoom")
 };
 
-const taskInput = document.getElementById("taskInput");
-const sendButton = document.getElementById("sendButton");
-const taskStatus = document.getElementById("taskStatus");
+const input = document.getElementById("taskInput");
+const button = document.getElementById("sendButton");
+const status = document.getElementById("status");
+
+const sleep = ms =>
+  new Promise(resolve => setTimeout(resolve,ms));
 
 /*
-Every point below is a legal place to stand.
+LEGAL WALKING POINTS
 
-Characters ONLY travel between connected points.
-This prevents them cutting straight through rooms/walls.
+These are doors, hallways and actual usable spots.
+Agents move between these only.
 */
 
 const nodes = {
 
-  codingDoor:[50,20],
   codingDesk:[50,12],
+  codingDoor:[50,20],
 
-  topHall:[50,23],
+  managerNorth:[50,22],
+  managerDesk:[50,31],
+  managerSouth:[50,41],
 
-  researchDoor:[30,34],
-  researchDesk:[17,34],
+  researchDoor:[34,31],
+  researchDesk:[18,31],
 
-  managerDoorTop:[50,27],
-  managerDesk:[50,37],
+  testDoor:[66,31],
+  testDesk:[82,31],
 
-  testDoor:[70,34],
-  testDesk:[83,34],
+  canteenNorth:[50,44],
+  canteenCentre:[50,51],
+  canteenCoffee:[38,52],
+  canteenTable:[54,52],
+  canteenSofa:[64,56],
+  canteenSouth:[50,61],
 
-  middleHall:[50,48],
+  designDoor:[34,58],
+  designDesk:[18,58],
 
-  canteenDoor:[50,51],
-  canteenCentre:[50,58],
-  canteenCoffee:[39,58],
-  canteenTable:[55,60],
-  canteenSofa:[61,63],
+  analyticsDoor:[66,58],
+  analyticsDesk:[82,58],
 
-  designDoor:[30,64],
-  designDesk:[17,65],
+  lowerHall:[50,66],
 
-  analyticsDoor:[70,64],
-  analyticsDesk:[83,65],
+  archivesDoor:[50,70],
+  archivesDesk:[50,84],
 
-  bottomHall:[50,72],
+  leftHub:[38,43],
+  rightHub:[62,43],
 
-  archivesDoor:[50,81],
-  archivesDesk:[50,89],
-
-  hallLeft:[36,48],
-  hallRight:[64,48],
-
-  hallLeftLower:[33,64],
-  hallRightLower:[67,64]
+  leftLower:[38,63],
+  rightLower:[62,63]
 };
 
-
 /*
-Allowed connections.
+CONNECTIONS.
 
-No diagonal teleporting.
-No walking through walls.
+There is no connection unless a real doorway/corridor
+exists between those points.
 */
 
-const links = {
+const graph = {
 
-  codingDoor:["codingDesk","topHall"],
   codingDesk:["codingDoor"],
+  codingDoor:["codingDesk","managerNorth"],
 
-  topHall:[
+  managerNorth:[
     "codingDoor",
-    "managerDoorTop"
-  ],
-
-  managerDoorTop:[
-    "topHall",
     "managerDesk",
-    "middleHall",
     "researchDoor",
     "testDoor"
   ],
 
   managerDesk:[
-    "managerDoorTop"
+    "managerNorth",
+    "managerSouth"
+  ],
+
+  managerSouth:[
+    "managerDesk",
+    "canteenNorth",
+    "leftHub",
+    "rightHub"
   ],
 
   researchDoor:[
-    "managerDoorTop",
+    "managerNorth",
     "researchDesk"
   ],
 
-  researchDesk:[
-    "researchDoor"
-  ],
+  researchDesk:["researchDoor"],
 
   testDoor:[
-    "managerDoorTop",
+    "managerNorth",
     "testDesk"
   ],
 
-  testDesk:[
-    "testDoor"
+  testDesk:["testDoor"],
+
+  leftHub:[
+    "managerSouth",
+    "designDoor",
+    "canteenNorth"
   ],
 
-  middleHall:[
-    "managerDoorTop",
-    "canteenDoor",
-    "hallLeft",
-    "hallRight",
-    "bottomHall"
+  rightHub:[
+    "managerSouth",
+    "analyticsDoor",
+    "canteenNorth"
   ],
 
-  hallLeft:[
-    "middleHall",
-    "hallLeftLower"
-  ],
-
-  hallRight:[
-    "middleHall",
-    "hallRightLower"
-  ],
-
-  canteenDoor:[
-    "middleHall",
+  canteenNorth:[
+    "managerSouth",
+    "leftHub",
+    "rightHub",
     "canteenCentre"
   ],
 
   canteenCentre:[
-    "canteenDoor",
+    "canteenNorth",
     "canteenCoffee",
     "canteenTable",
-    "canteenSofa"
+    "canteenSofa",
+    "canteenSouth"
   ],
 
-  canteenCoffee:[
-    "canteenCentre"
-  ],
+  canteenCoffee:["canteenCentre"],
+  canteenTable:["canteenCentre"],
+  canteenSofa:["canteenCentre"],
 
-  canteenTable:[
-    "canteenCentre"
-  ],
-
-  canteenSofa:[
-    "canteenCentre"
-  ],
-
-  hallLeftLower:[
-    "hallLeft",
-    "designDoor",
-    "bottomHall"
-  ],
-
-  hallRightLower:[
-    "hallRight",
-    "analyticsDoor",
-    "bottomHall"
+  canteenSouth:[
+    "canteenCentre",
+    "leftLower",
+    "rightLower",
+    "lowerHall"
   ],
 
   designDoor:[
-    "hallLeftLower",
+    "leftHub",
+    "leftLower",
     "designDesk"
   ],
 
-  designDesk:[
-    "designDoor"
-  ],
+  designDesk:["designDoor"],
 
   analyticsDoor:[
-    "hallRightLower",
+    "rightHub",
+    "rightLower",
     "analyticsDesk"
   ],
 
-  analyticsDesk:[
-    "analyticsDoor"
+  analyticsDesk:["analyticsDoor"],
+
+  leftLower:[
+    "designDoor",
+    "canteenSouth",
+    "lowerHall"
   ],
 
-  bottomHall:[
-    "middleHall",
-    "hallLeftLower",
-    "hallRightLower",
+  rightLower:[
+    "analyticsDoor",
+    "canteenSouth",
+    "lowerHall"
+  ],
+
+  lowerHall:[
+    "canteenSouth",
+    "leftLower",
+    "rightLower",
     "archivesDoor"
   ],
 
   archivesDoor:[
-    "bottomHall",
+    "lowerHall",
     "archivesDesk"
   ],
 
-  archivesDesk:[
-    "archivesDoor"
-  ]
+  archivesDesk:["archivesDoor"]
 };
-
-
-/*
-Starting locations.
-*/
 
 const state = {
 
   max:{
     node:"managerDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   calvin:{
     node:"codingDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   rico:{
     node:"researchDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   trent:{
     node:"testDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   draymond:{
     node:"designDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   axel:{
     node:"analyticsDesk",
-    busy:false
+    busy:false,
+    moving:false
   },
 
   adam:{
     node:"archivesDesk",
-    busy:false
+    busy:false,
+    moving:false
   }
 
 };
 
+const home = {
+
+  max:"managerDesk",
+  calvin:"codingDesk",
+  rico:"researchDesk",
+  trent:"testDesk",
+  draymond:"designDesk",
+  axel:"analyticsDesk",
+  adam:"archivesDesk"
+
+};
+
+function place(name,node){
+
+  const point=nodes[node];
+
+  agents[name].style.left=point[0]+"%";
+  agents[name].style.top=point[1]+"%";
+
+}
+
+Object.keys(state).forEach(name=>{
+  place(name,state[name].node);
+});
 
 /*
-Office destinations characters can choose when idle.
+SHORTEST LEGAL PATH
 */
 
-const idleDestinations = [
-
-  "canteenCoffee",
-  "canteenTable",
-  "canteenSofa",
-  "middleHall",
-  "hallLeft",
-  "hallRight",
-
-  "codingDesk",
-  "researchDesk",
-  "testDesk",
-  "designDesk",
-  "analyticsDesk",
-  "archivesDesk",
-  "managerDesk"
-
-];
-
-
-/*
-Find shortest legal route using BFS.
-*/
-
-function findPath(start,end){
+function pathfind(start,end){
 
   if(start===end){
     return [start];
   }
 
   const queue=[[start]];
-
   const visited=new Set([start]);
 
   while(queue.length){
@@ -1251,24 +1316,20 @@ function findPath(start,end){
 
     const current=path[path.length-1];
 
-    const neighbours=links[current] || [];
-
-    for(const next of neighbours){
+    for(const next of graph[current] || []){
 
       if(visited.has(next)){
         continue;
       }
 
-      const nextPath=[...path,next];
+      const route=[...path,next];
 
       if(next===end){
-        return nextPath;
+        return route;
       }
 
       visited.add(next);
-
-      queue.push(nextPath);
-
+      queue.push(route);
     }
 
   }
@@ -1277,38 +1338,13 @@ function findPath(start,end){
 
 }
 
-
-function setPosition(name,nodeName){
-
-  const agent=agents[name];
-
-  const point=nodes[nodeName];
-
-  agent.style.left=point[0]+"%";
-  agent.style.top=point[1]+"%";
-
-}
-
-
-Object.keys(state).forEach(name=>{
-
-  setPosition(name,state[name].node);
-
-});
-
-
-function delay(ms){
-
-  return new Promise(resolve=>setTimeout(resolve,ms));
-
-}
-
-
 /*
-Walk one character along legal route.
+REAL WALK SPEED
+
+1.2 seconds for each section.
 */
 
-async function walkTo(name,destination){
+async function walkTo(name,target){
 
   if(state[name].moving){
     return;
@@ -1318,232 +1354,245 @@ async function walkTo(name,destination){
 
   const agent=agents[name];
 
-  const path=findPath(
+  const route=pathfind(
     state[name].node,
-    destination
+    target
   );
 
+  agent.classList.remove("sitting");
   agent.classList.add("walking");
 
-  for(let i=1;i<path.length;i++){
+  for(let i=1;i<route.length;i++){
 
-    if(state[name].busy && state[name].cancelIdle){
+    if(state[name].interrupt){
       break;
     }
 
-    const node=path[i];
+    const next=route[i];
 
-    setPosition(name,node);
+    place(name,next);
 
-    await delay(600);
+    await sleep(1250);
 
-    state[name].node=node;
-
+    state[name].node=next;
   }
 
   agent.classList.remove("walking");
 
   state[name].moving=false;
-
 }
 
-
 /*
-Idle behaviour.
+IDLE LOCATIONS
 
-Characters DO NOT wander constantly.
-
-They spend most of the time standing/sitting somewhere,
-then occasionally decide to move.
+People spend most of their time doing something,
+NOT constantly wandering.
 */
 
-async function idleRoutine(name){
+const idleActivities = [
+
+  {
+    place:"canteenCoffee",
+    sitting:false
+  },
+
+  {
+    place:"canteenTable",
+    sitting:true
+  },
+
+  {
+    place:"canteenSofa",
+    sitting:true
+  },
+
+  {
+    place:"codingDesk",
+    sitting:true
+  },
+
+  {
+    place:"researchDesk",
+    sitting:true
+  },
+
+  {
+    place:"testDesk",
+    sitting:true
+  },
+
+  {
+    place:"designDesk",
+    sitting:true
+  },
+
+  {
+    place:"analyticsDesk",
+    sitting:true
+  },
+
+  {
+    place:"archivesDesk",
+    sitting:true
+  }
+
+];
+
+async function idleLife(name){
 
   while(true){
 
-    const waitTime=
-      5000 +
-      Math.random()*10000;
+    /*
+    Long idle periods.
+    */
 
-    await delay(waitTime);
+    await sleep(
+      9000 +
+      Math.random()*16000
+    );
 
     if(state[name].busy){
       continue;
     }
 
-    if(Math.random()<0.48){
+    /*
+    Often they just stay where they are.
+    */
+
+    if(Math.random()<0.55){
       continue;
     }
 
-    let destination;
-
-    const roll=Math.random();
-
-    /*
-    Sometimes go to canteen.
-    */
-
-    if(roll<0.42){
-
-      const canteenChoices=[
-        "canteenCoffee",
-        "canteenTable",
-        "canteenSofa"
+    const activity=
+      idleActivities[
+        Math.floor(
+          Math.random()*idleActivities.length
+        )
       ];
 
-      destination=
-        canteenChoices[
-          Math.floor(
-            Math.random()*canteenChoices.length
-          )
-        ];
-
-    }
-
-    else{
-
-      destination=
-        idleDestinations[
-          Math.floor(
-            Math.random()*idleDestinations.length
-          )
-        ];
-
-    }
-
-    await walkTo(name,destination);
-
-    /*
-    Stay there for a while.
-    */
-
-    await delay(
-      5000 +
-      Math.random()*9000
+    await walkTo(
+      name,
+      activity.place
     );
 
+    if(activity.sitting){
+      agents[name].classList.add("sitting");
+    }
+
+    /*
+    Actually hang around there.
+    */
+
+    await sleep(
+      9000 +
+      Math.random()*18000
+    );
+
+    agents[name].classList.remove("sitting");
   }
 
 }
 
-
 Object.keys(state).forEach(name=>{
-
-  idleRoutine(name);
-
+  idleLife(name);
 });
 
+/*
+SEND TO WORK
+*/
 
-const workDestination = {
-
-  max:"managerDesk",
-
-  calvin:"codingDesk",
-
-  rico:"researchDesk",
-
-  trent:"testDesk",
-
-  draymond:"designDesk",
-
-  axel:"analyticsDesk",
-
-  adam:"archivesDesk"
-
-};
-
-
-async function sendAgentToWork(name){
+async function sendToWork(name){
 
   state[name].busy=true;
-
-  state[name].cancelIdle=true;
+  state[name].interrupt=true;
 
   while(state[name].moving){
-
-    await delay(100);
-
+    await sleep(100);
   }
 
-  state[name].cancelIdle=false;
+  state[name].interrupt=false;
+
+  agents[name].classList.remove("sitting");
 
   await walkTo(
     name,
-    workDestination[name]
+    home[name]
   );
 
   agents[name].classList.add("working");
 
   rooms[name].classList.add("active");
-
 }
 
-
 /*
-Visual task demo.
-Actual AI will later connect here.
+TASK VISUALISATION
+
+Actual AI backend gets connected later.
 */
 
 async function runTask(){
 
-  const task=taskInput.value.trim();
+  const task=input.value.trim();
 
   if(!task){
 
-    taskStatus.textContent=
+    status.textContent=
       "Give Max a task first";
 
     return;
-
   }
 
-  taskStatus.textContent=
+  status.textContent=
+    "Max is heading to his desk...";
+
+  await sendToWork("max");
+
+  status.textContent=
     "Max is planning...";
 
-  await sendAgentToWork("max");
+  await sleep(1200);
 
-  await delay(500);
-
-  taskStatus.textContent=
+  status.textContent=
     "Max is assigning the team...";
 
-  sendAgentToWork("calvin");
-  sendAgentToWork("rico");
-  sendAgentToWork("trent");
-  sendAgentToWork("draymond");
-  sendAgentToWork("axel");
-  sendAgentToWork("adam");
+  sendToWork("calvin");
+  sendToWork("rico");
+  sendToWork("trent");
+  sendToWork("draymond");
+  sendToWork("axel");
+  sendToWork("adam");
 
-  await delay(2600);
+  await sleep(6000);
 
-  taskStatus.textContent=
+  status.textContent=
     "Team working...";
 
-  await delay(5000);
+  await sleep(6000);
 
   Object.keys(state).forEach(name=>{
 
     state[name].busy=false;
 
-    agents[name].classList.remove("working");
+    agents[name].classList.remove(
+      "working"
+    );
 
-    rooms[name].classList.remove("active");
+    rooms[name].classList.remove(
+      "active"
+    );
 
   });
 
-  taskStatus.textContent=
+  status.textContent=
     "Office idle";
-
 }
 
-
-sendButton.addEventListener(
+button.addEventListener(
   "click",
   runTask
 );
 
-
-taskInput.addEventListener(
+input.addEventListener(
   "keydown",
   event=>{
 
