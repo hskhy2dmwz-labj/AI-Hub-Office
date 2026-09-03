@@ -2465,10 +2465,10 @@ const nodes = {
   upperRight: {x:518,y:126},
 
   leftHallTop: {x:219,y:323},
-  leftHallBottom: {x:219,y:420},
+  leftHallBottom: {x:219,y:374},
 
   rightHallTop: {x:541,y:323},
-  rightHallBottom: {x:541,y:420},
+  rightHallBottom: {x:541,y:374},
 
   /* storage */
   storageDoor: {x:158,y:456},
@@ -2552,8 +2552,7 @@ const graph = {
   leftHallBottom:[
     "leftHallTop",
     "storageDoor",
-    "upperCentre",
-    "canteenTop"
+   
   ],
 
   rightHallTop:[
@@ -2565,8 +2564,7 @@ const graph = {
   rightHallBottom:[
     "rightHallTop",
     "serverDoor",
-    "upperCentre",
-    "canteenTop"
+    "
   ],
 
   upperCentre:[
@@ -2592,8 +2590,6 @@ const graph = {
 
   canteenTop:[
     "upperCentre",
-    "leftHallBottom",
-    "rightHallBottom",
     "canteenCentre"
   ],
 
@@ -2644,21 +2640,18 @@ const graph = {
   archiveTop:[
     "canteenBottom",
     "archiveDesk",
-    "lowerLeft",
-    "lowerRight"
+   
   ],
 
   archiveDesk:["archiveTop"],
 
   lowerLeft:[
     "designDoor",
-    "archiveTop",
     "utilityHallTop"
   ],
 
   lowerRight:[
     "analyticsDoor",
-    "archiveTop",
     "restroomHallTop"
   ],
 
