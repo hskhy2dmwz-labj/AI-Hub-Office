@@ -2300,6 +2300,7 @@ body{
 
 <div class="agent" id="max">
   <div class="agent-name">Max</div>
+<div id="maxNotification" class="max-notification" title="Message from Max">!</div>
   <div class="shadow"></div>
   <div class="hair"></div>
   <div class="head"></div>
@@ -9706,7 +9707,7 @@ taskInput?.addEventListener(
 );
 </script>
 <!-- MAX RESULT NOTIFICATION -->
-<div id="maxNotification" class="max-notification" title="Message from Max">!</div>
+
 
 <div id="maxResultPanel" class="max-result-panel">
   <div class="max-result-box">
@@ -9730,6 +9731,9 @@ taskInput?.addEventListener(
 .max-notification{
   display:none;
   position:absolute;
+  left:50%;
+margin-left:-17px;
+top:-42px;
   z-index:9998;
 
   width:34px;
@@ -9875,14 +9879,7 @@ function showMaxResult(answer){
 
   maxResultContent.textContent =
     answer || "Task completed.";
-const maxAgent = document.getElementById("max");
-const rect = maxAgent.getBoundingClientRect();
 
-maxNotification.style.left =
-  (rect.left + rect.width / 2 - 17) + "px";
-
-maxNotification.style.top =
-  (rect.top - 42) + "px";
   maxNotification.classList.add("visible");
 }
 
