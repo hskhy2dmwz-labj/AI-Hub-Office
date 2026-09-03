@@ -9870,8 +9870,16 @@ const closeMaxResult =
 
 function showMaxResult(answer){
 
-  maxResultContent.textContent =
-    answer || "Task completed.";
+  let clean = answer || "Task completed.";
+
+  clean = clean
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/###\s*/g, "")
+    .replace(/##\s*/g, "")
+    .replace(/#\s*/g, "");
+
+  maxResultContent.textContent = clean;
 
   maxNotification.classList.add("visible");
 }
