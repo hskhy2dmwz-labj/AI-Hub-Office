@@ -9616,7 +9616,12 @@ const sendButton =
   document.querySelector(".send");
 
 let aiOfficeTaskRunning = false;
+function setStatus(message) {
+  const statusEl = document.getElementById(".status");
+  if (!statusEl) return;
 
+  statusEl.textContent = message;
+}
 async function sendTaskToMax() {
   if (aiOfficeTaskRunning) return;
 
