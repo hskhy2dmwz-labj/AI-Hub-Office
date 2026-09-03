@@ -9665,10 +9665,10 @@ async function sendTaskToMax() {
       setStatus("Max completed the task");
     }
 
-    alert(
-      data.answer ||
-      "Max finished, but no answer was returned."
-    );
+    showMaxResult(
+  data.answer ||
+  "Max finished, but no answer was returned."
+);
 
     taskInput.value = "";
 
