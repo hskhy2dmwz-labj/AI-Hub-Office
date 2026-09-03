@@ -2,52 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Office</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --void:#020407;
-  --floor:#0d1521;
-  --floor2:#111b29;
-  --wall:#2b3a50;
-  --wall2:#3b4e69;
-  --text:#edf3ff;
-  --muted:#8e9bb1;
-  --purple:#746cff;
-  --green:#54d99b;
+  --void:#000307;
+  --wall:#34485f;
+  --wall-hi:#506883;
+  --line:#26384d;
+  --text:#f1f6ff;
+  --muted:#8d9aaf;
+  --purple:#7268ff;
+  --green:#55dda0;
 }
 
-body{
-  min-height:100vh;
+html,body{
   background:var(--void);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100%;
+}
+
+body{
   overflow-x:hidden;
 }
 
 .app{
   min-height:100vh;
-  padding:14px 8px 110px;
+  padding:16px 8px 115px;
 }
 
-.topbar{
-  max-width:650px;
-  margin:0 auto 10px;
+.top{
+  width:min(100%,650px);
+  margin:auto;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:0 4px;
+  padding:5px 7px 12px;
 }
 
-.topbar h1{
+.title{
   font-size:22px;
+  font-weight:800;
   letter-spacing:-.6px;
 }
 
@@ -55,702 +54,862 @@ body{
   display:flex;
   align-items:center;
   gap:7px;
-  color:#a0edc8;
+  color:#98e8c2;
   font-size:12px;
 }
 
-.online-dot{
+.online i{
+  display:block;
   width:8px;
   height:8px;
   border-radius:50%;
   background:var(--green);
-  box-shadow:0 0 10px rgba(84,217,155,.8);
-  animation:pulse 1.6s infinite;
+  box-shadow:0 0 9px rgba(85,221,160,.7);
 }
 
-@keyframes pulse{
-  50%{
-    transform:scale(1.3);
-    opacity:.45;
-  }
-}
-
-.map-wrap{
-  width:100%;
+.map-holder{
   display:flex;
   justify-content:center;
+  width:100%;
 }
 
 .office{
   position:relative;
   width:100%;
-  max-width:620px;
-  aspect-ratio:.78;
-  background:transparent;
+  max-width:630px;
+  height:790px;
 }
 
-/* BUILDING FLOOR */
+/* =====================================================
+   SHARED BUILDING STYLES
+===================================================== */
 
-.building{
+.room,
+.corridor{
   position:absolute;
-  inset:2%;
-  background:#080d14;
-  clip-path:polygon(
-    18% 0,
-    72% 0,
-    72% 7%,
-    93% 7%,
-    93% 21%,
-    100% 21%,
-    100% 50%,
-    92% 50%,
-    92% 76%,
-    72% 76%,
-    72% 100%,
-    28% 100%,
-    28% 91%,
-    8% 91%,
-    8% 73%,
-    0 73%,
-    0 37%,
-    9% 37%,
-    9% 15%,
-    18% 15%
-  );
-  border-radius:20px;
 }
-
-/* ROOMS */
 
 .room{
-  position:absolute;
-  background:var(--floor2);
-  border:2px solid var(--wall);
+  border:3px solid var(--wall);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    0 0 0 1px #09101a;
   overflow:hidden;
 }
 
+.room:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:16px 16px;
+}
+
 .room.active{
-  border-color:var(--purple);
+  border-color:#736cff;
   box-shadow:
-    inset 0 0 18px rgba(116,108,255,.08),
-    0 0 10px rgba(116,108,255,.16);
+    0 0 16px rgba(115,108,255,.25),
+    inset 0 0 18px rgba(115,108,255,.08);
 }
 
-.room-title{
+.label{
   position:absolute;
-  top:5px;
-  left:7px;
-  font-size:5.5px;
-  letter-spacing:.7px;
-  color:#aeb9ca;
+  top:6px;
+  left:8px;
+  z-index:4;
+  font-size:6px;
   font-weight:900;
+  letter-spacing:1px;
+  color:#d1dbeb;
+  text-shadow:0 1px #000;
 }
 
-/* ROOM POSITIONS */
-
-.coding{
-  left:28%;
-  top:3%;
-  width:44%;
-  height:17%;
-  border-radius:12px 12px 5px 5px;
+.corridor{
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #182333 0 13px,
+      #1d2a3b 13px 26px
+    );
+  border:2px solid var(--wall);
+  z-index:1;
 }
-
-.research{
-  left:4%;
-  top:19%;
-  width:31%;
-  height:23%;
-  border-radius:12px 5px 5px 12px;
-}
-
-.manager{
-  left:35%;
-  top:20%;
-  width:30%;
-  height:21%;
-  border-radius:5px;
-}
-
-.testing{
-  right:4%;
-  top:19%;
-  width:31%;
-  height:23%;
-  border-radius:5px 12px 12px 5px;
-}
-
-.canteen{
-  left:28%;
-  top:42%;
-  width:44%;
-  height:19%;
-  border-radius:5px;
-}
-
-.design{
-  left:4%;
-  top:47%;
-  width:31%;
-  height:23%;
-  border-radius:12px 5px 5px 12px;
-}
-
-.analytics{
-  right:4%;
-  top:47%;
-  width:31%;
-  height:23%;
-  border-radius:5px 12px 12px 5px;
-}
-
-.archives{
-  left:27%;
-  top:69%;
-  width:46%;
-  height:25%;
-  border-radius:5px 5px 12px 12px;
-}
-
-/* HALLWAYS */
-
-.hall{
-  position:absolute;
-  background:#0f1825;
-  border:1px solid #26364d;
-}
-
-.h-top{
-  left:47%;
-  top:19%;
-  width:6%;
-  height:3%;
-}
-
-.h-left1{
-  left:33%;
-  top:30%;
-  width:4%;
-  height:6%;
-}
-
-.h-right1{
-  right:33%;
-  top:30%;
-  width:4%;
-  height:6%;
-}
-
-.h-mid{
-  left:47%;
-  top:40%;
-  width:6%;
-  height:3%;
-}
-
-.h-left2{
-  left:33%;
-  top:54%;
-  width:4%;
-  height:6%;
-}
-
-.h-right2{
-  right:33%;
-  top:54%;
-  width:4%;
-  height:6%;
-}
-
-.h-bottom{
-  left:47%;
-  top:60%;
-  width:6%;
-  height:10%;
-}
-
-/* DOORS */
 
 .door{
   position:absolute;
-  z-index:4;
-  background:#131d2a;
+  background:#80583d;
+  border:1px solid #b07a51;
+  z-index:8;
 }
 
-.door.v{
-  width:8px;
-  height:16px;
+.door.vertical{
+  width:7px;
+  height:24px;
 }
 
-.door.h{
-  width:16px;
-  height:8px;
+.door.horizontal{
+  width:24px;
+  height:7px;
 }
 
-/* GENERIC DECOR */
+/* =====================================================
+   ASYMMETRICAL FLOORPLAN
+===================================================== */
+
+.research{
+  left:2%;
+  top:7%;
+  width:32%;
+  height:27%;
+  border-radius:12px 5px 5px 12px;
+  background:
+    radial-gradient(circle at 20% 60%,rgba(52,100,81,.28),transparent 45%),
+    repeating-linear-gradient(0deg,#263a37 0 13px,#293f3b 13px 26px);
+}
+
+.manager{
+  left:38%;
+  top:2%;
+  width:30%;
+  height:24%;
+  border-radius:6px 10px 4px 4px;
+  background:
+    linear-gradient(rgba(111,70,44,.12),rgba(111,70,44,.12)),
+    repeating-linear-gradient(90deg,#4c3429 0 15px,#55392c 15px 30px);
+}
+
+.testing{
+  right:1%;
+  top:9%;
+  width:27%;
+  height:29%;
+  border-radius:4px 12px 12px 5px;
+  background:
+    repeating-linear-gradient(0deg,#28323d 0 14px,#303b47 14px 28px);
+}
+
+.storage{
+  left:4%;
+  top:37%;
+  width:20%;
+  height:17%;
+  border-radius:8px 4px 4px 8px;
+  background:
+    repeating-linear-gradient(90deg,#3a3028 0 14px,#40352c 14px 28px);
+}
+
+.serverRoom{
+  right:3%;
+  top:41%;
+  width:21%;
+  height:18%;
+  border-radius:4px 9px 9px 4px;
+  background:
+    repeating-linear-gradient(0deg,#202c31 0 13px,#253339 13px 26px);
+}
+
+.canteen{
+  left:27%;
+  top:34%;
+  width:45%;
+  height:31%;
+  clip-path:polygon(
+    8% 0,
+    92% 0,
+    100% 13%,
+    100% 87%,
+    91% 100%,
+    14% 100%,
+    0 84%,
+    0 18%
+  );
+  background:
+    linear-gradient(90deg,rgba(105,70,42,.08) 50%,transparent 50%),
+    repeating-linear-gradient(
+      0deg,
+      #665142 0 16px,
+      #705847 16px 32px
+    );
+}
+
+.design{
+  left:2%;
+  top:58%;
+  width:29%;
+  height:21%;
+  border-radius:11px 4px 4px 11px;
+  background:
+    repeating-linear-gradient(90deg,#4c3137 0 14px,#56373f 14px 28px);
+}
+
+.analytics{
+  right:2%;
+  top:63%;
+  width:27%;
+  height:21%;
+  border-radius:4px 10px 10px 4px;
+  background:
+    repeating-linear-gradient(0deg,#263a4d 0 14px,#2a4156 14px 28px);
+}
+
+.utility{
+  left:7%;
+  top:81%;
+  width:18%;
+  height:14%;
+  border-radius:7px 4px 4px 7px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #252a2d 0 10px,
+      #2b3135 10px 20px
+    );
+}
+
+.archives{
+  left:29%;
+  top:69%;
+  width:45%;
+  height:28%;
+  border-radius:5px 5px 12px 12px;
+  background:
+    repeating-linear-gradient(0deg,#373630 0 14px,#3d3b34 14px 28px);
+}
+
+.restroom{
+  right:6%;
+  top:87%;
+  width:17%;
+  height:10%;
+  border-radius:4px 6px 9px 4px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #40536a 0 12px,
+      #485d77 12px 24px
+    );
+}
+
+/* corridors */
+
+.c1{left:31%;top:19%;width:9%;height:8%}
+.c2{left:66%;top:20%;width:8%;height:12%}
+.c3{left:20%;top:29%;width:19%;height:9%}
+.c4{left:68%;top:31%;width:17%;height:8%}
+.c5{left:18%;top:51%;width:13%;height:10%}
+.c6{left:70%;top:53%;width:13%;height:12%}
+.c7{left:18%;top:75%;width:16%;height:10%}
+.c8{left:71%;top:75%;width:15%;height:11%}
+.c9{left:45%;top:25%;width:8%;height:11%}
+.c10{left:45%;top:63%;width:8%;height:8%}
+
+/* =====================================================
+   FURNITURE
+===================================================== */
 
 .desk{
   position:absolute;
-  width:26px;
-  height:10px;
-  background:#3b4c64;
-  border:1px solid #58708d;
+  width:31px;
+  height:13px;
   border-radius:2px;
+  background:#58677a;
+  border:1px solid #8292a6;
+  box-shadow:0 2px rgba(0,0,0,.35);
 }
 
-.screen{
+.woodDesk{
+  background:#76523d;
+  border-color:#9a7056;
+}
+
+.monitor{
   position:absolute;
-  width:11px;
-  height:8px;
-  background:#0e2039;
-  border:1px solid #667fa0;
+  width:13px;
+  height:10px;
+  background:#10243c;
+  border:1px solid #7890ad;
   border-radius:2px;
 }
 
-.room.active .screen{
-  background:#6d74ff;
-  box-shadow:0 0 8px rgba(109,116,255,.8);
+.monitor:after{
+  content:"";
+  position:absolute;
+  left:2px;
+  right:2px;
+  top:3px;
+  height:2px;
+  background:#55b3ff;
+  box-shadow:0 3px #886fff;
 }
 
 .chair{
   position:absolute;
-  width:8px;
-  height:8px;
+  width:9px;
+  height:9px;
+  background:#374961;
+  border:1px solid #60748f;
   border-radius:3px;
-  background:#26364e;
-  border:1px solid #43556f;
-}
-
-.rug{
-  position:absolute;
-  background:#1b2840;
-  border:1px solid #293b58;
-  border-radius:5px;
-}
-
-.plant{
-  position:absolute;
-  width:10px;
-  height:13px;
-}
-
-.plant:before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:2px;
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#42a476;
-  box-shadow:
-    -3px 2px #347d60,
-    3px 2px #4bb283,
-    0 -2px #3c906c;
-}
-
-.plant:after{
-  content:"";
-  position:absolute;
-  bottom:0;
-  left:3px;
-  width:6px;
-  height:5px;
-  background:#865c3b;
 }
 
 .server{
   position:absolute;
-  width:11px;
-  height:31px;
-  background:#1d293a;
-  border:1px solid #52637b;
+  width:13px;
+  height:39px;
+  background:#162433;
+  border:1px solid #60758d;
 }
 
 .server:after{
   content:"";
   position:absolute;
+  width:3px;
+  height:3px;
   left:2px;
   top:5px;
-  width:2px;
-  height:2px;
-  background:#5fe09e;
+  background:#52e099;
   box-shadow:
-    4px 0 #7588ff,
-    0 5px #e7bb58,
-    4px 5px #5fe09e,
-    0 10px #7588ff,
-    4px 10px #e26b6b,
-    0 15px #5fe09e,
-    4px 15px #7588ff;
+    5px 0 #6e88ff,
+    0 6px #dfa94c,
+    5px 6px #52e099,
+    0 12px #7691ff,
+    5px 12px #e56a6a,
+    0 18px #52e099,
+    5px 18px #dfa94c,
+    0 24px #7691ff,
+    5px 24px #52e099;
 }
 
 .shelf{
   position:absolute;
-  width:12px;
-  height:35px;
-  background:#4b3a31;
-  border:1px solid #6e5547;
+  width:15px;
+  height:45px;
+  background:#594338;
+  border:1px solid #846554;
 }
 
 .shelf:after{
   content:"";
   position:absolute;
   left:2px;
-  top:4px;
-  width:8px;
-  height:4px;
-  background:#7386ad;
+  top:5px;
+  width:10px;
+  height:5px;
+  background:#c19062;
   box-shadow:
-    0 7px #bc895d,
-    0 14px #6fa17c,
-    0 21px #9d74aa;
+    0 8px #7592bf,
+    0 16px #75a87e,
+    0 24px #b57ca7,
+    0 32px #d2aa63;
 }
 
 .board{
   position:absolute;
-  width:32px;
-  height:13px;
-  background:#dce3eb;
-  border:1px solid #8d9caf;
-  border-radius:2px;
+  width:39px;
+  height:20px;
+  background:#d9e3eb;
+  border:2px solid #8999aa;
 }
 
 .board:after{
-  content:"AI ↗ ?";
+  content:"";
   position:absolute;
   left:5px;
-  top:3px;
-  color:#58687b;
-  font-size:4px;
+  top:5px;
+  width:20px;
+  height:2px;
+  background:#e06464;
+  box-shadow:
+    3px 4px #4d78b1,
+    0 8px #4f956b;
 }
 
-.sofa{
+.plant{
   position:absolute;
-  width:30px;
-  height:12px;
-  background:#3d4d6b;
-  border:1px solid #5e7191;
-  border-radius:5px;
+  width:14px;
+  height:20px;
 }
 
-.table{
-  position:absolute;
-  width:17px;
-  height:11px;
-  background:#6b5040;
-  border:1px solid #8a6c58;
-  border-radius:50%;
-}
-
-.vending{
-  position:absolute;
-  width:15px;
-  height:31px;
-  background:#34485e;
-  border:1px solid #617995;
-}
-
-.vending:before{
+.plant:before{
   content:"";
   position:absolute;
-  left:3px;
-  top:4px;
   width:9px;
-  height:16px;
-  background:
-    linear-gradient(
-      #e36d6d 0 20%,
-      #6d9cda 20% 40%,
-      #63b98a 40% 60%,
-      #e6ba57 60% 80%,
-      #9a74d6 80%
-    );
+  height:11px;
+  left:2px;
+  top:0;
+  background:#42a873;
+  border-radius:60% 40% 60% 40%;
+  box-shadow:
+    -4px 3px #39875e,
+    5px 2px #55ba82,
+    0 -3px #42996a;
 }
 
-.fridge{
-  position:absolute;
-  width:13px;
-  height:28px;
-  background:#7f8da0;
-  border:1px solid #9ba8b8;
-}
-
-.coffee{
-  position:absolute;
-  width:12px;
-  height:14px;
-  background:#45566b;
-  border:1px solid #697c92;
-}
-
-.coffee:after{
+.plant:after{
   content:"";
   position:absolute;
-  bottom:2px;
-  left:4px;
-  width:4px;
-  height:4px;
-  background:#eee;
+  width:8px;
+  height:7px;
+  left:3px;
+  bottom:0;
+  background:#966143;
+  border-radius:1px 1px 3px 3px;
 }
 
 .cabinet{
   position:absolute;
-  width:11px;
-  height:26px;
-  background:#415064;
-  border:1px solid #66788d;
+  width:14px;
+  height:35px;
+  background:#586779;
+  border:1px solid #8090a3;
 }
 
 .cabinet:after{
   content:"";
   position:absolute;
   left:2px;
-  top:6px;
-  width:6px;
+  top:7px;
+  width:8px;
   height:1px;
-  background:#a8b4c2;
+  background:#bbc5cf;
   box-shadow:
-    0 7px #a8b4c2,
-    0 14px #a8b4c2;
+    0 9px #bbc5cf,
+    0 18px #bbc5cf;
+}
+
+.box{
+  position:absolute;
+  width:14px;
+  height:11px;
+  background:#886243;
+  border:1px solid #b48257;
+}
+
+.paper{
+  position:absolute;
+  width:9px;
+  height:7px;
+  background:#e3dfd0;
+  transform:rotate(-12deg);
+  border:1px solid #9d9a8f;
+}
+
+.cup{
+  position:absolute;
+  width:5px;
+  height:6px;
+  background:#d6dce5;
+  border-radius:1px;
 }
 
 .poster{
   position:absolute;
-  width:12px;
-  height:16px;
-  background:#1c3358;
-  border:1px solid #4d6486;
+  width:14px;
+  height:19px;
+  background:#33507c;
+  border:1px solid #7089ac;
 }
 
 .poster:after{
   content:"★";
+  font-size:7px;
   position:absolute;
   left:3px;
   top:2px;
-  font-size:6px;
-  color:#c6d5ff;
+  color:#dce9ff;
+}
+
+.vending{
+  position:absolute;
+  width:18px;
+  height:38px;
+  background:#354a63;
+  border:2px solid #69829d;
+}
+
+.vending:after{
+  content:"";
+  position:absolute;
+  left:3px;
+  top:4px;
+  width:9px;
+  height:20px;
+  background:
+    linear-gradient(
+      #eb6674 0 20%,
+      #6c8cef 20% 40%,
+      #61c58c 40% 60%,
+      #e9bb59 60% 80%,
+      #a36fd6 80%
+    );
+}
+
+.fridge{
+  position:absolute;
+  width:17px;
+  height:36px;
+  background:#9aa5b0;
+  border:2px solid #c2cad1;
+}
+
+.fridge:after{
+  content:"";
+  position:absolute;
+  top:16px;
+  left:1px;
+  right:1px;
+  height:1px;
+  background:#636f79;
+}
+
+.tableRound{
+  position:absolute;
+  width:24px;
+  height:17px;
+  background:#8a6248;
+  border:2px solid #b0815e;
+  border-radius:50%;
+}
+
+.sofa{
+  position:absolute;
+  width:38px;
+  height:15px;
+  background:#53637b;
+  border:2px solid #72859f;
+  border-radius:6px;
+}
+
+.pipe{
+  position:absolute;
+  background:#5a6269;
+  border:1px solid #7d878f;
 }
 
 .bin{
   position:absolute;
-  width:7px;
-  height:8px;
-  background:#344356;
-  border-radius:1px 1px 2px 2px;
+  width:8px;
+  height:10px;
+  background:#344352;
+  border:1px solid #5f6d79;
 }
 
-.lamp{
+.rug{
   position:absolute;
-  width:4px;
-  height:11px;
-  background:#54647a;
+  border:2px solid rgba(255,255,255,.1);
+  background:#293b54;
+  opacity:.85;
 }
 
-.lamp:before{
-  content:"";
+.keyboard{
   position:absolute;
-  top:-3px;
-  left:-3px;
   width:10px;
-  height:5px;
-  background:#d7bd6a;
-  border-radius:50% 50% 2px 2px;
+  height:4px;
+  background:#718195;
+  border:1px solid #9aa7b5;
 }
 
-/* PEOPLE */
+.light{
+  position:absolute;
+  width:20px;
+  height:4px;
+  background:#e3d48b;
+  box-shadow:0 0 10px rgba(240,218,137,.7);
+}
+
+/* =====================================================
+   AGENTS
+===================================================== */
 
 .agent{
   position:absolute;
-  width:11px;
-  height:16px;
+  width:14px;
+  height:22px;
   z-index:50;
   pointer-events:none;
   transition:
-    left 1.2s linear,
-    top 1.2s linear;
+    left 2.6s linear,
+    top 2.6s linear;
 }
 
-.agent-name{
+.agentName{
   position:absolute;
-  bottom:19px;
+  bottom:25px;
   left:50%;
   transform:translateX(-50%);
-  font-size:4.7px;
-  font-weight:800;
+  font-size:5.5px;
+  font-weight:900;
   white-space:nowrap;
-  color:white;
+  color:#fff;
   text-shadow:
     0 1px 2px #000,
-    0 0 3px #000;
+    1px 0 2px #000,
+    -1px 0 2px #000;
 }
 
-.face{
+.head{
   position:absolute;
-  left:3px;
-  top:3px;
-  width:6px;
-  height:5px;
-  background:#efb06d;
-  border-radius:1px;
+  left:4px;
+  top:4px;
+  width:7px;
+  height:7px;
+  background:#efb475;
+  border-radius:2px;
 }
 
 .hair{
   position:absolute;
   left:3px;
   top:1px;
-  width:6px;
-  height:3px;
-  z-index:2;
-  background:#362a22;
+  width:9px;
+  height:5px;
+  background:#31231f;
+  z-index:3;
 }
 
-.shirt{
+.body{
   position:absolute;
-  left:2px;
-  top:8px;
-  width:8px;
-  height:6px;
+  left:3px;
+  top:11px;
+  width:9px;
+  height:8px;
   border-radius:1px;
 }
 
+.arm{
+  position:absolute;
+  top:12px;
+  width:2px;
+  height:7px;
+  background:#d99d66;
+}
+
+.arm.a{left:1px}
+.arm.b{right:1px}
+
 .leg{
   position:absolute;
-  top:13px;
-  width:2px;
-  height:3px;
-  background:#48556d;
+  top:18px;
+  width:3px;
+  height:4px;
+  background:#39475b;
 }
 
-.leg.left{
-  left:3px;
+.leg.a{left:3px}
+.leg.b{right:2px}
+
+.shoe{
+  position:absolute;
+  top:21px;
+  width:4px;
+  height:2px;
+  background:#151a20;
 }
 
-.leg.right{
-  right:3px;
+.shoe.a{left:2px}
+.shoe.b{right:1px}
+
+.walking .leg.a{
+  animation:walkA .34s infinite alternate;
 }
 
-.walking .leg.left{
-  animation:walkL .3s infinite alternate;
+.walking .leg.b{
+  animation:walkB .34s infinite alternate;
 }
 
-.walking .leg.right{
-  animation:walkR .3s infinite alternate;
+@keyframes walkA{
+  to{transform:translateY(-2px)}
 }
 
-@keyframes walkL{
-  to{transform:translateY(-1px)}
-}
-
-@keyframes walkR{
-  to{transform:translateY(1px)}
-}
-
-.sitting{
-  transform:translateY(2px) scaleY(.9);
+@keyframes walkB{
+  to{transform:translateY(2px)}
 }
 
 .working{
-  animation:workBob .65s infinite alternate;
+  animation:working .7s infinite alternate;
 }
 
-@keyframes workBob{
+@keyframes working{
   to{transform:translateY(-1px)}
 }
 
-/* UNIQUE PEOPLE */
+.sitting{
+  transform:translateY(4px) scaleY(.85);
+}
 
-.max .shirt{background:#dc5a8b;}
+/* unique */
+
+.max .body{background:#db598b}
 .max .hair{
-  background:#33241f;
-  border-radius:3px 3px 0 0;
+  border-radius:5px 4px 0 0;
 }
 
-.calvin .shirt{background:#6678ff;}
-.calvin .hair{
-  background:#423023;
-  height:2px;
-}
-
-.rico .shirt{background:#3faf88;}
-.rico .hair{
-  background:#14171a;
-  border-radius:4px 4px 1px 1px;
-}
-
-.trent .shirt{background:#dc6565;}
-.trent .hair{
-  background:#d7a657;
+.max:after{
+  content:"";
+  position:absolute;
+  top:13px;
+  left:6px;
+  width:3px;
   height:3px;
+  background:#f2c452;
 }
 
-.draymond .face{
-  background:#71482f;
+.calvin .body{background:#6577f6}
+.calvin .hair{
+  background:#513626;
+  height:4px;
+  transform:skewX(-12deg);
 }
 
-.draymond .shirt{background:#9c66ed;}
+.calvin:after{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:2px;
+  left:4px;
+  top:12px;
+  background:#a9b4ff;
+}
+
+.rico .body{background:#47ad84}
+.rico .hair{
+  background:#171b1c;
+  border-radius:4px 4px 0 0;
+}
+
+.rico:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:7px;
+  width:7px;
+  height:1px;
+  background:#252525;
+}
+
+.trent .body{background:#dc6461}
+.trent .hair{
+  background:#d7a255;
+  height:5px;
+  clip-path:polygon(0 100%,10% 0,40% 40%,65% 0,100% 45%,100% 100%);
+}
+
+.draymond .head,
+.draymond .arm{
+  background:#73492f;
+}
+
+.draymond .body{background:#925fdb}
 .draymond .hair{
   background:#101112;
-  border-radius:4px 4px 1px 1px;
+  border-radius:5px 5px 1px 1px;
 }
 
-.axel .shirt{background:#dfa948;}
-.axel .hair{background:#bd7e43;}
+.draymond:after{
+  content:"";
+  position:absolute;
+  right:-1px;
+  top:11px;
+  width:5px;
+  height:7px;
+  background:#453063;
+  border:1px solid #af86ea;
+}
 
-.adam .shirt{background:#6491b8;}
+.axel .body{background:#e0a744}
+.axel .hair{
+  background:#c77738;
+  clip-path:polygon(0 100%,10% 20%,35% 0,60% 20%,100% 0,100% 100%);
+}
+
+.axel:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:7px;
+  width:7px;
+  height:1px;
+  background:#354257;
+}
+
+.adam .body{background:#588fc0}
 .adam .hair{
-  background:#3d332c;
-  height:2px;
+  background:#372d27;
+  height:4px;
 }
 
-/* UI */
+.adam:after{
+  content:"";
+  position:absolute;
+  top:11px;
+  right:-2px;
+  width:4px;
+  height:5px;
+  background:#aab6c5;
+}
+
+/* =====================================================
+   UI
+===================================================== */
 
 .status{
   position:fixed;
   left:50%;
-  bottom:78px;
+  bottom:79px;
   transform:translateX(-50%);
-  color:var(--muted);
-  font-size:10px;
   z-index:100;
+  color:#96a1b4;
+  font-size:10px;
 }
 
 .taskbar{
   position:fixed;
   left:50%;
-  bottom:13px;
+  bottom:12px;
   transform:translateX(-50%);
   width:calc(100% - 24px);
-  max-width:620px;
-  height:56px;
+  max-width:630px;
+  height:58px;
   display:flex;
+  align-items:center;
   padding:6px;
-  gap:6px;
-  background:rgba(7,11,18,.96);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:18px;
-  backdrop-filter:blur(16px);
+  gap:5px;
+  border:1px solid #273040;
+  background:rgba(6,10,17,.97);
+  border-radius:20px;
   z-index:100;
 }
 
 .taskbar input{
   flex:1;
+  height:100%;
   min-width:0;
-  border:none;
+  border:0;
   outline:none;
-  background:transparent;
-  color:white;
-  padding:0 10px;
+  background:none;
+  color:#fff;
+  padding:0 12px;
   font-size:14px;
 }
 
 .taskbar button{
-  width:46px;
-  border:none;
-  border-radius:12px;
+  width:47px;
+  height:47px;
+  border:0;
+  border-radius:14px;
   background:var(--purple);
   color:white;
-  font-size:20px;
+  font-size:22px;
+}
+
+/* small screens */
+
+@media(max-width:450px){
+  .office{
+    height:760px;
+  }
 }
 </style>
 </head>
@@ -759,269 +918,570 @@ body{
 
 <div class="app">
 
-<div class="topbar">
-  <h1>AI Office</h1>
+<div class="top">
+  <div class="title">AI Office</div>
 
   <div class="online">
-    <span class="online-dot"></span>
+    <i></i>
     Online
   </div>
 </div>
 
-<div class="map-wrap">
+<div class="map-holder">
 
 <div class="office">
 
-<div class="building"></div>
+<!-- corridors -->
+<div class="corridor c1"></div>
+<div class="corridor c2"></div>
+<div class="corridor c3"></div>
+<div class="corridor c4"></div>
+<div class="corridor c5"></div>
+<div class="corridor c6"></div>
+<div class="corridor c7"></div>
+<div class="corridor c8"></div>
+<div class="corridor c9"></div>
+<div class="corridor c10"></div>
 
-<!-- HALLWAYS -->
-<div class="hall h-top"></div>
-<div class="hall h-left1"></div>
-<div class="hall h-right1"></div>
-<div class="hall h-mid"></div>
-<div class="hall h-left2"></div>
-<div class="hall h-right2"></div>
-<div class="hall h-bottom"></div>
+<!-- =====================================================
+RESEARCH
+===================================================== -->
 
-<!-- CODING -->
-<div class="room coding" id="coderRoom">
-  <div class="room-title">CODING LAB</div>
-
-  <div class="desk" style="left:17%;top:35%"></div>
-  <div class="screen" style="left:23%;top:25%"></div>
-  <div class="chair" style="left:25%;top:51%"></div>
-
-  <div class="desk" style="left:42%;top:35%"></div>
-  <div class="screen" style="left:48%;top:25%"></div>
-  <div class="chair" style="left:50%;top:51%"></div>
-
-  <div class="desk" style="right:10%;top:35%"></div>
-  <div class="screen" style="right:17%;top:25%"></div>
-  <div class="chair" style="right:18%;top:51%"></div>
-
-  <div class="server" style="left:5%;bottom:7%"></div>
-  <div class="server" style="left:12%;bottom:7%"></div>
-
-  <div class="board" style="left:43%;top:6%"></div>
-
-  <div class="plant" style="right:5%;bottom:7%"></div>
-  <div class="bin" style="right:15%;bottom:8%"></div>
-</div>
-
-<!-- RESEARCH -->
 <div class="room research" id="researchRoom">
-  <div class="room-title">RESEARCH</div>
 
-  <div class="rug" style="left:10%;top:28%;width:58%;height:53%"></div>
+<div class="label">RESEARCH LAB</div>
 
-  <div class="desk" style="left:12%;top:39%"></div>
-  <div class="screen" style="left:20%;top:30%"></div>
-  <div class="chair" style="left:23%;top:52%"></div>
+<div class="board" style="left:35%;top:10%"></div>
 
-  <div class="shelf" style="right:6%;top:22%"></div>
-  <div class="shelf" style="right:14%;top:22%"></div>
-  <div class="shelf" style="right:22%;top:22%"></div>
+<div class="shelf" style="left:5%;top:20%"></div>
+<div class="shelf" style="left:11%;top:20%"></div>
 
-  <div class="poster" style="left:9%;bottom:7%"></div>
-  <div class="plant" style="right:8%;bottom:6%"></div>
-  <div class="lamp" style="left:49%;bottom:9%"></div>
+<div class="rug"
+style="left:19%;top:29%;width:53%;height:55%;border-radius:5px"></div>
+
+<div class="woodDesk" style="
+position:absolute;
+left:10%;
+bottom:8%;
+width:73%;
+height:13px;
+border:1px solid #9b7054">
 </div>
 
-<!-- MANAGER -->
+<div class="monitor" style="left:15%;bottom:10%"></div>
+<div class="monitor" style="left:36%;bottom:10%"></div>
+
+<div class="paper" style="left:58%;bottom:10%"></div>
+<div class="paper" style="left:67%;bottom:11%;transform:rotate(18deg)"></div>
+<div class="cup" style="left:76%;bottom:11%"></div>
+
+<div class="plant" style="right:6%;bottom:8%"></div>
+<div class="poster" style="right:7%;top:17%"></div>
+
+<div class="box" style="left:6%;top:67%"></div>
+<div class="box" style="left:12%;top:71%"></div>
+
+<div class="light" style="left:47%;top:4%"></div>
+
+</div>
+
+<!-- =====================================================
+MANAGER
+===================================================== -->
+
 <div class="room manager" id="managerRoom">
-  <div class="room-title">MANAGER</div>
 
-  <div class="rug" style="left:12%;top:28%;width:76%;height:57%"></div>
+<div class="label">MANAGER OFFICE</div>
 
-  <div class="desk" style="left:32%;top:42%;width:37%"></div>
-  <div class="screen" style="left:45%;top:31%"></div>
-  <div class="chair" style="left:47%;top:56%"></div>
+<div class="shelf" style="left:5%;top:20%"></div>
+<div class="shelf" style="left:12%;top:20%"></div>
 
-  <div class="board" style="right:7%;top:8%"></div>
+<div class="board" style="right:8%;top:13%"></div>
 
-  <div class="plant" style="left:5%;bottom:7%"></div>
-  <div class="plant" style="right:5%;bottom:7%"></div>
+<div class="rug"
+style="left:17%;top:39%;width:67%;height:50%;border-radius:4px;background:#5a3341"></div>
 
-  <div class="sofa" style="left:8%;top:66%"></div>
-  <div class="lamp" style="right:20%;bottom:10%"></div>
+<div class="desk woodDesk"
+style="left:32%;top:49%;width:39px"></div>
+
+<div class="monitor"
+style="left:44%;top:40%"></div>
+
+<div class="keyboard"
+style="left:45%;top:52%"></div>
+
+<div class="cup"
+style="left:64%;top:51%"></div>
+
+<div class="paper"
+style="left:33%;top:51%"></div>
+
+<div class="chair"
+style="left:48%;top:61%"></div>
+
+<div class="plant"
+style="right:5%;bottom:6%"></div>
+
+<div class="plant"
+style="left:5%;bottom:7%"></div>
+
+<div class="light"
+style="left:45%;top:5%"></div>
+
 </div>
 
-<!-- TEST LAB -->
+<!-- =====================================================
+TEST
+===================================================== -->
+
 <div class="room testing" id="testerRoom">
-  <div class="room-title">TEST LAB</div>
 
-  <div class="desk" style="left:11%;top:38%"></div>
-  <div class="screen" style="left:18%;top:29%"></div>
-  <div class="chair" style="left:22%;top:52%"></div>
+<div class="label">TEST LAB</div>
 
-  <div class="server" style="right:5%;top:23%"></div>
-  <div class="server" style="right:13%;top:23%"></div>
-  <div class="server" style="right:21%;top:23%"></div>
+<div class="server" style="right:5%;top:15%"></div>
+<div class="server" style="right:11%;top:15%"></div>
+<div class="server" style="right:17%;top:15%"></div>
 
-  <div class="board" style="left:15%;bottom:8%"></div>
+<div class="board"
+style="left:9%;top:13%"></div>
 
-  <div class="bin" style="right:8%;bottom:8%"></div>
+<div class="desk woodDesk"
+style="left:25%;top:45%;width:45px;height:16px"></div>
+
+<div class="monitor"
+style="left:29%;top:35%"></div>
+
+<div class="monitor"
+style="left:48%;top:35%"></div>
+
+<div class="keyboard"
+style="left:38%;top:48%"></div>
+
+<div class="chair"
+style="left:40%;top:58%"></div>
+
+<div class="cabinet"
+style="left:6%;bottom:8%"></div>
+
+<div class="paper"
+style="left:70%;bottom:9%"></div>
+
+<div class="box"
+style="right:7%;bottom:8%"></div>
+
+<div class="light"
+style="left:45%;top:5%"></div>
+
 </div>
 
-<!-- CANTEEN -->
+<!-- =====================================================
+STORAGE
+===================================================== -->
+
+<div class="room storage">
+
+<div class="label">STORAGE</div>
+
+<div class="shelf" style="left:7%;top:22%"></div>
+<div class="shelf" style="left:18%;top:22%"></div>
+
+<div class="box" style="left:39%;top:23%"></div>
+<div class="box" style="left:48%;top:23%"></div>
+<div class="box" style="left:39%;top:33%"></div>
+
+<div class="cabinet" style="right:7%;top:24%"></div>
+<div class="cabinet" style="right:18%;top:24%"></div>
+
+<div class="box" style="left:8%;bottom:8%"></div>
+<div class="box" style="left:21%;bottom:8%"></div>
+<div class="box" style="left:34%;bottom:8%"></div>
+
+</div>
+
+<!-- =====================================================
+SERVER
+===================================================== -->
+
+<div class="room serverRoom">
+
+<div class="label">SERVER ROOM</div>
+
+<div class="server" style="left:8%;top:25%"></div>
+<div class="server" style="left:20%;top:25%"></div>
+<div class="server" style="left:32%;top:25%"></div>
+<div class="server" style="left:44%;top:25%"></div>
+
+<div class="server" style="right:8%;top:25%"></div>
+<div class="server" style="right:20%;top:25%"></div>
+
+<div class="pipe"
+style="left:8%;bottom:12%;width:75%;height:5px"></div>
+
+<div class="box"
+style="right:8%;bottom:6%"></div>
+
+</div>
+
+<!-- =====================================================
+CANTEEN
+===================================================== -->
+
 <div class="room canteen" id="canteenRoom">
-  <div class="room-title">CANTEEN + LOUNGE</div>
 
-  <div class="vending" style="left:5%;top:25%"></div>
-  <div class="fridge" style="left:13%;top:25%"></div>
-  <div class="coffee" style="left:22%;top:30%"></div>
+<div class="label" style="left:40%">CANTEEN + LOUNGE</div>
 
-  <div class="table" style="left:38%;top:40%"></div>
-  <div class="chair" style="left:32%;top:37%"></div>
-  <div class="chair" style="left:47%;top:37%"></div>
-  <div class="chair" style="left:39%;top:55%"></div>
+<div class="fridge"
+style="right:6%;top:14%"></div>
 
-  <div class="table" style="right:20%;top:40%"></div>
-  <div class="chair" style="right:30%;top:37%"></div>
-  <div class="chair" style="right:12%;top:37%"></div>
+<div class="vending"
+style="left:7%;top:14%"></div>
 
-  <div class="sofa" style="right:5%;bottom:8%"></div>
-  <div class="plant" style="right:5%;top:9%"></div>
-  <div class="poster" style="left:29%;bottom:8%"></div>
+<div class="desk woodDesk"
+style="left:24%;top:16%;width:70px;height:16px"></div>
+
+<div class="cup" style="left:27%;top:18%"></div>
+<div class="cup" style="left:33%;top:18%"></div>
+<div class="cup" style="left:39%;top:18%"></div>
+
+<div class="rug"
+style="left:24%;top:39%;width:53%;height:47%;border-radius:5px;background:#263c59"></div>
+
+<div class="tableRound"
+style="left:31%;top:48%"></div>
+
+<div class="chair"
+style="left:26%;top:48%"></div>
+
+<div class="chair"
+style="left:41%;top:48%"></div>
+
+<div class="chair"
+style="left:34%;top:57%"></div>
+
+<div class="tableRound"
+style="left:51%;top:67%"></div>
+
+<div class="chair"
+style="left:46%;top:67%"></div>
+
+<div class="chair"
+style="left:61%;top:67%"></div>
+
+<div class="sofa"
+style="right:4%;bottom:13%"></div>
+
+<div class="plant"
+style="left:5%;bottom:8%"></div>
+
+<div class="plant"
+style="right:7%;top:4%"></div>
+
+<div class="paper"
+style="right:22%;bottom:16%"></div>
+
+<div class="poster"
+style="left:8%;bottom:8%"></div>
+
 </div>
 
-<!-- DESIGN -->
+<!-- =====================================================
+DESIGN
+===================================================== -->
+
 <div class="room design" id="designerRoom">
-  <div class="room-title">DESIGN</div>
 
-  <div class="rug" style="left:10%;top:29%;width:60%;height:52%"></div>
+<div class="label">DESIGN STUDIO</div>
 
-  <div class="desk" style="left:13%;top:41%"></div>
-  <div class="screen" style="left:20%;top:31%"></div>
-  <div class="chair" style="left:23%;top:54%"></div>
+<div class="rug"
+style="left:17%;top:27%;width:59%;height:59%;border-radius:4px;background:#5a3449"></div>
 
-  <div class="board" style="right:8%;top:15%"></div>
+<div class="desk woodDesk"
+style="left:8%;top:36%;height:14px;width:44px"></div>
 
-  <div class="poster" style="right:10%;bottom:8%"></div>
-  <div class="plant" style="left:8%;bottom:7%"></div>
+<div class="monitor"
+style="left:13%;top:27%"></div>
 
-  <div class="shelf" style="right:7%;top:49%"></div>
+<div class="monitor"
+style="left:31%;top:27%"></div>
+
+<div class="keyboard"
+style="left:21%;top:39%"></div>
+
+<div class="chair"
+style="left:23%;top:48%"></div>
+
+<div class="board"
+style="right:7%;top:14%"></div>
+
+<div class="shelf"
+style="right:7%;bottom:8%"></div>
+
+<div class="poster"
+style="left:6%;bottom:7%"></div>
+
+<div class="plant"
+style="right:19%;bottom:7%"></div>
+
+<div class="paper"
+style="left:46%;bottom:9%"></div>
+
 </div>
 
-<!-- ANALYTICS -->
+<!-- =====================================================
+ANALYTICS
+===================================================== -->
+
 <div class="room analytics" id="analystRoom">
-  <div class="room-title">ANALYTICS</div>
 
-  <div class="desk" style="left:12%;top:39%"></div>
-  <div class="screen" style="left:19%;top:29%"></div>
-  <div class="chair" style="left:22%;top:53%"></div>
+<div class="label">ANALYTICS</div>
 
-  <div class="board" style="right:8%;top:14%"></div>
+<div class="board"
+style="right:7%;top:13%"></div>
 
-  <div class="shelf" style="right:8%;bottom:9%"></div>
-  <div class="shelf" style="right:17%;bottom:9%"></div>
+<div class="desk woodDesk"
+style="left:10%;top:34%;width:48px;height:15px"></div>
 
-  <div class="plant" style="left:7%;bottom:7%"></div>
-  <div class="lamp" style="left:49%;bottom:8%"></div>
+<div class="monitor"
+style="left:14%;top:25%"></div>
+
+<div class="monitor"
+style="left:33%;top:25%"></div>
+
+<div class="keyboard"
+style="left:23%;top:37%"></div>
+
+<div class="chair"
+style="left:25%;top:47%"></div>
+
+<div class="shelf"
+style="right:7%;bottom:7%"></div>
+
+<div class="shelf"
+style="right:15%;bottom:7%"></div>
+
+<div class="paper"
+style="left:55%;bottom:12%"></div>
+
+<div class="plant"
+style="left:5%;bottom:7%"></div>
+
 </div>
 
-<!-- ARCHIVES -->
+<!-- =====================================================
+UTILITY
+===================================================== -->
+
+<div class="room utility">
+
+<div class="label">UTILITY</div>
+
+<div class="pipe"
+style="left:9%;top:27%;width:8px;height:60%"></div>
+
+<div class="pipe"
+style="left:23%;top:22%;width:8px;height:65%"></div>
+
+<div class="pipe"
+style="left:38%;top:25%;width:8px;height:62%"></div>
+
+<div class="cabinet"
+style="right:12%;top:29%"></div>
+
+<div class="box"
+style="right:9%;bottom:8%"></div>
+
+</div>
+
+<!-- =====================================================
+ARCHIVES
+===================================================== -->
+
 <div class="room archives" id="adminRoom">
-  <div class="room-title">ARCHIVES + WORKSPACE</div>
 
-  <div class="cabinet" style="left:6%;top:24%"></div>
-  <div class="cabinet" style="left:13%;top:24%"></div>
-  <div class="cabinet" style="left:20%;top:24%"></div>
+<div class="label">ARCHIVES + WORKSPACE</div>
 
-  <div class="shelf" style="right:7%;top:24%"></div>
-  <div class="shelf" style="right:15%;top:24%"></div>
-  <div class="shelf" style="right:23%;top:24%"></div>
+<div class="cabinet" style="left:7%;top:21%"></div>
+<div class="cabinet" style="left:13%;top:21%"></div>
+<div class="cabinet" style="left:19%;top:21%"></div>
 
-  <div class="desk" style="left:39%;bottom:12%"></div>
-  <div class="screen" style="left:46%;bottom:22%"></div>
-  <div class="chair" style="left:48%;bottom:6%"></div>
+<div class="shelf" style="right:6%;top:18%"></div>
+<div class="shelf" style="right:13%;top:18%"></div>
+<div class="shelf" style="right:20%;top:18%"></div>
 
-  <div class="server" style="left:31%;top:24%"></div>
+<div class="box" style="left:28%;top:19%"></div>
+<div class="box" style="left:35%;top:19%"></div>
 
-  <div class="plant" style="right:6%;bottom:6%"></div>
-  <div class="poster" style="left:6%;bottom:7%"></div>
+<div class="board"
+style="right:29%;top:18%"></div>
+
+<div class="rug"
+style="left:29%;bottom:8%;width:42%;height:42%;border-radius:4px;background:#30463e"></div>
+
+<div class="desk woodDesk"
+style="left:39%;bottom:20%;width:43px"></div>
+
+<div class="monitor"
+style="left:47%;bottom:30%"></div>
+
+<div class="keyboard"
+style="left:48%;bottom:22%"></div>
+
+<div class="chair"
+style="left:49%;bottom:11%"></div>
+
+<div class="paper"
+style="left:39%;bottom:23%"></div>
+
+<div class="cup"
+style="left:62%;bottom:22%"></div>
+
+<div class="plant"
+style="right:6%;bottom:6%"></div>
+
+<div class="light"
+style="left:48%;top:5%"></div>
+
 </div>
 
-<!-- AGENTS -->
+<!-- =====================================================
+RESTROOM
+===================================================== -->
+
+<div class="room restroom">
+
+<div class="label">WC</div>
+
+<div style="
+position:absolute;
+right:10%;
+top:24%;
+width:13px;
+height:19px;
+background:#d9e0e5;
+border:2px solid #a5b0ba;
+border-radius:6px 6px 2px 2px">
+</div>
+
+<div style="
+position:absolute;
+left:14%;
+top:25%;
+width:21px;
+height:10px;
+background:#cfd8df;
+border:2px solid #9caab6;
+border-radius:2px 2px 6px 6px">
+</div>
+
+</div>
+
+<!-- =====================================================
+AGENTS
+===================================================== -->
 
 <div class="agent max" id="max">
-  <div class="agent-name">Max</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Max</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent calvin" id="calvin">
-  <div class="agent-name">Calvin</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Calvin</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent rico" id="rico">
-  <div class="agent-name">Rico</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Rico</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent trent" id="trent">
-  <div class="agent-name">Trent</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Trent</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent draymond" id="draymond">
-  <div class="agent-name">Draymond</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Draymond</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent axel" id="axel">
-  <div class="agent-name">Axel</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Axel</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 <div class="agent adam" id="adam">
-  <div class="agent-name">Adam</div>
-  <div class="hair"></div>
-  <div class="face"></div>
-  <div class="shirt"></div>
-  <div class="leg left"></div>
-  <div class="leg right"></div>
+<div class="agentName">Adam</div>
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="arm a"></div>
+<div class="arm b"></div>
+<div class="leg a"></div>
+<div class="leg b"></div>
+<div class="shoe a"></div>
+<div class="shoe b"></div>
 </div>
 
 </div>
 </div>
 </div>
 
-<div class="status" id="status">
-Office idle
-</div>
+<div class="status" id="status">Office idle</div>
 
 <div class="taskbar">
-  <input
-    id="taskInput"
-    autocomplete="off"
-    placeholder="Give Max a task..."
-  >
-  <button id="sendButton">↑</button>
+<input
+id="taskInput"
+placeholder="Give Max a task..."
+autocomplete="off">
+<button id="sendButton">↑</button>
 </div>
 
 <script>
@@ -1038,7 +1498,7 @@ const agents = {
 
 const rooms = {
   max: document.getElementById("managerRoom"),
-  calvin: document.getElementById("coderRoom"),
+  calvin: document.querySelector(".manager"),
   rico: document.getElementById("researchRoom"),
   trent: document.getElementById("testerRoom"),
   draymond: document.getElementById("designerRoom"),
@@ -1053,255 +1513,274 @@ const status = document.getElementById("status");
 const sleep = ms =>
   new Promise(resolve => setTimeout(resolve,ms));
 
-/*
-LEGAL WALKING POINTS
-
-These are doors, hallways and actual usable spots.
-Agents move between these only.
-*/
+/* =====================================================
+LEGAL ROUTE NETWORK
+===================================================== */
 
 const nodes = {
 
-  codingDesk:[50,12],
-  codingDoor:[50,20],
+  researchDesk:[17,20],
+  researchDoor:[31,27],
 
-  managerNorth:[50,22],
-  managerDesk:[50,31],
-  managerSouth:[50,41],
+  managerDesk:[52,16],
+  managerDoor:[49,27],
 
-  researchDoor:[34,31],
-  researchDesk:[18,31],
+  testDesk:[86,23],
+  testDoor:[73,31],
 
-  testDoor:[66,31],
-  testDesk:[82,31],
+  topLeftHall:[35,30],
+  topCentre:[49,31],
+  topRightHall:[69,34],
 
-  canteenNorth:[50,44],
-  canteenCentre:[50,51],
-  canteenCoffee:[38,52],
-  canteenTable:[54,52],
-  canteenSofa:[64,56],
-  canteenSouth:[50,61],
+  storage:[14,45],
+  storageDoor:[25,48],
 
-  designDoor:[34,58],
-  designDesk:[18,58],
+  centralLeft:[31,44],
+  central:[49,42],
+  centralRight:[70,45],
 
-  analyticsDoor:[66,58],
-  analyticsDesk:[82,58],
+  canteenTable:[44,50],
+  canteenSofa:[63,57],
+  canteenKitchen:[39,40],
 
-  lowerHall:[50,66],
+  designDoor:[29,65],
+  designDesk:[16,68],
 
-  archivesDoor:[50,70],
-  archivesDesk:[50,84],
+  analyticsDoor:[72,69],
+  analyticsDesk:[86,72],
 
-  leftHub:[38,43],
-  rightHub:[62,43],
+  lowerCentre:[49,67],
 
-  leftLower:[38,63],
-  rightLower:[62,63]
+  utilityDoor:[24,84],
+  utility:[15,87],
+
+  archivesDoor:[49,72],
+  archivesDesk:[51,87],
+
+  restroomDoor:[79,88],
+  restroom:[89,91]
 };
-
-/*
-CONNECTIONS.
-
-There is no connection unless a real doorway/corridor
-exists between those points.
-*/
 
 const graph = {
 
-  codingDesk:["codingDoor"],
-  codingDoor:["codingDesk","managerNorth"],
-
-  managerNorth:[
-    "codingDoor",
-    "managerDesk",
-    "researchDoor",
-    "testDoor"
-  ],
-
-  managerDesk:[
-    "managerNorth",
-    "managerSouth"
-  ],
-
-  managerSouth:[
-    "managerDesk",
-    "canteenNorth",
-    "leftHub",
-    "rightHub"
-  ],
-
-  researchDoor:[
-    "managerNorth",
-    "researchDesk"
-  ],
-
   researchDesk:["researchDoor"],
+  researchDoor:["researchDesk","topLeftHall"],
 
-  testDoor:[
-    "managerNorth",
-    "testDesk"
-  ],
+  managerDesk:["managerDoor"],
+  managerDoor:["managerDesk","topCentre"],
 
   testDesk:["testDoor"],
+  testDoor:["testDesk","topRightHall"],
 
-  leftHub:[
-    "managerSouth",
-    "designDoor",
-    "canteenNorth"
+  topLeftHall:[
+    "researchDoor",
+    "topCentre",
+    "storageDoor",
+    "centralLeft"
   ],
 
-  rightHub:[
-    "managerSouth",
-    "analyticsDoor",
-    "canteenNorth"
+  topCentre:[
+    "topLeftHall",
+    "topRightHall",
+    "managerDoor",
+    "central"
   ],
 
-  canteenNorth:[
-    "managerSouth",
-    "leftHub",
-    "rightHub",
-    "canteenCentre"
+  topRightHall:[
+    "topCentre",
+    "testDoor",
+    "centralRight"
   ],
 
-  canteenCentre:[
-    "canteenNorth",
-    "canteenCoffee",
+  storage:["storageDoor"],
+
+  storageDoor:[
+    "storage",
+    "topLeftHall",
+    "centralLeft"
+  ],
+
+  centralLeft:[
+    "topLeftHall",
+    "storageDoor",
+    "central",
+    "designDoor"
+  ],
+
+  central:[
+    "topCentre",
+    "centralLeft",
+    "centralRight",
+    "canteenKitchen",
     "canteenTable",
-    "canteenSofa",
-    "canteenSouth"
+    "lowerCentre"
   ],
 
-  canteenCoffee:["canteenCentre"],
-  canteenTable:["canteenCentre"],
-  canteenSofa:["canteenCentre"],
+  centralRight:[
+    "topRightHall",
+    "central",
+    "analyticsDoor"
+  ],
 
-  canteenSouth:[
-    "canteenCentre",
-    "leftLower",
-    "rightLower",
-    "lowerHall"
+  canteenKitchen:[
+    "central",
+    "canteenTable"
+  ],
+
+  canteenTable:[
+    "central",
+    "canteenKitchen",
+    "canteenSofa",
+    "lowerCentre"
+  ],
+
+  canteenSofa:[
+    "canteenTable",
+    "analyticsDoor"
   ],
 
   designDoor:[
-    "leftHub",
-    "leftLower",
-    "designDesk"
+    "centralLeft",
+    "designDesk",
+    "utilityDoor",
+    "lowerCentre"
   ],
 
-  designDesk:["designDoor"],
+  designDesk:[
+    "designDoor"
+  ],
 
   analyticsDoor:[
-    "rightHub",
-    "rightLower",
-    "analyticsDesk"
+    "centralRight",
+    "canteenSofa",
+    "analyticsDesk",
+    "lowerCentre",
+    "restroomDoor"
   ],
 
-  analyticsDesk:["analyticsDoor"],
+  analyticsDesk:[
+    "analyticsDoor"
+  ],
 
-  leftLower:[
+  lowerCentre:[
+    "central",
+    "canteenTable",
     "designDoor",
-    "canteenSouth",
-    "lowerHall"
-  ],
-
-  rightLower:[
     "analyticsDoor",
-    "canteenSouth",
-    "lowerHall"
-  ],
-
-  lowerHall:[
-    "canteenSouth",
-    "leftLower",
-    "rightLower",
     "archivesDoor"
   ],
 
-  archivesDoor:[
-    "lowerHall",
-    "archivesDesk"
+  utilityDoor:[
+    "designDoor",
+    "utility",
+    "archivesDoor"
   ],
 
-  archivesDesk:["archivesDoor"]
+  utility:[
+    "utilityDoor"
+  ],
+
+  archivesDoor:[
+    "lowerCentre",
+    "utilityDoor",
+    "archivesDesk",
+    "restroomDoor"
+  ],
+
+  archivesDesk:[
+    "archivesDoor"
+  ],
+
+  restroomDoor:[
+    "archivesDoor",
+    "analyticsDoor",
+    "restroom"
+  ],
+
+  restroom:[
+    "restroomDoor"
+  ]
 };
 
 const state = {
 
   max:{
     node:"managerDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   calvin:{
-    node:"codingDesk",
+    node:"topCentre",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   rico:{
     node:"researchDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   trent:{
     node:"testDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   draymond:{
     node:"designDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   axel:{
     node:"analyticsDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   },
 
   adam:{
     node:"archivesDesk",
+    moving:false,
     busy:false,
-    moving:false
+    interrupt:false
   }
-
 };
 
 const home = {
-
   max:"managerDesk",
-  calvin:"codingDesk",
+  calvin:"topCentre",
   rico:"researchDesk",
   trent:"testDesk",
   draymond:"designDesk",
   axel:"analyticsDesk",
   adam:"archivesDesk"
-
 };
 
 function place(name,node){
 
-  const point=nodes[node];
+  const p=nodes[node];
 
-  agents[name].style.left=point[0]+"%";
-  agents[name].style.top=point[1]+"%";
-
+  agents[name].style.left=p[0]+"%";
+  agents[name].style.top=p[1]+"%";
 }
 
 Object.keys(state).forEach(name=>{
   place(name,state[name].node);
 });
 
-/*
-SHORTEST LEGAL PATH
-*/
+/* =====================================================
+PATH FINDING
+===================================================== */
 
-function pathfind(start,end){
+function findPath(start,end){
 
   if(start===end){
     return [start];
@@ -1312,9 +1791,8 @@ function pathfind(start,end){
 
   while(queue.length){
 
-    const path=queue.shift();
-
-    const current=path[path.length-1];
+    const route=queue.shift();
+    const current=route[route.length-1];
 
     for(const next of graph[current] || []){
 
@@ -1322,27 +1800,23 @@ function pathfind(start,end){
         continue;
       }
 
-      const route=[...path,next];
+      const newRoute=[...route,next];
 
       if(next===end){
-        return route;
+        return newRoute;
       }
 
       visited.add(next);
-      queue.push(route);
+      queue.push(newRoute);
     }
-
   }
 
   return [start];
-
 }
 
-/*
-REAL WALK SPEED
-
-1.2 seconds for each section.
-*/
+/* =====================================================
+SLOW WALKING
+===================================================== */
 
 async function walkTo(name,target){
 
@@ -1353,8 +1827,7 @@ async function walkTo(name,target){
   state[name].moving=true;
 
   const agent=agents[name];
-
-  const route=pathfind(
+  const route=findPath(
     state[name].node,
     target
   );
@@ -1372,70 +1845,70 @@ async function walkTo(name,target){
 
     place(name,next);
 
-    await sleep(1250);
+    /*
+      THIS IS THE SPEED.
+      2700 = 2.7 seconds per section.
+    */
+
+    await sleep(2700);
 
     state[name].node=next;
   }
 
   agent.classList.remove("walking");
-
   state[name].moving=false;
 }
 
-/*
-IDLE LOCATIONS
+/* =====================================================
+LIVING OFFICE
+===================================================== */
 
-People spend most of their time doing something,
-NOT constantly wandering.
-*/
-
-const idleActivities = [
+const activities = [
 
   {
-    place:"canteenCoffee",
+    node:"canteenTable",
+    sitting:true
+  },
+
+  {
+    node:"canteenSofa",
+    sitting:true
+  },
+
+  {
+    node:"canteenKitchen",
     sitting:false
   },
 
   {
-    place:"canteenTable",
+    node:"researchDesk",
     sitting:true
   },
 
   {
-    place:"canteenSofa",
+    node:"testDesk",
     sitting:true
   },
 
   {
-    place:"codingDesk",
+    node:"designDesk",
     sitting:true
   },
 
   {
-    place:"researchDesk",
+    node:"analyticsDesk",
     sitting:true
   },
 
   {
-    place:"testDesk",
+    node:"archivesDesk",
     sitting:true
   },
 
   {
-    place:"designDesk",
-    sitting:true
-  },
-
-  {
-    place:"analyticsDesk",
-    sitting:true
-  },
-
-  {
-    place:"archivesDesk",
-    sitting:true
+    node:"storage",
+    sitting:false
   }
-
 ];
 
 async function idleLife(name){
@@ -1443,12 +1916,13 @@ async function idleLife(name){
   while(true){
 
     /*
-    Long idle periods.
+      WAIT 12–30 SECONDS.
+      They no longer constantly wander.
     */
 
     await sleep(
-      9000 +
-      Math.random()*16000
+      12000 +
+      Math.random()*18000
     );
 
     if(state[name].busy){
@@ -1456,61 +1930,64 @@ async function idleLife(name){
     }
 
     /*
-    Often they just stay where they are.
+      65% chance they just stay where they are.
     */
 
-    if(Math.random()<0.55){
+    if(Math.random()<0.65){
       continue;
     }
 
-    const activity=
-      idleActivities[
+    const action=
+      activities[
         Math.floor(
-          Math.random()*idleActivities.length
+          Math.random()*activities.length
         )
       ];
 
     await walkTo(
       name,
-      activity.place
+      action.node
     );
 
-    if(activity.sitting){
+    if(action.sitting){
       agents[name].classList.add("sitting");
     }
 
     /*
-    Actually hang around there.
+      Stay there for ages.
     */
 
     await sleep(
-      9000 +
-      Math.random()*18000
+      14000 +
+      Math.random()*22000
     );
 
     agents[name].classList.remove("sitting");
   }
-
 }
 
 Object.keys(state).forEach(name=>{
   idleLife(name);
 });
 
-/*
-SEND TO WORK
-*/
+/* =====================================================
+WORK
+===================================================== */
 
 async function sendToWork(name){
 
   state[name].busy=true;
-  state[name].interrupt=true;
 
-  while(state[name].moving){
-    await sleep(100);
+  if(state[name].moving){
+
+    state[name].interrupt=true;
+
+    while(state[name].moving){
+      await sleep(100);
+    }
+
+    state[name].interrupt=false;
   }
-
-  state[name].interrupt=false;
 
   agents[name].classList.remove("sitting");
 
@@ -1521,14 +1998,14 @@ async function sendToWork(name){
 
   agents[name].classList.add("working");
 
-  rooms[name].classList.add("active");
+  if(rooms[name]){
+    rooms[name].classList.add("active");
+  }
 }
 
-/*
-TASK VISUALISATION
-
-Actual AI backend gets connected later.
-*/
+/* =====================================================
+TASK DEMO
+===================================================== */
 
 async function runTask(){
 
@@ -1542,32 +2019,33 @@ async function runTask(){
     return;
   }
 
+  button.disabled=true;
+
   status.textContent=
-    "Max is heading to his desk...";
+    "Max is returning to his office...";
 
   await sendToWork("max");
 
   status.textContent=
-    "Max is planning...";
+    "Max is planning the task...";
 
-  await sleep(1200);
+  await sleep(1600);
 
   status.textContent=
     "Max is assigning the team...";
 
-  sendToWork("calvin");
-  sendToWork("rico");
-  sendToWork("trent");
-  sendToWork("draymond");
-  sendToWork("axel");
-  sendToWork("adam");
-
-  await sleep(6000);
+  await Promise.all([
+    sendToWork("rico"),
+    sendToWork("trent"),
+    sendToWork("draymond"),
+    sendToWork("axel"),
+    sendToWork("adam")
+  ]);
 
   status.textContent=
     "Team working...";
 
-  await sleep(6000);
+  await sleep(7000);
 
   Object.keys(state).forEach(name=>{
 
@@ -1577,14 +2055,16 @@ async function runTask(){
       "working"
     );
 
-    rooms[name].classList.remove(
-      "active"
-    );
-
+    if(rooms[name]){
+      rooms[name].classList.remove(
+        "active"
+      );
+    }
   });
 
-  status.textContent=
-    "Office idle";
+  status.textContent="Office idle";
+
+  button.disabled=false;
 }
 
 button.addEventListener(
@@ -1594,12 +2074,10 @@ button.addEventListener(
 
 input.addEventListener(
   "keydown",
-  event=>{
-
-    if(event.key==="Enter"){
+  e=>{
+    if(e.key==="Enter"){
       runTask();
     }
-
   }
 );
 
