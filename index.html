@@ -9729,7 +9729,7 @@ taskInput?.addEventListener(
 <style>
 .max-notification{
   display:none;
-  position:absolute;
+  position:fixed;
   z-index:9998;
 
   width:34px;
@@ -9875,7 +9875,14 @@ function showMaxResult(answer){
 
   maxResultContent.textContent =
     answer || "Task completed.";
+const maxAgent = document.getElementById("max");
+const rect = maxAgent.getBoundingClientRect();
 
+maxNotification.style.left =
+  (rect.left + rect.width / 2 - 17) + "px";
+
+maxNotification.style.top =
+  (rect.top - 42) + "px";
   maxNotification.classList.add("visible");
 }
 
