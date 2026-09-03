@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Office</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 50% 15%, #18213d 0%, transparent 35%),
+        #080b12;
+      color: white;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 22px 18px 120px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .online {
+      font-size: 12px;
+      color: #7ee2ad;
+      background: rgba(74, 222, 128, 0.08);
+      border: 1px solid rgba(74, 222, 128, 0.18);
+      padding: 7px 11px;
+      border-radius: 20px;
+    }
+
+    .office {
+      position: relative;
+      max-width: 700px;
+      height: 570px;
+      margin: 35px auto 0;
+    }
+
+    .agent {
+      position: absolute;
+      width: 140px;
+      padding: 16px 12px;
+      text-align: center;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 15px 35px rgba(0,0,0,.25);
+    }
+
+    .agent-icon {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 10px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: rgba(115,130,255,.12);
+      font-size: 20px;
+    }
+
+    .agent h3 {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .agent span {
+      color: #78839b;
+      font-size: 10px;
+    }
+
+    .coder {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .research {
+      left: 0;
+      top: 215px;
+    }
+
+    .tester {
+      right: 0;
+      top: 215px;
+    }
+
+    .design {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .manager {
+      width: 190px;
+      min-height: 175px;
+      top: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(91,108,255,.17),
+          rgba(108,75,255,.07)
+        );
+      border: 1px solid rgba(112,125,255,.32);
+      box-shadow:
+        0 0 65px rgba(74,91,255,.13),
+        0 20px 45px rgba(0,0,0,.3);
+    }
+
+    .manager .agent-icon {
+      width: 52px;
+      height: 52px;
+      font-size: 25px;
+      border-radius: 16px;
+    }
+
+    .manager h3 {
+      font-size: 19px;
+    }
+
+    .manager span {
+      line-height: 1.5;
+      padding: 0 8px;
+    }
+
+    .composer {
+      max-width: 700px;
+      margin: 30px auto 0;
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 18px;
+    }
+
+    .composer input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .composer input::placeholder {
+      color: #657087;
+    }
+
+    .composer button {
+      border: none;
+      border-radius: 12px;
+      padding: 0 17px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg,#6675ff,#865cff);
+    }
+
+    .workspace {
+      position: fixed;
+      right: 0;
+      top: 45%;
+      padding: 18px 10px;
+      border-radius: 14px 0 0 14px;
+      background: #111725;
+      border: 1px solid rgba(255,255,255,.08);
+      color: #9ba5bb;
+    }
+
+    @media(max-width:600px) {
+      .office {
+        height: 500px;
+      }
+
+      .agent {
+        width: 112px;
+        padding: 13px 8px;
+      }
+
+      .research,
+      .tester {
+        top: 195px;
+      }
+
+      .manager {
+        top: 155px;
+        width: 155px;
+        min-height: 160px;
+      }
+
+      .agent span {
+        font-size: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="logo">AI Office</div>
+    <div class="online">● Online</div>
+  </header>
+
+  <div class="office">
+
+    <div class="agent coder">
+      <div class="agent-icon">⌨</div>
+      <h3>Coder</h3>
+      <span>Build & automate</span>
+    </div>
+
+    <div class="agent research">
+      <div class="agent-icon">⌕</div>
+      <h3>Research</h3>
+      <span>Search & investigate</span>
+    </div>
+
+    <div class="agent manager">
+      <div class="agent-icon">◆</div>
+      <h3>Manager</h3>
+      <span>Plans, delegates and coordinates your AI workforce</span>
+    </div>
+
+    <div class="agent tester">
+      <div class="agent-icon">✓</div>
+      <h3>Tester</h3>
+      <span>Test & verify</span>
+    </div>
+
+    <div class="agent design">
+      <div class="agent-icon">✦</div>
+      <h3>Design</h3>
+      <span>Design & present</span>
+    </div>
+
+  </div>
+
+  <div class="composer">
+    <input
+      type="text"
+      placeholder="Give your Manager a task..."
+    >
+    <button>Send</button>
+  </div>
+
+</div>
+
+<div class="workspace">‹</div>
+
+</body>
+</html>
