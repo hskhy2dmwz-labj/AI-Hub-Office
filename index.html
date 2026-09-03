@@ -3403,5 +3403,2601 @@ setTimeout(()=>{
   }
 }
 </style>
+  <!-- =========================================================
+     AI OFFICE — HEAVY DETAIL PASS V2
+     KEEP THE EXISTING MOBILE ZOOM FIX.
+========================================================= -->
+
+<style id="ai-office-heavy-detail-v2">
+
+/* =========================================================
+   1. CHARACTERS — EXACTLY 15% SMALLER
+   Uses CSS individual scale so it DOES NOT overwrite the
+   translate() used by the movement system.
+========================================================= */
+
+.agent{
+  scale:.85;
+  transform-origin:center bottom;
+
+  filter:
+    drop-shadow(0 3px 1px rgba(0,0,0,.78))
+    drop-shadow(0 0 1px rgba(0,0,0,.7));
+}
+
+/* keep names readable even though bodies are smaller */
+
+.agent .name,
+.agent-name{
+  font-weight:800;
+  letter-spacing:.25px;
+  text-shadow:
+    0 2px 2px #000,
+    1px 0 #000,
+    -1px 0 #000;
+}
+
+
+/* =========================================================
+   2. ROOM DEPTH
+========================================================= */
+
+.room{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* stronger dark perimeter inside each room */
+
+.room::before{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.09),
+    inset 0 0 18px rgba(0,0,0,.44),
+    inset 0 -18px 25px rgba(0,0,0,.12);
+}
+
+/* subtle top lighting */
+
+.room::after{
+  opacity:.88;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));
+}
+
+
+/* =========================================================
+   3. FLOOR TEXTURE
+========================================================= */
+
+.ai-floor-grain{
+  position:absolute;
+  inset:12px;
+  z-index:1;
+  pointer-events:none;
+
+  opacity:.17;
+
+  background:
+    radial-gradient(
+      circle at 20% 31%,
+      rgba(255,255,255,.18) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 74% 67%,
+      rgba(0,0,0,.36) 0 1px,
+      transparent 1.6px
+    ),
+    radial-gradient(
+      circle at 49% 17%,
+      rgba(255,255,255,.13) 0 1px,
+      transparent 1.4px
+    );
+
+  background-size:
+    31px 29px,
+    37px 43px,
+    53px 47px;
+}
+
+.ai-floor-scuff{
+  position:absolute;
+  z-index:2;
+  pointer-events:none;
+
+  width:15px;
+  height:4px;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(0,0,0,.26),
+      transparent
+    );
+
+  opacity:.7;
+}
+
+.ai-floor-scratch{
+  position:absolute;
+  z-index:2;
+  pointer-events:none;
+
+  width:14px;
+  height:1px;
+
+  background:rgba(255,255,255,.08);
+
+  box-shadow:
+    4px 3px rgba(0,0,0,.11);
+}
+
+
+/* =========================================================
+   4. WALL HARDWARE
+========================================================= */
+
+.ai-wall-bolt{
+  position:absolute;
+  z-index:12;
+
+  width:4px;
+  height:4px;
+
+  border-radius:50%;
+
+  background:#818b90;
+
+  box-shadow:
+    0 0 0 1px #121619,
+    inset 1px 1px rgba(255,255,255,.45);
+}
+
+.ai-wall-panel{
+  position:absolute;
+  z-index:9;
+
+  width:29px;
+  height:18px;
+
+  border:2px solid #151b1f;
+
+  background:
+    linear-gradient(
+      145deg,
+      #3a464c,
+      #222a2f
+    );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    2px 2px 0 rgba(0,0,0,.35);
+}
+
+.ai-wall-panel::before{
+  content:"";
+
+  position:absolute;
+
+  width:4px;
+  height:4px;
+
+  left:5px;
+  top:5px;
+
+  border-radius:50%;
+
+  background:#55cf7b;
+
+  box-shadow:
+    8px 0 #cfb755,
+    16px 0 #b34e4e;
+}
+
+.ai-vent-small{
+  position:absolute;
+  z-index:10;
+
+  width:30px;
+  height:18px;
+
+  border:2px solid #111719;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #566269 0 2px,
+      #20292e 2px 4px
+    );
+
+  box-shadow:
+    inset 0 0 6px rgba(0,0,0,.6),
+    1px 2px 0 rgba(0,0,0,.4);
+}
+
+.ai-warning-strip{
+  position:absolute;
+  z-index:9;
+
+  height:6px;
+
+  border:1px solid #171717;
+
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #c49b35 0 6px,
+      #252525 6px 12px
+    );
+}
+
+
+/* =========================================================
+   5. CABLES + PIPES
+========================================================= */
+
+.ai-cable{
+  position:absolute;
+  z-index:8;
+
+  height:3px;
+
+  border-radius:5px;
+
+  background:#171b1d;
+
+  box-shadow:
+    0 1px rgba(255,255,255,.09),
+    0 -1px rgba(0,0,0,.5);
+}
+
+.ai-cable.blue{
+  background:#1b516d;
+}
+
+.ai-cable.red{
+  background:#66312c;
+}
+
+.ai-cable.yellow{
+  background:#76692c;
+}
+
+.ai-pipe{
+  position:absolute;
+  z-index:7;
+
+  width:7px;
+
+  border-left:2px solid #15191b;
+  border-right:2px solid #15191b;
+
+  background:
+    linear-gradient(
+      90deg,
+      #4f5c61,
+      #7e8c91 45%,
+      #374147
+    );
+
+  box-shadow:
+    2px 0 2px rgba(0,0,0,.4);
+}
+
+.ai-pipe::before,
+.ai-pipe::after{
+  content:"";
+
+  position:absolute;
+
+  width:11px;
+  height:4px;
+
+  left:-4px;
+
+  background:#77848a;
+
+  border:1px solid #242b2e;
+}
+
+.ai-pipe::before{
+  top:17px;
+}
+
+.ai-pipe::after{
+  bottom:21px;
+}
+
+
+/* =========================================================
+   6. LITTLE ELECTRONICS
+========================================================= */
+
+.ai-status-light{
+  position:absolute;
+  z-index:20;
+
+  width:6px;
+  height:3px;
+
+  border-radius:4px;
+
+  background:#55dc7c;
+
+  box-shadow:
+    0 0 4px rgba(85,220,124,.75);
+
+  animation:aiBlink 3.2s infinite steps(2);
+}
+
+.ai-status-light.blue{
+  background:#5ab7ea;
+
+  box-shadow:
+    0 0 4px rgba(90,183,234,.8);
+}
+
+.ai-status-light.red{
+  background:#dc5e58;
+
+  box-shadow:
+    0 0 4px rgba(220,94,88,.8);
+}
+
+@keyframes aiBlink{
+  0%,82%{
+    opacity:1;
+  }
+
+  83%,100%{
+    opacity:.35;
+  }
+}
+
+
+/* =========================================================
+   7. COMPUTER CLUTTER
+========================================================= */
+
+.ai-keyboard{
+  position:absolute;
+  z-index:20;
+
+  width:28px;
+  height:9px;
+
+  border:2px solid #111518;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #343d42 0 2px,
+      #171d20 2px 4px
+    );
+
+  transform:perspective(12px) rotateX(8deg);
+}
+
+.ai-mouse{
+  position:absolute;
+  z-index:21;
+
+  width:7px;
+  height:10px;
+
+  border:1px solid #111;
+
+  border-radius:5px;
+
+  background:#363d41;
+
+  box-shadow:
+    inset 2px 1px rgba(255,255,255,.08);
+}
+
+.ai-mug{
+  position:absolute;
+  z-index:22;
+
+  width:9px;
+  height:10px;
+
+  border:1px solid #403a32;
+
+  border-radius:2px 2px 4px 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #bcae95,
+      #e1d7c5 50%,
+      #9d927f
+    );
+
+  box-shadow:
+    1px 2px 2px rgba(0,0,0,.25);
+}
+
+.ai-mug::after{
+  content:"";
+
+  position:absolute;
+
+  width:5px;
+  height:5px;
+
+  right:-5px;
+  top:2px;
+
+  border:2px solid #8e8373;
+  border-left:0;
+
+  border-radius:0 6px 6px 0;
+}
+
+.ai-paper{
+  position:absolute;
+  z-index:18;
+
+  width:17px;
+  height:22px;
+
+  border:1px solid #514d42;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #ddd4ba 0 3px,
+      #aba38d 3px 4px
+    );
+
+  box-shadow:
+    2px 2px 1px rgba(0,0,0,.2);
+}
+
+.ai-pen{
+  position:absolute;
+  z-index:23;
+
+  width:18px;
+  height:2px;
+
+  background:#305e81;
+
+  border-radius:2px;
+}
+
+
+/* =========================================================
+   8. BOOKS / FILES / OFFICE STUFF
+========================================================= */
+
+.ai-books{
+  position:absolute;
+  z-index:18;
+
+  width:25px;
+  height:18px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #785044 0 5px,
+      transparent 5px 6px,
+      #355e73 6px 11px,
+      transparent 11px 12px,
+      #74703e 12px 18px
+    );
+
+  border-left:2px solid rgba(0,0,0,.45);
+
+  filter:drop-shadow(2px 2px 1px rgba(0,0,0,.3));
+}
+
+.ai-file-box{
+  position:absolute;
+  z-index:17;
+
+  width:30px;
+  height:24px;
+
+  border:2px solid #342718;
+
+  background:
+    linear-gradient(
+      135deg,
+      #926d42,
+      #70502e
+    );
+
+  box-shadow:
+    inset 2px 2px rgba(255,255,255,.07),
+    2px 2px 2px rgba(0,0,0,.35);
+}
+
+.ai-file-box::after{
+  content:"";
+
+  position:absolute;
+
+  width:16px;
+  height:7px;
+
+  left:5px;
+  top:6px;
+
+  border:1px solid #5a5549;
+
+  background:#dbd2b6;
+}
+
+.ai-folder{
+  position:absolute;
+  z-index:19;
+
+  width:22px;
+  height:14px;
+
+  background:#b69e50;
+
+  border:1px solid #514522;
+
+  transform:rotate(-5deg);
+}
+
+.ai-folder::before{
+  content:"";
+
+  position:absolute;
+
+  width:9px;
+  height:4px;
+
+  left:2px;
+  top:-4px;
+
+  background:#b69e50;
+
+  border:1px solid #514522;
+  border-bottom:0;
+}
+
+
+/* =========================================================
+   9. PLANTS
+========================================================= */
+
+.ai-plant{
+  position:absolute;
+  z-index:16;
+
+  width:18px;
+  height:28px;
+}
+
+.ai-plant::after{
+  content:"";
+
+  position:absolute;
+
+  bottom:0;
+  left:4px;
+
+  width:11px;
+  height:10px;
+
+  background:#815539;
+
+  border:2px solid #39291e;
+
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    82% 100%,
+    18% 100%
+  );
+}
+
+.ai-plant::before{
+  content:"";
+
+  position:absolute;
+
+  width:18px;
+  height:19px;
+
+  top:0;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 90%,
+      #38784c 0 18%,
+      transparent 19%
+    ),
+    radial-gradient(
+      ellipse at 20% 60%,
+      #4a945d 0 19%,
+      transparent 20%
+    ),
+    radial-gradient(
+      ellipse at 80% 62%,
+      #2f7246 0 19%,
+      transparent 20%
+    ),
+    radial-gradient(
+      ellipse at 48% 27%,
+      #5b9e68 0 20%,
+      transparent 21%
+    );
+}
+
+
+/* =========================================================
+   10. RESEARCH DETAIL
+========================================================= */
+
+.ai-note-board{
+  position:absolute;
+  z-index:11;
+
+  width:48px;
+  height:40px;
+
+  border:3px solid #37291d;
+
+  background:#86684c;
+
+  box-shadow:
+    inset 0 0 0 1px #ae8a63,
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+.ai-note-board::before{
+  content:"";
+
+  position:absolute;
+  inset:5px;
+
+  background:
+    linear-gradient(
+      17deg,
+      transparent 45%,
+      rgba(151,47,43,.65) 46% 48%,
+      transparent 49%
+    ),
+    linear-gradient(
+      -31deg,
+      transparent 48%,
+      rgba(55,84,127,.7) 49% 51%,
+      transparent 52%
+    );
+}
+
+.ai-note-board::after{
+  content:"";
+
+  position:absolute;
+
+  width:11px;
+  height:9px;
+
+  left:7px;
+  top:7px;
+
+  background:#d2c49c;
+
+  box-shadow:
+    18px 3px #c9d0ba,
+    7px 19px #d4b5a6,
+    25px 18px #c7bc87;
+}
+
+
+/* =========================================================
+   11. SERVER DETAIL
+========================================================= */
+
+.ai-mini-server{
+  position:absolute;
+  z-index:16;
+
+  width:29px;
+  height:51px;
+
+  border:2px solid #090c0e;
+
+  background:
+    linear-gradient(
+      90deg,
+      #151c20,
+      #263138 48%,
+      #11171b
+    );
+
+  box-shadow:
+    inset 2px 0 rgba(255,255,255,.05),
+    3px 4px 3px rgba(0,0,0,.35);
+}
+
+.ai-mini-server::before{
+  content:"";
+
+  position:absolute;
+  inset:5px;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #2c3a41 0 4px,
+      #11181c 4px 7px
+    );
+}
+
+.ai-mini-server::after{
+  content:"";
+
+  position:absolute;
+
+  width:3px;
+  height:3px;
+
+  right:6px;
+  top:8px;
+
+  border-radius:50%;
+
+  background:#45e67b;
+
+  box-shadow:
+    0 8px #54b7ee,
+    0 16px #45e67b,
+    0 24px #d1b447,
+    0 32px #54b7ee;
+}
+
+
+/* =========================================================
+   12. DESIGN STUDIO DETAIL
+========================================================= */
+
+.ai-paint-palette{
+  position:absolute;
+  z-index:19;
+
+  width:23px;
+  height:17px;
+
+  border:2px solid #3c3028;
+
+  border-radius:50% 46% 52% 40%;
+
+  background:#ba9b76;
+
+  transform:rotate(12deg);
+}
+
+.ai-paint-palette::after{
+  content:"";
+
+  position:absolute;
+
+  width:4px;
+  height:4px;
+
+  left:4px;
+  top:4px;
+
+  border-radius:50%;
+
+  background:#db5961;
+
+  box-shadow:
+    7px 1px #4d9ed3,
+    12px 5px #e5c24d,
+    5px 8px #70a25f;
+}
+
+.ai-poster{
+  position:absolute;
+  z-index:11;
+
+  width:29px;
+  height:39px;
+
+  border:2px solid #16161a;
+
+  background:
+    linear-gradient(
+      150deg,
+      #bb476e 0 32%,
+      #492e71 33% 67%,
+      #d1a75f 68%
+    );
+
+  box-shadow:
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   13. ANALYTICS DETAIL
+========================================================= */
+
+.ai-chart-screen{
+  position:absolute;
+  z-index:12;
+
+  width:48px;
+  height:33px;
+
+  border:3px solid #10171a;
+
+  background:
+    linear-gradient(
+      to top,
+      transparent 0 24%,
+      rgba(255,255,255,.05) 25% 26%,
+      transparent 27% 49%,
+      rgba(255,255,255,.05) 50% 51%,
+      transparent 52%
+    ),
+    linear-gradient(
+      125deg,
+      transparent 0 12%,
+      #58b4dd 13% 16%,
+      transparent 17% 31%,
+      #58b4dd 32% 35%,
+      transparent 36% 54%,
+      #79c872 55% 58%,
+      transparent 59%
+    ),
+    #172733;
+
+  box-shadow:
+    inset 0 0 9px rgba(71,157,206,.23),
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   14. CANTEEN DETAIL
+========================================================= */
+
+.ai-food-tray{
+  position:absolute;
+  z-index:18;
+
+  width:28px;
+  height:17px;
+
+  border:2px solid #353b3d;
+
+  border-radius:3px;
+
+  background:#8a9798;
+}
+
+.ai-food-tray::before{
+  content:"";
+
+  position:absolute;
+
+  width:8px;
+  height:6px;
+
+  left:4px;
+  top:4px;
+
+  border-radius:50%;
+
+  background:#a66c3e;
+
+  box-shadow:
+    11px 0 #639259;
+}
+
+.ai-drink-can{
+  position:absolute;
+  z-index:21;
+
+  width:7px;
+  height:13px;
+
+  border:1px solid #20272a;
+
+  border-radius:2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #b94546,
+      #db6c64,
+      #803031
+    );
+}
+
+
+/* =========================================================
+   15. UTILITY DETAIL
+========================================================= */
+
+.ai-toolbox{
+  position:absolute;
+  z-index:18;
+
+  width:31px;
+  height:19px;
+
+  border:2px solid #451512;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #b7433c,
+      #812a25
+    );
+
+  box-shadow:
+    inset 0 2px rgba(255,255,255,.15),
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+.ai-toolbox::before{
+  content:"";
+
+  position:absolute;
+
+  width:13px;
+  height:6px;
+
+  left:7px;
+  top:-8px;
+
+  border:2px solid #52231f;
+  border-bottom:0;
+}
+
+.ai-cleaner{
+  position:absolute;
+  z-index:19;
+
+  width:9px;
+  height:18px;
+
+  border:2px solid #234350;
+
+  border-radius:2px 2px 4px 4px;
+
+  background:#4fa7c7;
+}
+
+.ai-cleaner::before{
+  content:"";
+
+  position:absolute;
+
+  width:6px;
+  height:6px;
+
+  left:0;
+  top:-7px;
+
+  background:#d7dedc;
+
+  border:1px solid #4c5658;
+}
+
+
+/* =========================================================
+   16. RESTROOM DETAIL
+========================================================= */
+
+.ai-mirror{
+  position:absolute;
+  z-index:12;
+
+  width:38px;
+  height:28px;
+
+  border:3px solid #283236;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7d979f,
+      #c2d0d1 48%,
+      #768a91 50%,
+      #9fb4b7
+    );
+
+  box-shadow:
+    inset 0 0 5px rgba(255,255,255,.25),
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+.ai-soap{
+  position:absolute;
+  z-index:18;
+
+  width:7px;
+  height:12px;
+
+  border:1px solid #28393e;
+
+  border-radius:2px;
+
+  background:#72b5bd;
+}
+
+
+/* =========================================================
+   17. STORAGE DETAIL
+========================================================= */
+
+.ai-crate-small{
+  position:absolute;
+  z-index:16;
+
+  width:30px;
+  height:25px;
+
+  border:2px solid #3b2919;
+
+  background:
+    linear-gradient(
+      45deg,
+      transparent 45%,
+      rgba(73,46,27,.8) 46% 53%,
+      transparent 54%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 45%,
+      rgba(73,46,27,.8) 46% 53%,
+      transparent 54%
+    ),
+    #8a633b;
+
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.04),
+    2px 3px 0 rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   18. CHARACTER EXTRA SHADING
+========================================================= */
+
+.agent .head{
+  box-shadow:
+    inset 2px 2px rgba(255,255,255,.18),
+    inset -3px -3px rgba(55,25,17,.19),
+    0 0 0 1px rgba(20,13,10,.7);
+}
+
+.agent .body{
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.1),
+    inset -4px -3px rgba(0,0,0,.22),
+    0 0 0 1px rgba(0,0,0,.35);
+}
+
+.agent .hair{
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.09),
+    inset -4px -3px rgba(0,0,0,.32);
+}
+
+/* subtle body breathing */
+
+.agent:not(.walking){
+  transition:
+    margin-left .9s ease,
+    margin-top .9s ease;
+}
+
+
+/* =========================================================
+   DRAYMOND
+========================================================= */
+
+#draymond .head{
+  box-shadow:
+    inset 2px 2px rgba(255,255,255,.10),
+    inset -3px -3px rgba(25,12,9,.22),
+    0 0 0 1px rgba(10,8,7,.72);
+}
+
+
+/* =========================================================
+   JARED — JANITOR DETAILS
+========================================================= */
+
+#jared .body{
+  position:relative;
+}
+
+#jared .body::after{
+  content:"";
+
+  position:absolute;
+
+  left:2px;
+  right:2px;
+  top:7px;
+
+  height:3px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #c5d2c8,
+      #81948a
+    );
+
+  opacity:.68;
+}
+
+#jared .cap{
+  filter:
+    drop-shadow(0 1px 0 #111)
+    drop-shadow(0 0 1px rgba(0,0,0,.55));
+}
+
+</style>
+
+
+<script>
+/* =========================================================
+   AI OFFICE HEAVY DETAIL ENGINE
+========================================================= */
+
+(function(){
+
+  if(
+    window.AI_OFFICE_DETAIL_V2_LOADED
+  ){
+    return;
+  }
+
+  window.AI_OFFICE_DETAIL_V2_LOADED = true;
+
+
+  /* -------------------------------------------------------
+     CREATE ELEMENT
+  ------------------------------------------------------- */
+
+  function add(
+    room,
+    className,
+    x,
+    y,
+    extra={}
+  ){
+
+    if(!room){
+      return null;
+    }
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      className;
+
+    item.style.left =
+      x + "px";
+
+    item.style.top =
+      y + "px";
+
+    Object.entries(extra)
+      .forEach(([key,value])=>{
+
+        item.style[key] =
+          value;
+
+      });
+
+    room.appendChild(item);
+
+    return item;
+  }
+
+
+  /* -------------------------------------------------------
+     ROOM REFERENCES
+  ------------------------------------------------------- */
+
+  const rooms = {
+
+    research:
+      document.getElementById("research"),
+
+    manager:
+      document.getElementById("manager"),
+
+    test:
+      document.getElementById("test"),
+
+    storage:
+      document.getElementById("storage"),
+
+    server:
+      document.getElementById("server"),
+
+    canteen:
+      document.getElementById("canteen"),
+
+    design:
+      document.getElementById("design"),
+
+    analytics:
+      document.getElementById("analytics"),
+
+    archives:
+      document.getElementById("archives"),
+
+    utility:
+      document.getElementById("utility"),
+
+    restroom:
+      document.getElementById("restroom")
+
+  };
+
+
+  /* -------------------------------------------------------
+     AUTOMATIC ROOM TEXTURE
+  ------------------------------------------------------- */
+
+  Object.values(rooms)
+    .forEach(room=>{
+
+      if(!room){
+        return;
+      }
+
+      const grain =
+        document.createElement("div");
+
+      grain.className =
+        "ai-floor-grain";
+
+      room.appendChild(grain);
+
+
+      const w =
+        room.clientWidth;
+
+      const h =
+        room.clientHeight;
+
+
+      /* bolts */
+
+      const boltPositions = [
+
+        [12,12],
+
+        [w - 17,12],
+
+        [12,h - 17],
+
+        [w - 17,h - 17],
+
+        [
+          Math.floor(w / 2),
+          12
+        ]
+
+      ];
+
+      boltPositions
+        .forEach(([x,y])=>{
+
+          add(
+            room,
+            "ai-wall-bolt",
+            x,
+            y
+          );
+
+        });
+
+
+      /* floor scuffs */
+
+      for(
+        let i=0;
+        i<12;
+        i++
+      ){
+
+        const x =
+          20 +
+          Math.random() *
+          Math.max(
+            20,
+            w - 55
+          );
+
+        const y =
+          40 +
+          Math.random() *
+          Math.max(
+            20,
+            h - 75
+          );
+
+        add(
+          room,
+          "ai-floor-scuff",
+          x,
+          y,
+          {
+            transform:
+              `rotate(${
+                Math.round(
+                  Math.random()*100 - 50
+                )
+              }deg)`
+          }
+        );
+
+      }
+
+
+      /* tiny scratches */
+
+      for(
+        let i=0;
+        i<7;
+        i++
+      ){
+
+        add(
+          room,
+          "ai-floor-scratch",
+
+          22 +
+          Math.random() *
+          Math.max(
+            20,
+            w - 55
+          ),
+
+          38 +
+          Math.random() *
+          Math.max(
+            20,
+            h - 70
+          ),
+
+          {
+            transform:
+              `rotate(${
+                Math.random()*90 - 45
+              }deg)`
+          }
+        );
+
+      }
+
+    });
+
+
+  /* =======================================================
+     RESEARCH LAB — RICO
+  ======================================================= */
+
+  add(
+    rooms.research,
+    "ai-note-board",
+    22,
+    45
+  );
+
+  add(
+    rooms.research,
+    "ai-books",
+    139,
+    48
+  );
+
+  add(
+    rooms.research,
+    "ai-books",
+    144,
+    72
+  );
+
+  add(
+    rooms.research,
+    "ai-keyboard",
+    49,
+    225
+  );
+
+  add(
+    rooms.research,
+    "ai-mouse",
+    81,
+    226
+  );
+
+  add(
+    rooms.research,
+    "ai-mug",
+    106,
+    219
+  );
+
+  add(
+    rooms.research,
+    "ai-paper",
+    132,
+    213,
+    {
+      transform:"rotate(8deg)"
+    }
+  );
+
+  add(
+    rooms.research,
+    "ai-pen",
+    142,
+    235,
+    {
+      transform:"rotate(-26deg)"
+    }
+  );
+
+  add(
+    rooms.research,
+    "ai-plant",
+    163,
+    245
+  );
+
+  add(
+    rooms.research,
+    "ai-wall-panel",
+    18,
+    121
+  );
+
+  add(
+    rooms.research,
+    "ai-vent-small",
+    152,
+    132
+  );
+
+  add(
+    rooms.research,
+    "ai-status-light",
+    171,
+    181
+  );
+
+  add(
+    rooms.research,
+    "ai-cable blue",
+    43,
+    264,
+    {
+      width:"81px",
+      transform:"rotate(4deg)"
+    }
+  );
+
+
+  /* =======================================================
+     MANAGER OFFICE — MAX
+  ======================================================= */
+
+  add(
+    rooms.manager,
+    "ai-note-board",
+    81,
+    48
+  );
+
+  add(
+    rooms.manager,
+    "ai-books",
+    22,
+    90
+  );
+
+  add(
+    rooms.manager,
+    "ai-keyboard",
+    88,
+    191
+  );
+
+  add(
+    rooms.manager,
+    "ai-mouse",
+    121,
+    193
+  );
+
+  add(
+    rooms.manager,
+    "ai-mug",
+    61,
+    187
+  );
+
+  add(
+    rooms.manager,
+    "ai-paper",
+    148,
+    213,
+    {
+      transform:"rotate(-7deg)"
+    }
+  );
+
+  add(
+    rooms.manager,
+    "ai-pen",
+    158,
+    236,
+    {
+      transform:"rotate(37deg)"
+    }
+  );
+
+  add(
+    rooms.manager,
+    "ai-folder",
+    33,
+    215
+  );
+
+  add(
+    rooms.manager,
+    "ai-plant",
+    173,
+    76
+  );
+
+  add(
+    rooms.manager,
+    "ai-wall-panel",
+    166,
+    133
+  );
+
+  add(
+    rooms.manager,
+    "ai-vent-small",
+    20,
+    270
+  );
+
+  add(
+    rooms.manager,
+    "ai-status-light blue",
+    178,
+    160
+  );
+
+  add(
+    rooms.manager,
+    "ai-warning-strip",
+    66,
+    306,
+    {
+      width:"81px"
+    }
+  );
+
+
+  /* =======================================================
+     TEST LAB — TRENT
+  ======================================================= */
+
+  add(
+    rooms.test,
+    "ai-mini-server",
+    20,
+    118
+  );
+
+  add(
+    rooms.test,
+    "ai-mini-server",
+    53,
+    118
+  );
+
+  add(
+    rooms.test,
+    "ai-keyboard",
+    111,
+    221
+  );
+
+  add(
+    rooms.test,
+    "ai-mouse",
+    145,
+    223
+  );
+
+  add(
+    rooms.test,
+    "ai-paper",
+    91,
+    212,
+    {
+      transform:"rotate(5deg)"
+    }
+  );
+
+  add(
+    rooms.test,
+    "ai-wall-panel",
+    138,
+    74
+  );
+
+  add(
+    rooms.test,
+    "ai-vent-small",
+    99,
+    50
+  );
+
+  add(
+    rooms.test,
+    "ai-status-light red",
+    25,
+    183
+  );
+
+  add(
+    rooms.test,
+    "ai-cable red",
+    42,
+    269,
+    {
+      width:"108px",
+      transform:"rotate(-3deg)"
+    }
+  );
+
+  add(
+    rooms.test,
+    "ai-warning-strip",
+    93,
+    287,
+    {
+      width:"69px"
+    }
+  );
+
+
+  /* =======================================================
+     STORAGE
+  ======================================================= */
+
+  add(
+    rooms.storage,
+    "ai-crate-small",
+    18,
+    62
+  );
+
+  add(
+    rooms.storage,
+    "ai-crate-small",
+    51,
+    73
+  );
+
+  add(
+    rooms.storage,
+    "ai-crate-small",
+    96,
+    117
+  );
+
+  add(
+    rooms.storage,
+    "ai-file-box",
+    17,
+    151
+  );
+
+  add(
+    rooms.storage,
+    "ai-file-box",
+    55,
+    160
+  );
+
+  add(
+    rooms.storage,
+    "ai-toolbox",
+    91,
+    197
+  );
+
+  add(
+    rooms.storage,
+    "ai-warning-strip",
+    17,
+    218,
+    {
+      width:"109px"
+    }
+  );
+
+  add(
+    rooms.storage,
+    "ai-wall-panel",
+    104,
+    47
+  );
+
+
+  /* =======================================================
+     SERVER ROOM
+  ======================================================= */
+
+  add(
+    rooms.server,
+    "ai-mini-server",
+    16,
+    58
+  );
+
+  add(
+    rooms.server,
+    "ai-mini-server",
+    50,
+    58
+  );
+
+  add(
+    rooms.server,
+    "ai-mini-server",
+    84,
+    58
+  );
+
+  add(
+    rooms.server,
+    "ai-mini-server",
+    17,
+    116
+  );
+
+  add(
+    rooms.server,
+    "ai-keyboard",
+    78,
+    182
+  );
+
+  add(
+    rooms.server,
+    "ai-mouse",
+    111,
+    184
+  );
+
+  add(
+    rooms.server,
+    "ai-cable blue",
+    15,
+    215,
+    {
+      width:"113px"
+    }
+  );
+
+  add(
+    rooms.server,
+    "ai-cable red",
+    15,
+    221,
+    {
+      width:"93px"
+    }
+  );
+
+  add(
+    rooms.server,
+    "ai-status-light",
+    119,
+    72
+  );
+
+  add(
+    rooms.server,
+    "ai-status-light blue",
+    119,
+    84
+  );
+
+  add(
+    rooms.server,
+    "ai-warning-strip",
+    24,
+    229,
+    {
+      width:"100px"
+    }
+  );
+
+
+  /* =======================================================
+     CANTEEN / LOUNGE
+  ======================================================= */
+
+  add(
+    rooms.canteen,
+    "ai-food-tray",
+    48,
+    151
+  );
+
+  add(
+    rooms.canteen,
+    "ai-drink-can",
+    83,
+    151
+  );
+
+  add(
+    rooms.canteen,
+    "ai-mug",
+    108,
+    165
+  );
+
+  add(
+    rooms.canteen,
+    "ai-food-tray",
+    188,
+    204
+  );
+
+  add(
+    rooms.canteen,
+    "ai-drink-can",
+    223,
+    204
+  );
+
+  add(
+    rooms.canteen,
+    "ai-mug",
+    254,
+    211
+  );
+
+  add(
+    rooms.canteen,
+    "ai-paper",
+    192,
+    270,
+    {
+      transform:"rotate(13deg)"
+    }
+  );
+
+  add(
+    rooms.canteen,
+    "ai-books",
+    251,
+    70
+  );
+
+  add(
+    rooms.canteen,
+    "ai-plant",
+    291,
+    96
+  );
+
+  add(
+    rooms.canteen,
+    "ai-plant",
+    27,
+    306
+  );
+
+  add(
+    rooms.canteen,
+    "ai-wall-panel",
+    20,
+    75
+  );
+
+  add(
+    rooms.canteen,
+    "ai-vent-small",
+    272,
+    42
+  );
+
+  add(
+    rooms.canteen,
+    "ai-status-light",
+    34,
+    103
+  );
+
+  add(
+    rooms.canteen,
+    "ai-cable yellow",
+    65,
+    348,
+    {
+      width:"176px",
+      opacity:".38"
+    }
+  );
+
+
+  /* =======================================================
+     DESIGN STUDIO — DRAYMOND
+  ======================================================= */
+
+  add(
+    rooms.design,
+    "ai-poster",
+    20,
+    47
+  );
+
+  add(
+    rooms.design,
+    "ai-poster",
+    56,
+    47
+  );
+
+  add(
+    rooms.design,
+    "ai-chart-screen",
+    99,
+    50,
+    {
+      width:"48px"
+    }
+  );
+
+  add(
+    rooms.design,
+    "ai-keyboard",
+    36,
+    143
+  );
+
+  add(
+    rooms.design,
+    "ai-mouse",
+    69,
+    145
+  );
+
+  add(
+    rooms.design,
+    "ai-paint-palette",
+    112,
+    153
+  );
+
+  add(
+    rooms.design,
+    "ai-paper",
+    72,
+    211,
+    {
+      transform:"rotate(-13deg)"
+    }
+  );
+
+  add(
+    rooms.design,
+    "ai-pen",
+    93,
+    224,
+    {
+      transform:"rotate(42deg)"
+    }
+  );
+
+  add(
+    rooms.design,
+    "ai-mug",
+    25,
+    212
+  );
+
+  add(
+    rooms.design,
+    "ai-plant",
+    136,
+    210
+  );
+
+  add(
+    rooms.design,
+    "ai-cable blue",
+    31,
+    181,
+    {
+      width:"104px",
+      transform:"rotate(4deg)"
+    }
+  );
+
+
+  /* =======================================================
+     ANALYTICS — AXEL
+  ======================================================= */
+
+  add(
+    rooms.analytics,
+    "ai-chart-screen",
+    18,
+    55
+  );
+
+  add(
+    rooms.analytics,
+    "ai-chart-screen",
+    77,
+    55
+  );
+
+  add(
+    rooms.analytics,
+    "ai-keyboard",
+    86,
+    188
+  );
+
+  add(
+    rooms.analytics,
+    "ai-mouse",
+    119,
+    190
+  );
+
+  add(
+    rooms.analytics,
+    "ai-paper",
+    48,
+    197,
+    {
+      transform:"rotate(8deg)"
+    }
+  );
+
+  add(
+    rooms.analytics,
+    "ai-folder",
+    22,
+    222
+  );
+
+  add(
+    rooms.analytics,
+    "ai-mug",
+    131,
+    226
+  );
+
+  add(
+    rooms.analytics,
+    "ai-plant",
+    19,
+    242
+  );
+
+  add(
+    rooms.analytics,
+    "ai-status-light blue",
+    137,
+    121
+  );
+
+
+  /* =======================================================
+     ARCHIVES / WORKSPACE — ADAM
+  ======================================================= */
+
+  add(
+    rooms.archives,
+    "ai-file-box",
+    26,
+    76
+  );
+
+  add(
+    rooms.archives,
+    "ai-file-box",
+    62,
+    76
+  );
+
+  add(
+    rooms.archives,
+    "ai-file-box",
+    98,
+    76
+  );
+
+  add(
+    rooms.archives,
+    "ai-folder",
+    145,
+    83
+  );
+
+  add(
+    rooms.archives,
+    "ai-folder",
+    173,
+    92
+  );
+
+  add(
+    rooms.archives,
+    "ai-books",
+    215,
+    72
+  );
+
+  add(
+    rooms.archives,
+    "ai-keyboard",
+    151,
+    205
+  );
+
+  add(
+    rooms.archives,
+    "ai-mouse",
+    184,
+    207
+  );
+
+  add(
+    rooms.archives,
+    "ai-mug",
+    213,
+    199
+  );
+
+  add(
+    rooms.archives,
+    "ai-paper",
+    257,
+    202,
+    {
+      transform:"rotate(-8deg)"
+    }
+  );
+
+  add(
+    rooms.archives,
+    "ai-plant",
+    302,
+    208
+  );
+
+  add(
+    rooms.archives,
+    "ai-wall-panel",
+    286,
+    52
+  );
+
+  add(
+    rooms.archives,
+    "ai-status-light",
+    309,
+    107
+  );
+
+
+  /* =======================================================
+     UTILITY — JARED AREA
+  ======================================================= */
+
+  add(
+    rooms.utility,
+    "ai-pipe",
+    20,
+    47,
+    {
+      height:"108px"
+    }
+  );
+
+  add(
+    rooms.utility,
+    "ai-pipe",
+    38,
+    58,
+    {
+      height:"91px"
+    }
+  );
+
+  add(
+    rooms.utility,
+    "ai-toolbox",
+    75,
+    119
+  );
+
+  add(
+    rooms.utility,
+    "ai-cleaner",
+    116,
+    93
+  );
+
+  add(
+    rooms.utility,
+    "ai-cleaner",
+    130,
+    101,
+    {
+      background:"#71a850"
+    }
+  );
+
+  add(
+    rooms.utility,
+    "ai-wall-panel",
+    83,
+    52
+  );
+
+  add(
+    rooms.utility,
+    "ai-warning-strip",
+    63,
+    160,
+    {
+      width:"71px"
+    }
+  );
+
+  add(
+    rooms.utility,
+    "ai-cable red",
+    16,
+    174,
+    {
+      width:"118px"
+    }
+  );
+
+
+  /* =======================================================
+     RESTROOM
+  ======================================================= */
+
+  add(
+    rooms.restroom,
+    "ai-mirror",
+    22,
+    45
+  );
+
+  add(
+    rooms.restroom,
+    "ai-mirror",
+    74,
+    45
+  );
+
+  add(
+    rooms.restroom,
+    "ai-soap",
+    64,
+    84
+  );
+
+  add(
+    rooms.restroom,
+    "ai-cleaner",
+    21,
+    137
+  );
+
+  add(
+    rooms.restroom,
+    "ai-vent-small",
+    96,
+    125
+  );
+
+  add(
+    rooms.restroom,
+    "ai-status-light blue",
+    125,
+    74
+  );
+
+
+  /* =======================================================
+     CHARACTER LOCAL MOVEMENT
+
+     Existing corridor/path system remains untouched.
+
+     This makes characters feel more alive between proper
+     trips. They shuffle around their work area occasionally
+     and return to their actual path coordinates.
+
+     Because margin is used rather than left/top, this does
+     NOT corrupt the office pathfinding positions.
+  ======================================================= */
+
+  const people = [
+
+    "max",
+    "rico",
+    "trent",
+    "calvin",
+    "draymond",
+    "axel",
+    "adam"
+
+  ]
+  .map(
+    id =>
+      document.getElementById(id)
+  )
+  .filter(Boolean);
+
+
+  function localIdleMove(agent){
+
+    if(
+      !agent ||
+      agent.classList.contains("walking")
+    ){
+      return;
+    }
+
+    /*
+      small work-area movements:
+      turn to another monitor,
+      step towards shelf,
+      move beside desk etc.
+    */
+
+    const choices = [
+
+      [-8,0],
+      [8,0],
+
+      [-5,-5],
+      [5,-5],
+
+      [-7,4],
+      [7,4],
+
+      [0,-6],
+      [0,5]
+
+    ];
+
+    const choice =
+      choices[
+        Math.floor(
+          Math.random() *
+          choices.length
+        )
+      ];
+
+    agent.style.marginLeft =
+      choice[0] + "px";
+
+    agent.style.marginTop =
+      choice[1] + "px";
+
+
+    /*
+      stay there for a moment,
+      then return to normal position
+    */
+
+    setTimeout(()=>{
+
+      if(
+        !agent.classList.contains("walking")
+      ){
+
+        agent.style.marginLeft =
+          "0px";
+
+        agent.style.marginTop =
+          "0px";
+
+      }
+
+    },
+    2200 +
+    Math.random()*2600);
+
+  }
+
+
+  /*
+    More activity than before.
+
+    Every 7–11 seconds one random person has a chance
+    to make a little local movement.
+  */
+
+  function scheduleLocalMovement(){
+
+    const delay =
+      7000 +
+      Math.random()*4000;
+
+    setTimeout(()=>{
+
+      if(
+        people.length
+      ){
+
+        const person =
+          people[
+            Math.floor(
+              Math.random() *
+              people.length
+            )
+          ];
+
+        /*
+          high enough to notice,
+          low enough to avoid everyone jittering
+        */
+
+        if(
+          Math.random() < .72
+        ){
+          localIdleMove(person);
+        }
+
+      }
+
+      scheduleLocalMovement();
+
+    },delay);
+
+  }
+
+  scheduleLocalMovement();
+
+
+  /* =======================================================
+     JARED MOVES EVEN MORE
+
+     We DON'T replace Jared's existing corridor patrol.
+     This just gives him cleaning motion between patrols.
+  ======================================================= */
+
+  const jared =
+    document.getElementById("jared");
+
+  function jaredClean(){
+
+    if(
+      !jared ||
+      jared.classList.contains("walking")
+    ){
+      return;
+    }
+
+    jared.style.marginLeft =
+      "-5px";
+
+    setTimeout(()=>{
+
+      if(
+        !jared.classList.contains("walking")
+      ){
+        jared.style.marginLeft =
+          "5px";
+      }
+
+    },900);
+
+    setTimeout(()=>{
+
+      if(
+        !jared.classList.contains("walking")
+      ){
+
+        jared.style.marginLeft =
+          "0px";
+
+      }
+
+    },1800);
+
+  }
+
+  setInterval(
+    jaredClean,
+    9000
+  );
+
+
+  /* =======================================================
+     KEEP MARGINS CLEAN WHEN AN AGENT STARTS WALKING
+  ======================================================= */
+
+  const movementObserver =
+    new MutationObserver(
+      mutations=>{
+
+        mutations.forEach(
+          mutation=>{
+
+            const agent =
+              mutation.target;
+
+            if(
+              agent.classList &&
+              agent.classList.contains("walking")
+            ){
+
+              agent.style.marginLeft =
+                "0px";
+
+              agent.style.marginTop =
+                "0px";
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+  [
+    ...people,
+    jared
+  ]
+  .filter(Boolean)
+  .forEach(agent=>{
+
+    movementObserver.observe(
+      agent,
+      {
+        attributes:true,
+        attributeFilter:[
+          "class"
+        ]
+      }
+    );
+
+  });
+
+})();
+</script>
 </body>
 </html>
