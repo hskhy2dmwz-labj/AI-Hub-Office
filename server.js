@@ -299,7 +299,25 @@ SPECIALIST WORK:
 
 ${teamWork}
 
-Produce the final answer.
+Produce the final answer in exactly this order:
+
+QUICK TAKEAWAY
+
+Start with a short, useful summary of the answer.
+Keep this to roughly 3-6 lines.
+Give the user the most important information immediately.
+
+FULL REPORT
+
+Then give the detailed answer.
+Use clear section headings, short paragraphs and bullet points where useful.
+Include tables only when a table genuinely makes the information easier to understand.
+
+Do not use HTML.
+Do not use markdown tables.
+Do not use decorative symbols.
+Do not repeat the Quick Takeaway in the Full Report.
+Keep the detailed report useful and thorough rather than unnecessarily long.
         `.trim()
       }
     ]);
