@@ -7793,6 +7793,1868 @@ setTimeout(()=>{
   scheduleTrip();
 
 })();
+  
+</script>
+  <!-- =========================================================
+     AI OFFICE — 2D PIXEL CHARACTER + ROOM DETAIL PASS V4
+========================================================= -->
+
+<style id="pixel-pass-v4">
+
+/* =========================================================
+   CHARACTER STYLE RESET
+   REMOVE THE SMOOTH / 3D LOOK
+========================================================= */
+
+.agent{
+  scale:.85;
+  transform-origin:center bottom;
+
+  filter:none !important;
+
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+
+
+/* hard pixel shadow instead of blurry 3D shadow */
+
+.agent .character-shadow-v3{
+  width:24px !important;
+  height:5px !important;
+
+  bottom:-4px !important;
+
+  border-radius:0 !important;
+
+  filter:none !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 8%,
+      rgba(0,0,0,.22) 8% 16%,
+      rgba(0,0,0,.55) 16% 84%,
+      rgba(0,0,0,.22) 84% 92%,
+      transparent 92%
+    ) !important;
+}
+
+
+/* =========================================================
+   PIXEL HEAD
+========================================================= */
+
+.agent .head{
+  width:20px !important;
+  height:19px !important;
+
+  left:5px !important;
+  top:4px !important;
+
+  border-radius:0 !important;
+
+  clip-path:polygon(
+    20% 0,
+    80% 0,
+
+    80% 5%,
+    95% 5%,
+
+    95% 20%,
+    100% 20%,
+
+    100% 70%,
+
+    90% 70%,
+    90% 85%,
+
+    70% 85%,
+    70% 95%,
+
+    60% 95%,
+    60% 100%,
+
+    40% 100%,
+    40% 95%,
+
+    30% 95%,
+    30% 85%,
+
+    10% 85%,
+    10% 70%,
+
+    0 70%,
+    0 20%,
+
+    5% 20%,
+    5% 5%,
+
+    20% 5%
+  ) !important;
+
+  box-shadow:
+    inset 2px 0 rgba(255,255,255,.10),
+    inset -3px 0 rgba(0,0,0,.16),
+    inset 0 -2px rgba(0,0,0,.10),
+    1px 0 #17100d,
+    -1px 0 #17100d,
+    0 -1px #17100d,
+    0 1px #17100d !important;
+}
+
+
+/* remove smooth face gradient */
+
+.agent .face-shade-v3{
+  width:4px !important;
+  height:12px !important;
+
+  top:5px !important;
+  right:1px !important;
+
+  border-radius:0 !important;
+
+  background:rgba(60,25,18,.14) !important;
+}
+
+
+/* =========================================================
+   PIXEL EARS
+========================================================= */
+
+.agent .ear-v3{
+  width:3px !important;
+  height:5px !important;
+
+  top:10px !important;
+
+  border-radius:0 !important;
+
+  box-shadow:
+    inset -1px 0 rgba(0,0,0,.17),
+    0 0 0 1px #17100d !important;
+}
+
+.agent .ear-v3.left{
+  left:3px !important;
+}
+
+.agent .ear-v3.right{
+  right:3px !important;
+}
+
+
+/* =========================================================
+   EYEBROWS
+========================================================= */
+
+.agent .brow-v3{
+  width:5px !important;
+  height:2px !important;
+
+  top:10px !important;
+
+  border-radius:0 !important;
+
+  transform:none !important;
+
+  background:#2b1c16 !important;
+}
+
+
+/* =========================================================
+   EYES
+========================================================= */
+
+.agent .eyes{
+  width:2px !important;
+  height:2px !important;
+
+  top:13px !important;
+
+  border-radius:0 !important;
+
+  background:#17110f !important;
+
+  box-shadow:
+    9px 0 #17110f !important;
+}
+
+
+/* tiny eye highlight */
+
+.agent .pixel-eye-light-v4{
+  position:absolute;
+
+  width:1px;
+  height:1px;
+
+  left:9px;
+  top:13px;
+
+  background:rgba(255,255,255,.72);
+
+  z-index:30;
+
+  box-shadow:
+    9px 0 rgba(255,255,255,.72);
+}
+
+
+/* =========================================================
+   PIXEL NOSE
+========================================================= */
+
+.agent .nose{
+  width:3px !important;
+  height:4px !important;
+
+  left:14px !important;
+  top:15px !important;
+
+  border-radius:0 !important;
+
+  background:transparent !important;
+
+  box-shadow:
+    1px 0 rgba(76,36,26,.28),
+    1px 1px rgba(76,36,26,.28),
+    2px 2px rgba(76,36,26,.20) !important;
+}
+
+
+/* =========================================================
+   MOUTH
+========================================================= */
+
+.agent .mouth-v3{
+  width:6px !important;
+  height:2px !important;
+
+  left:12px !important;
+  top:20px !important;
+
+  border:0 !important;
+  border-radius:0 !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 16%,
+      rgba(75,30,25,.68) 16% 84%,
+      transparent 84%
+    ) !important;
+}
+
+
+/* =========================================================
+   PIXEL CHIN / JAW
+========================================================= */
+
+.agent .chin-v3{
+  width:8px !important;
+  height:2px !important;
+
+  left:11px !important;
+  top:22px !important;
+
+  border-radius:0 !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 20%,
+      rgba(80,39,27,.13) 20% 80%,
+      transparent 80%
+    ) !important;
+}
+
+
+/* =========================================================
+   HAIR — HARD PIXEL SHAPE
+========================================================= */
+
+.agent .hair{
+  width:22px !important;
+  height:12px !important;
+
+  left:4px !important;
+  top:1px !important;
+
+  border-radius:0 !important;
+
+  clip-path:polygon(
+    9% 17%,
+    18% 17%,
+    18% 8%,
+    32% 8%,
+    32% 0,
+
+    45% 0,
+    45% 8%,
+
+    59% 8%,
+    59% 0,
+
+    73% 0,
+    73% 8%,
+
+    86% 8%,
+    86% 17%,
+
+    95% 17%,
+    95% 33%,
+
+    100% 33%,
+    100% 67%,
+
+    91% 67%,
+    91% 83%,
+
+    82% 83%,
+    82% 67%,
+
+    68% 67%,
+    68% 75%,
+
+    55% 75%,
+    55% 67%,
+
+    41% 67%,
+    41% 83%,
+
+    27% 83%,
+    27% 67%,
+
+    14% 67%,
+    14% 83%,
+
+    5% 83%,
+    5% 67%,
+
+    0 67%,
+    0 33%,
+
+    9% 33%
+  ) !important;
+
+  box-shadow:
+    inset 2px 0 rgba(255,255,255,.08),
+    inset -3px -2px rgba(0,0,0,.28) !important;
+}
+
+
+/* pixel hair highlight */
+
+.agent .pixel-hair-light-v4{
+  position:absolute;
+
+  width:6px;
+  height:2px;
+
+  left:9px;
+  top:4px;
+
+  background:rgba(255,255,255,.09);
+
+  z-index:31;
+}
+
+
+/* =========================================================
+   NECK
+========================================================= */
+
+.agent .neck-v3{
+  width:8px !important;
+  height:5px !important;
+
+  left:11px !important;
+  top:22px !important;
+
+  border-radius:0 !important;
+
+  box-shadow:
+    inset -2px 0 rgba(0,0,0,.15) !important;
+}
+
+
+/* =========================================================
+   SHOULDERS / BODY
+========================================================= */
+
+.agent .body{
+  width:21px !important;
+  height:18px !important;
+
+  left:4px !important;
+  top:26px !important;
+
+  border-radius:0 !important;
+
+  clip-path:polygon(
+    14% 0,
+    86% 0,
+
+    86% 6%,
+    95% 6%,
+
+    95% 17%,
+    100% 17%,
+
+    100% 72%,
+
+    90% 72%,
+    90% 100%,
+
+    10% 100%,
+    10% 72%,
+
+    0 72%,
+    0 17%,
+
+    5% 17%,
+    5% 6%,
+
+    14% 6%
+  ) !important;
+
+  box-shadow:
+    inset 2px 0 rgba(255,255,255,.08),
+    inset -3px 0 rgba(0,0,0,.20),
+    inset 0 -2px rgba(0,0,0,.18),
+    1px 0 #111,
+    -1px 0 #111,
+    0 -1px #111,
+    0 1px #111 !important;
+}
+
+
+/* body highlight becomes pixel block */
+
+.agent .torso-light-v3{
+  width:4px !important;
+  height:9px !important;
+
+  left:7px !important;
+  top:29px !important;
+
+  border-radius:0 !important;
+
+  background:rgba(255,255,255,.08) !important;
+}
+
+
+/* =========================================================
+   COLLAR
+========================================================= */
+
+.agent .collar-v3{
+  width:12px !important;
+  height:4px !important;
+
+  left:9px !important;
+  top:27px !important;
+}
+
+.agent .collar-v3::before,
+.agent .collar-v3::after{
+  height:4px !important;
+
+  background:rgba(255,255,255,.14) !important;
+}
+
+
+/* =========================================================
+   ARMS
+========================================================= */
+
+.agent .arm{
+  width:5px !important;
+  height:15px !important;
+
+  border-radius:0 !important;
+
+  box-shadow:
+    inset -1px 0 rgba(0,0,0,.20),
+    1px 0 #111 !important;
+}
+
+
+/* hands become square-ish pixel hands */
+
+.agent .arm::after{
+  width:5px !important;
+  height:5px !important;
+
+  border-radius:0 !important;
+
+  box-shadow:
+    inset -1px -1px rgba(0,0,0,.15),
+    0 0 0 1px rgba(20,10,8,.5) !important;
+}
+
+
+/* =========================================================
+   LEGS
+========================================================= */
+
+.agent .leg{
+  width:7px !important;
+  height:10px !important;
+
+  border-radius:0 !important;
+
+  box-shadow:
+    inset -2px 0 rgba(0,0,0,.20),
+    1px 0 rgba(0,0,0,.5) !important;
+}
+
+
+/* =========================================================
+   SHOES
+========================================================= */
+
+.agent .leg::after{
+  width:9px !important;
+  height:4px !important;
+
+  border-radius:0 !important;
+
+  background:#17191b !important;
+
+  box-shadow:
+    inset 0 -1px #080909,
+    1px 1px rgba(0,0,0,.35) !important;
+}
+
+
+/* =========================================================
+   INDIVIDUAL CHARACTER SHAPES
+========================================================= */
+
+/* MAX — broader manager build */
+
+#max .body{
+  width:23px !important;
+  left:3px !important;
+}
+
+#max .pixel-badge-v4{
+  background:#d2b14c;
+}
+
+
+/* RICO — slimmer body / longer face */
+
+#rico .body{
+  width:19px !important;
+  left:5px !important;
+}
+
+#rico .head{
+  width:19px !important;
+  left:6px !important;
+}
+
+
+/* TRENT — squared tester silhouette */
+
+#trent .head{
+  width:20px !important;
+}
+
+#trent .body{
+  width:20px !important;
+  left:5px !important;
+}
+
+
+/* CALVIN — slightly loose clothing */
+
+#calvin .body{
+  width:22px !important;
+  left:4px !important;
+}
+
+
+/* DRAYMOND */
+
+#draymond .head{
+  width:21px !important;
+  left:4px !important;
+}
+
+#draymond .body{
+  width:22px !important;
+  left:4px !important;
+}
+
+
+/* AXEL */
+
+#axel .body{
+  width:23px !important;
+  left:3px !important;
+}
+
+
+/* ADAM */
+
+#adam .body{
+  width:20px !important;
+  left:5px !important;
+}
+
+
+/* JARED */
+
+#jared .body{
+  width:23px !important;
+  left:3px !important;
+}
+
+
+/* =========================================================
+   LITTLE CHARACTER CLOTHING DETAILS
+========================================================= */
+
+.pixel-badge-v4{
+  position:absolute;
+
+  width:3px;
+  height:3px;
+
+  left:10px;
+  top:33px;
+
+  background:#a6b5bb;
+
+  z-index:35;
+}
+
+.pixel-pocket-v4{
+  position:absolute;
+
+  width:5px;
+  height:4px;
+
+  right:7px;
+  top:35px;
+
+  border:
+    1px solid rgba(0,0,0,.28);
+
+  background:
+    rgba(0,0,0,.07);
+
+  z-index:34;
+}
+
+
+/* =========================================================
+   PIXEL WALK ANIMATION
+========================================================= */
+
+.agent.real-walking-v3{
+  animation:none !important;
+}
+
+.agent.real-walking-v3 .leg.left{
+  animation:pxLegA .32s steps(2,end) infinite !important;
+}
+
+.agent.real-walking-v3 .leg.right{
+  animation:pxLegB .32s steps(2,end) infinite !important;
+}
+
+.agent.real-walking-v3 .arm.left{
+  animation:pxLegB .32s steps(2,end) infinite !important;
+}
+
+.agent.real-walking-v3 .arm.right{
+  animation:pxLegA .32s steps(2,end) infinite !important;
+}
+
+@keyframes pxLegA{
+
+  0%{
+    transform:translateY(0);
+  }
+
+  100%{
+    transform:translateY(-2px);
+  }
+}
+
+@keyframes pxLegB{
+
+  0%{
+    transform:translateY(-2px);
+  }
+
+  100%{
+    transform:translateY(0);
+  }
+}
+
+
+/* =========================================================
+   EXTRA ROOM DETAIL OBJECTS
+========================================================= */
+
+.v4-object{
+  position:absolute;
+  pointer-events:none;
+}
+
+
+/* wall conduits */
+
+.v4-conduit{
+  height:4px;
+
+  background:#39464c;
+
+  border-top:1px solid #738087;
+  border-bottom:1px solid #101517;
+
+  box-shadow:
+    0 2px rgba(0,0,0,.25);
+
+  z-index:8;
+}
+
+
+/* wall sockets */
+
+.v4-socket{
+  width:12px;
+  height:10px;
+
+  border:2px solid #151a1c;
+
+  background:#5d686b;
+
+  box-shadow:
+    inset 1px 1px rgba(255,255,255,.1);
+
+  z-index:13;
+}
+
+.v4-socket::before,
+.v4-socket::after{
+  content:"";
+
+  position:absolute;
+
+  width:2px;
+  height:3px;
+
+  top:2px;
+
+  background:#161a1b;
+}
+
+.v4-socket::before{
+  left:2px;
+}
+
+.v4-socket::after{
+  right:2px;
+}
+
+
+/* small screens */
+
+.v4-screen{
+  width:27px;
+  height:19px;
+
+  border:3px solid #111719;
+
+  background:#102530;
+
+  box-shadow:
+    inset 0 0 0 1px #345260,
+    2px 2px rgba(0,0,0,.3);
+
+  z-index:17;
+}
+
+.v4-screen::before{
+  content:"";
+
+  position:absolute;
+
+  width:14px;
+  height:2px;
+
+  left:4px;
+  top:5px;
+
+  background:#56badc;
+
+  box-shadow:
+    3px 4px #55a36c,
+    -1px 8px #b8a84e;
+}
+
+
+/* little desk lamp */
+
+.v4-lamp{
+  width:4px;
+  height:18px;
+
+  background:#333b3e;
+
+  border-left:1px solid #111;
+
+  z-index:20;
+}
+
+.v4-lamp::before{
+  content:"";
+
+  position:absolute;
+
+  width:11px;
+  height:6px;
+
+  left:-4px;
+  top:-4px;
+
+  background:#59656a;
+
+  border:2px solid #15191a;
+
+  clip-path:polygon(
+    20% 0,
+    80% 0,
+    100% 100%,
+    0 100%
+  );
+}
+
+.v4-lamp::after{
+  content:"";
+
+  position:absolute;
+
+  width:9px;
+  height:3px;
+
+  left:-3px;
+  bottom:-2px;
+
+  background:#242a2d;
+}
+
+
+/* paperwork pile */
+
+.v4-paper-stack{
+  width:20px;
+  height:13px;
+
+  background:#d4ccb1;
+
+  border:1px solid #4c473b;
+
+  box-shadow:
+    2px 2px 0 #aaa28c,
+    3px 3px 0 #4d493e;
+
+  z-index:18;
+}
+
+.v4-paper-stack::before{
+  content:"";
+
+  position:absolute;
+
+  width:12px;
+  height:1px;
+
+  left:3px;
+  top:4px;
+
+  background:#817b6c;
+
+  box-shadow:
+    0 3px #817b6c,
+    3px 6px #817b6c;
+}
+
+
+/* tiny bin */
+
+.v4-bin{
+  width:16px;
+  height:19px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #394246 0 2px,
+      #21282b 2px 4px
+    );
+
+  border:2px solid #111719;
+
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    85% 100%,
+    15% 100%
+  );
+
+  z-index:15;
+}
+
+
+/* floor grate */
+
+.v4-grate{
+  width:30px;
+  height:18px;
+
+  border:2px solid #171c1f;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #4d595e 0 3px,
+      #20272a 3px 6px
+    );
+
+  box-shadow:
+    inset 0 0 4px #111;
+
+  z-index:3;
+}
+
+
+/* cable bundle */
+
+.v4-wire{
+  height:3px;
+
+  background:#263944;
+
+  box-shadow:
+    0 3px #5a2c2c,
+    0 6px #6c642c;
+
+  z-index:6;
+}
+
+
+/* wall label */
+
+.v4-label{
+  padding:2px 4px;
+
+  font-family:
+    monospace;
+
+  font-size:6px;
+
+  line-height:1;
+
+  color:#9da7a8;
+
+  background:#161c1f;
+
+  border:1px solid #566166;
+
+  letter-spacing:.4px;
+
+  z-index:14;
+}
+
+
+/* little toolbox */
+
+.v4-tool-rack{
+  width:29px;
+  height:22px;
+
+  border:2px solid #181c1d;
+
+  background:#454c4e;
+
+  z-index:15;
+}
+
+.v4-tool-rack::before{
+  content:"";
+
+  position:absolute;
+
+  width:2px;
+  height:12px;
+
+  left:5px;
+  top:4px;
+
+  background:#b55e46;
+
+  box-shadow:
+    6px 2px #b9a34f,
+    12px -1px #628ca1,
+    18px 3px #778260;
+}
+
+
+/* fridge magnets */
+
+.v4-magnets{
+  width:20px;
+  height:28px;
+
+  z-index:20;
+
+  background:
+    radial-gradient(
+      circle at 25% 20%,
+      #c75858 0 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 70% 38%,
+      #d3b656 0 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 38% 70%,
+      #5c99bd 0 2px,
+      transparent 3px
+    );
+}
+
+
+/* archive label stack */
+
+.v4-files{
+  width:27px;
+  height:18px;
+
+  background:
+    repeating-linear-gradient(
+      to right,
+      #8f6841 0 4px,
+      #c3ae71 4px 5px,
+      #566b74 5px 9px,
+      #beb078 9px 10px
+    );
+
+  border-bottom:2px solid #1b2021;
+
+  z-index:17;
+}
+
+
+/* design colour samples */
+
+.v4-swatches{
+  width:27px;
+  height:15px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #b64f68 0 20%,
+      #4b91b2 20% 40%,
+      #d0b451 40% 60%,
+      #6d9b63 60% 80%,
+      #755596 80%
+    );
+
+  border:2px solid #201b23;
+
+  z-index:18;
+}
+
+
+/* =========================================================
+   ROOM DETAIL SHOULD STAY HARD-EDGED / PIXEL
+========================================================= */
+
+.room .v4-object{
+  image-rendering:pixelated;
+}
+
+</style>
+
+
+<script>
+(function(){
+
+  if(window.AI_PIXEL_PASS_V4){
+    return;
+  }
+
+  window.AI_PIXEL_PASS_V4 = true;
+
+
+  /* =====================================================
+     CHARACTER EXTRAS
+  ===================================================== */
+
+  const characterIds = [
+    "max",
+    "rico",
+    "trent",
+    "calvin",
+    "draymond",
+    "axel",
+    "adam",
+    "jared"
+  ];
+
+
+  function addCharacterPart(
+    agent,
+    className
+  ){
+
+    if(!agent){
+      return;
+    }
+
+    if(
+      agent.querySelector(
+        "." +
+        className.split(" ")[0]
+      )
+    ){
+      return;
+    }
+
+    const el =
+      document.createElement("div");
+
+    el.className =
+      className;
+
+    agent.appendChild(el);
+
+  }
+
+
+  characterIds.forEach(id=>{
+
+    const agent =
+      document.getElementById(id);
+
+    if(!agent){
+      return;
+    }
+
+    addCharacterPart(
+      agent,
+      "pixel-eye-light-v4"
+    );
+
+    addCharacterPart(
+      agent,
+      "pixel-hair-light-v4"
+    );
+
+    addCharacterPart(
+      agent,
+      "pixel-badge-v4"
+    );
+
+    addCharacterPart(
+      agent,
+      "pixel-pocket-v4"
+    );
+
+  });
+
+
+  /* =====================================================
+     ROOM DETAIL ENGINE
+  ===================================================== */
+
+  function room(id){
+
+    return document.getElementById(id);
+
+  }
+
+
+  function detail(
+    target,
+    className,
+    x,
+    y,
+    styles={}
+  ){
+
+    if(!target){
+      return;
+    }
+
+    const el =
+      document.createElement("div");
+
+    el.className =
+      "v4-object " +
+      className;
+
+    el.style.left =
+      x + "px";
+
+    el.style.top =
+      y + "px";
+
+    Object.entries(styles)
+      .forEach(
+        ([key,value])=>{
+
+          el.style[key] =
+            value;
+
+        }
+      );
+
+    target.appendChild(el);
+
+    return el;
+
+  }
+
+
+  function label(
+    target,
+    x,
+    y,
+    text
+  ){
+
+    const el =
+      detail(
+        target,
+        "v4-label",
+        x,
+        y
+      );
+
+    if(el){
+      el.textContent =
+        text;
+    }
+
+  }
+
+
+  const R = {
+
+    research:
+      room("research"),
+
+    manager:
+      room("manager"),
+
+    test:
+      room("test"),
+
+    storage:
+      room("storage"),
+
+    server:
+      room("server"),
+
+    canteen:
+      room("canteen"),
+
+    design:
+      room("design"),
+
+    analytics:
+      room("analytics"),
+
+    archives:
+      room("archives"),
+
+    utility:
+      room("utility"),
+
+    restroom:
+      room("restroom")
+
+  };
+
+
+  /* =====================================================
+     RESEARCH LAB
+  ===================================================== */
+
+  detail(
+    R.research,
+    "v4-screen",
+    18,
+    172
+  );
+
+  detail(
+    R.research,
+    "v4-paper-stack",
+    115,
+    224,
+    {
+      transform:"rotate(-5deg)"
+    }
+  );
+
+  detail(
+    R.research,
+    "v4-lamp",
+    154,
+    202
+  );
+
+  detail(
+    R.research,
+    "v4-conduit",
+    29,
+    102,
+    {
+      width:"125px"
+    }
+  );
+
+  detail(
+    R.research,
+    "v4-socket",
+    156,
+    104
+  );
+
+  detail(
+    R.research,
+    "v4-bin",
+    20,
+    254
+  );
+
+  label(
+    R.research,
+    118,
+    116,
+    "DATA"
+  );
+
+
+  /* =====================================================
+     MANAGER
+  ===================================================== */
+
+  detail(
+    R.manager,
+    "v4-screen",
+    21,
+    234
+  );
+
+  detail(
+    R.manager,
+    "v4-lamp",
+    176,
+    196
+  );
+
+  detail(
+    R.manager,
+    "v4-paper-stack",
+    143,
+    202,
+    {
+      transform:"rotate(5deg)"
+    }
+  );
+
+  detail(
+    R.manager,
+    "v4-conduit",
+    26,
+    276,
+    {
+      width:"83px"
+    }
+  );
+
+  detail(
+    R.manager,
+    "v4-socket",
+    111,
+    274
+  );
+
+  detail(
+    R.manager,
+    "v4-bin",
+    176,
+    269
+  );
+
+  label(
+    R.manager,
+    27,
+    138,
+    "MX-01"
+  );
+
+
+  /* =====================================================
+     TEST LAB
+  ===================================================== */
+
+  detail(
+    R.test,
+    "v4-screen",
+    139,
+    206
+  );
+
+  detail(
+    R.test,
+    "v4-tool-rack",
+    20,
+    62
+  );
+
+  detail(
+    R.test,
+    "v4-grate",
+    102,
+    262
+  );
+
+  detail(
+    R.test,
+    "v4-wire",
+    40,
+    298,
+    {
+      width:"93px"
+    }
+  );
+
+  detail(
+    R.test,
+    "v4-socket",
+    163,
+    139
+  );
+
+  label(
+    R.test,
+    27,
+    96,
+    "QA-7"
+  );
+
+
+  /* =====================================================
+     STORAGE
+  ===================================================== */
+
+  detail(
+    R.storage,
+    "v4-tool-rack",
+    17,
+    189
+  );
+
+  detail(
+    R.storage,
+    "v4-paper-stack",
+    93,
+    159
+  );
+
+  detail(
+    R.storage,
+    "v4-bin",
+    112,
+    211
+  );
+
+  detail(
+    R.storage,
+    "v4-socket",
+    114,
+    48
+  );
+
+  label(
+    R.storage,
+    24,
+    128,
+    "B-12"
+  );
+
+
+  /* =====================================================
+     SERVER ROOM
+  ===================================================== */
+
+  detail(
+    R.server,
+    "v4-screen",
+    84,
+    184
+  );
+
+  detail(
+    R.server,
+    "v4-grate",
+    21,
+    197
+  );
+
+  detail(
+    R.server,
+    "v4-wire",
+    19,
+    224,
+    {
+      width:"99px"
+    }
+  );
+
+  detail(
+    R.server,
+    "v4-conduit",
+    112,
+    59,
+    {
+      width:"4px",
+      height:"112px"
+    }
+  );
+
+  detail(
+    R.server,
+    "v4-socket",
+    117,
+    173
+  );
+
+  label(
+    R.server,
+    80,
+    48,
+    "RACK-C"
+  );
+
+
+  /* =====================================================
+     CANTEEN + LOUNGE
+  ===================================================== */
+
+  detail(
+    R.canteen,
+    "v4-magnets",
+    225,
+    47
+  );
+
+  detail(
+    R.canteen,
+    "v4-paper-stack",
+    211,
+    275,
+    {
+      transform:"rotate(9deg)"
+    }
+  );
+
+  detail(
+    R.canteen,
+    "v4-bin",
+    285,
+    281
+  );
+
+  detail(
+    R.canteen,
+    "v4-socket",
+    29,
+    91
+  );
+
+  detail(
+    R.canteen,
+    "v4-conduit",
+    56,
+    326,
+    {
+      width:"186px"
+    }
+  );
+
+  label(
+    R.canteen,
+    268,
+    118,
+    "COFFEE"
+  );
+
+
+  /* =====================================================
+     DESIGN
+  ===================================================== */
+
+  detail(
+    R.design,
+    "v4-swatches",
+    106,
+    106
+  );
+
+  detail(
+    R.design,
+    "v4-screen",
+    23,
+    125
+  );
+
+  detail(
+    R.design,
+    "v4-paper-stack",
+    61,
+    218,
+    {
+      transform:"rotate(-7deg)"
+    }
+  );
+
+  detail(
+    R.design,
+    "v4-lamp",
+    135,
+    153
+  );
+
+  detail(
+    R.design,
+    "v4-bin",
+    23,
+    227
+  );
+
+  detail(
+    R.design,
+    "v4-socket",
+    137,
+    200
+  );
+
+  label(
+    R.design,
+    25,
+    95,
+    "RGB"
+  );
+
+
+  /* =====================================================
+     ANALYTICS
+  ===================================================== */
+
+  detail(
+    R.analytics,
+    "v4-screen",
+    107,
+    155
+  );
+
+  detail(
+    R.analytics,
+    "v4-paper-stack",
+    32,
+    187
+  );
+
+  detail(
+    R.analytics,
+    "v4-lamp",
+    137,
+    198
+  );
+
+  detail(
+    R.analytics,
+    "v4-socket",
+    17,
+    124
+  );
+
+  detail(
+    R.analytics,
+    "v4-conduit",
+    25,
+    242,
+    {
+      width:"101px"
+    }
+  );
+
+  label(
+    R.analytics,
+    27,
+    116,
+    "LIVE"
+  );
+
+
+  /* =====================================================
+     ARCHIVES
+  ===================================================== */
+
+  detail(
+    R.archives,
+    "v4-files",
+    24,
+    116
+  );
+
+  detail(
+    R.archives,
+    "v4-files",
+    291,
+    114
+  );
+
+  detail(
+    R.archives,
+    "v4-paper-stack",
+    235,
+    195
+  );
+
+  detail(
+    R.archives,
+    "v4-bin",
+    27,
+    224
+  );
+
+  detail(
+    R.archives,
+    "v4-socket",
+    302,
+    182
+  );
+
+  detail(
+    R.archives,
+    "v4-conduit",
+    86,
+    253,
+    {
+      width:"165px"
+    }
+  );
+
+  label(
+    R.archives,
+    260,
+    79,
+    "A-09"
+  );
+
+
+  /* =====================================================
+     UTILITY
+  ===================================================== */
+
+  detail(
+    R.utility,
+    "v4-tool-rack",
+    72,
+    74
+  );
+
+  detail(
+    R.utility,
+    "v4-grate",
+    84,
+    144
+  );
+
+  detail(
+    R.utility,
+    "v4-socket",
+    111,
+    53
+  );
+
+  detail(
+    R.utility,
+    "v4-wire",
+    19,
+    170,
+    {
+      width:"95px"
+    }
+  );
+
+  label(
+    R.utility,
+    66,
+    108,
+    "ELEC"
+  );
+
+
+  /* =====================================================
+     RESTROOM
+  ===================================================== */
+
+  detail(
+    R.restroom,
+    "v4-grate",
+    19,
+    146,
+    {
+      width:"17px",
+      height:"12px"
+    }
+  );
+
+  detail(
+    R.restroom,
+    "v4-socket",
+    117,
+    68
+  );
+
+  detail(
+    R.restroom,
+    "v4-conduit",
+    18,
+    171,
+    {
+      width:"104px"
+    }
+  );
+
+  label(
+    R.restroom,
+    89,
+    131,
+    "WATER"
+  );
+
+})();
 </script>
 </body>
 </html>
