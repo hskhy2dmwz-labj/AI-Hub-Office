@@ -5999,5 +5999,1800 @@ setTimeout(()=>{
 
 })();
 </script>
+  <!-- =========================================================
+     AI OFFICE — CHARACTER OVERHAUL + REAL MOVEMENT V3
+========================================================= -->
+
+<style id="character-overhaul-v3">
+
+/* =========================================================
+   EXACTLY 15% SMALLER
+========================================================= */
+
+.agent{
+  scale:.85;
+  transform-origin:center bottom;
+  overflow:visible !important;
+}
+
+
+/* =========================================================
+   PROPER FLOOR SHADOW
+========================================================= */
+
+.agent .character-shadow-v3{
+  position:absolute;
+  width:27px;
+  height:8px;
+  left:50%;
+  bottom:-5px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(0,0,0,.55) 0%,
+      rgba(0,0,0,.32) 48%,
+      transparent 72%
+    );
+
+  filter:blur(.6px);
+
+  z-index:-3;
+}
+
+
+/* =========================================================
+   FACE SHAPE
+========================================================= */
+
+.agent .head{
+  width:20px !important;
+  height:19px !important;
+
+  left:5px !important;
+  top:4px !important;
+
+  border-radius:
+    46% 46%
+    42% 42% !important;
+
+  clip-path:polygon(
+    17% 5%,
+    83% 5%,
+    96% 23%,
+    94% 65%,
+    78% 91%,
+    59% 100%,
+    41% 100%,
+    22% 91%,
+    6% 65%,
+    4% 23%
+  );
+
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.14),
+    inset -3px -3px rgba(0,0,0,.20),
+    0 0 0 1px rgba(10,8,7,.74),
+    0 2px 2px rgba(0,0,0,.28) !important;
+}
+
+
+/* =========================================================
+   FACE SIDE SHADING
+========================================================= */
+
+.agent .face-shade-v3{
+  position:absolute;
+
+  width:6px;
+  height:13px;
+
+  right:1px;
+  top:3px;
+
+  border-radius:0 50% 50% 30%;
+
+  background:rgba(55,20,13,.13);
+
+  pointer-events:none;
+}
+
+
+/* =========================================================
+   EARS
+========================================================= */
+
+.agent .ear-v3{
+  position:absolute;
+
+  width:4px;
+  height:6px;
+
+  top:9px;
+
+  border-radius:50%;
+
+  background:var(--skin);
+
+  box-shadow:
+    inset -1px -1px rgba(0,0,0,.20),
+    0 0 0 1px rgba(0,0,0,.35);
+
+  z-index:-1;
+}
+
+.agent .ear-v3.left{
+  left:3px;
+}
+
+.agent .ear-v3.right{
+  right:3px;
+}
+
+
+/* =========================================================
+   EYEBROWS
+========================================================= */
+
+.agent .brow-v3{
+  position:absolute;
+
+  width:5px;
+  height:2px;
+
+  top:10px;
+
+  background:rgba(30,18,13,.82);
+
+  border-radius:3px;
+
+  z-index:8;
+}
+
+.agent .brow-v3.left{
+  left:8px;
+  transform:rotate(-5deg);
+}
+
+.agent .brow-v3.right{
+  right:8px;
+  transform:rotate(5deg);
+}
+
+
+/* =========================================================
+   EYES
+========================================================= */
+
+.agent .eyes{
+  top:13px !important;
+
+  width:2px !important;
+  height:3px !important;
+
+  background:#15110f !important;
+
+  box-shadow:
+    9px 0 #15110f,
+    0 -1px rgba(255,255,255,.38),
+    9px -1px rgba(255,255,255,.38) !important;
+}
+
+
+/* =========================================================
+   NOSE — ACTUALLY READABLE
+========================================================= */
+
+.agent .nose{
+  width:3px !important;
+  height:4px !important;
+
+  left:14px !important;
+  top:15px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.13),
+      rgba(70,30,20,.28)
+    ) !important;
+
+  border-radius:
+    60% 35% 55% 45% !important;
+
+  box-shadow:
+    1px 1px rgba(0,0,0,.15);
+}
+
+
+/* =========================================================
+   MOUTH
+========================================================= */
+
+.agent .mouth-v3{
+  position:absolute;
+
+  width:6px;
+  height:2px;
+
+  left:12px;
+  top:20px;
+
+  border-bottom:1px solid rgba(60,24,18,.72);
+
+  border-radius:50%;
+
+  z-index:10;
+}
+
+
+/* =========================================================
+   CHIN
+========================================================= */
+
+.agent .chin-v3{
+  position:absolute;
+
+  width:8px;
+  height:3px;
+
+  left:11px;
+  top:22px;
+
+  border-radius:50%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(75,35,24,.10)
+    );
+
+  z-index:9;
+}
+
+
+/* =========================================================
+   HAIR — MORE NATURAL OUTLINE
+========================================================= */
+
+.agent .hair{
+  width:22px !important;
+  height:12px !important;
+
+  left:4px !important;
+  top:1px !important;
+
+  border-radius:55% 50% 30% 25% !important;
+
+  clip-path:polygon(
+    3% 68%,
+    8% 30%,
+    19% 12%,
+    33% 5%,
+    45% 10%,
+    58% 1%,
+    73% 8%,
+    88% 23%,
+    98% 53%,
+    91% 82%,
+    78% 69%,
+    68% 82%,
+    53% 69%,
+    40% 84%,
+    27% 68%,
+    15% 86%
+  ) !important;
+
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.10),
+    inset -4px -3px rgba(0,0,0,.32),
+    0 1px rgba(0,0,0,.35) !important;
+}
+
+
+/* =========================================================
+   NECK
+========================================================= */
+
+.agent .neck-v3{
+  position:absolute;
+
+  width:8px;
+  height:6px;
+
+  left:11px;
+  top:21px;
+
+  background:var(--skin);
+
+  border-radius:0 0 4px 4px;
+
+  box-shadow:
+    inset -2px 0 rgba(0,0,0,.13);
+
+  z-index:2;
+}
+
+
+/* =========================================================
+   TORSO — HUMAN SHAPE
+========================================================= */
+
+.agent .body{
+  width:21px !important;
+  height:18px !important;
+
+  left:4px !important;
+  top:26px !important;
+
+  clip-path:polygon(
+    18% 0,
+    82% 0,
+
+    100% 20%,
+
+    88% 100%,
+    12% 100%,
+
+    0 20%
+  ) !important;
+
+  border-radius:
+    5px 5px
+    3px 3px !important;
+
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.11),
+    inset -4px -3px rgba(0,0,0,.25),
+    0 0 0 1px rgba(0,0,0,.38),
+    0 2px 2px rgba(0,0,0,.22) !important;
+}
+
+
+/* chest light */
+
+.agent .torso-light-v3{
+  position:absolute;
+
+  width:6px;
+  height:13px;
+
+  left:7px;
+  top:28px;
+
+  border-radius:4px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.10),
+      transparent
+    );
+
+  z-index:5;
+}
+
+
+/* =========================================================
+   COLLAR
+========================================================= */
+
+.agent .collar-v3{
+  position:absolute;
+
+  width:12px;
+  height:5px;
+
+  left:9px;
+  top:27px;
+
+  z-index:7;
+}
+
+.agent .collar-v3::before,
+.agent .collar-v3::after{
+  content:"";
+
+  position:absolute;
+
+  top:0;
+
+  width:6px;
+  height:5px;
+
+  background:rgba(255,255,255,.15);
+}
+
+.agent .collar-v3::before{
+  left:0;
+
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    75% 100%
+  );
+}
+
+.agent .collar-v3::after{
+  right:0;
+
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    25% 100%
+  );
+}
+
+
+/* =========================================================
+   ARMS — SHOULDER + FOREARM SHAPE
+========================================================= */
+
+.agent .arm{
+  width:6px !important;
+  height:15px !important;
+
+  top:28px !important;
+
+  border-radius:
+    4px 4px
+    3px 3px !important;
+
+  box-shadow:
+    inset -2px -2px rgba(0,0,0,.16),
+    inset 1px 1px rgba(255,255,255,.08);
+}
+
+.agent .arm.left{
+  left:1px !important;
+}
+
+.agent .arm.right{
+  right:1px !important;
+}
+
+
+/* hand */
+
+.agent .arm::after{
+  width:5px !important;
+  height:5px !important;
+
+  border-radius:
+    45% 45%
+    50% 50% !important;
+
+  box-shadow:
+    inset -1px -1px rgba(0,0,0,.15);
+}
+
+
+/* =========================================================
+   LEGS
+========================================================= */
+
+.agent .leg{
+  width:7px !important;
+  height:10px !important;
+
+  top:41px !important;
+
+  border-radius:
+    2px 2px
+    3px 3px !important;
+
+  box-shadow:
+    inset -2px 0 rgba(0,0,0,.17);
+}
+
+
+/* =========================================================
+   SHOES
+========================================================= */
+
+.agent .leg::after{
+  width:9px !important;
+  height:4px !important;
+
+  bottom:-3px !important;
+
+  border-radius:
+    3px 4px
+    2px 2px !important;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #282a2b,
+      #101112
+    ) !important;
+
+  box-shadow:
+    inset 1px 1px rgba(255,255,255,.08),
+    0 2px 1px rgba(0,0,0,.28);
+}
+
+
+/* =========================================================
+   DIFFERENT BODY SHAPES
+========================================================= */
+
+/* MAX — broader shoulders */
+
+#max .body{
+  width:23px !important;
+  left:3px !important;
+}
+
+/* RICO — slimmer */
+
+#rico .body{
+  width:19px !important;
+  left:5px !important;
+}
+
+/* TRENT — taller / straighter */
+
+#trent .body{
+  height:19px !important;
+}
+
+/* CALVIN — relaxed hoodie silhouette */
+
+#calvin .body{
+  width:22px !important;
+  left:4px !important;
+
+  border-radius:
+    7px 7px
+    4px 4px !important;
+}
+
+/* DRAYMOND — athletic */
+
+#draymond .body{
+  width:22px !important;
+  left:4px !important;
+
+  clip-path:polygon(
+    12% 0,
+    88% 0,
+    100% 20%,
+    82% 100%,
+    18% 100%,
+    0 20%
+  ) !important;
+}
+
+/* AXEL — slightly stockier */
+
+#axel .body{
+  width:23px !important;
+  left:3px !important;
+
+  height:18px !important;
+}
+
+/* ADAM — narrower office build */
+
+#adam .body{
+  width:20px !important;
+  left:5px !important;
+}
+
+/* JARED — workwear build */
+
+#jared .body{
+  width:23px !important;
+  left:3px !important;
+}
+
+
+/* =========================================================
+   INDIVIDUAL FACE SHAPES
+========================================================= */
+
+#rico .head{
+  clip-path:polygon(
+    20% 3%,
+    80% 3%,
+    96% 24%,
+    90% 69%,
+    73% 93%,
+    50% 100%,
+    27% 93%,
+    10% 69%,
+    4% 24%
+  ) !important;
+}
+
+
+#trent .head{
+  width:19px !important;
+
+  clip-path:polygon(
+    14% 6%,
+    86% 6%,
+    97% 27%,
+    90% 70%,
+    70% 95%,
+    50% 100%,
+    30% 95%,
+    10% 70%,
+    3% 27%
+  ) !important;
+}
+
+
+#calvin .head{
+  border-radius:
+    48% 48%
+    44% 44% !important;
+}
+
+
+#draymond .head{
+  width:21px !important;
+  left:4px !important;
+
+  clip-path:polygon(
+    15% 5%,
+    85% 5%,
+    97% 25%,
+    94% 66%,
+    77% 91%,
+    57% 100%,
+    40% 98%,
+    21% 89%,
+    6% 64%,
+    4% 25%
+  ) !important;
+}
+
+
+#axel .head{
+  width:21px !important;
+  left:4px !important;
+}
+
+
+#adam .head{
+  width:19px !important;
+  left:6px !important;
+}
+
+
+/* =========================================================
+   DRAYMOND HAIR
+========================================================= */
+
+#draymond .hair{
+  width:23px !important;
+
+  clip-path:polygon(
+    2% 72%,
+    5% 37%,
+    14% 14%,
+    25% 4%,
+    36% 10%,
+    47% 2%,
+    58% 9%,
+    69% 2%,
+    81% 10%,
+    94% 30%,
+    99% 63%,
+    91% 88%,
+    76% 75%,
+    62% 86%,
+    49% 72%,
+    34% 85%,
+    20% 73%,
+    8% 89%
+  ) !important;
+}
+
+
+/* =========================================================
+   AXEL BEARD
+========================================================= */
+
+#axel .beard-v3{
+  position:absolute;
+
+  width:14px;
+  height:7px;
+
+  left:8px;
+  top:17px;
+
+  background:rgba(75,43,27,.42);
+
+  border-radius:
+    0 0
+    7px 7px;
+
+  clip-path:polygon(
+    5% 0,
+    95% 0,
+    82% 68%,
+    50% 100%,
+    18% 68%
+  );
+
+  z-index:7;
+}
+
+
+/* =========================================================
+   JARED WORK CLOTHING
+========================================================= */
+
+#jared .body{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.12),
+      transparent 22% 70%,
+      rgba(0,0,0,.20)
+    ),
+    var(--shirt) !important;
+}
+
+
+#jared .reflective-v3{
+  position:absolute;
+
+  width:19px;
+  height:3px;
+
+  left:5px;
+  top:36px;
+
+  background:#aebcb5;
+
+  opacity:.62;
+
+  z-index:9;
+}
+
+
+/* =========================================================
+   WALKING
+========================================================= */
+
+.agent.real-walking-v3 .leg.left{
+  animation:v3LeftLeg .38s infinite alternate ease-in-out;
+}
+
+.agent.real-walking-v3 .leg.right{
+  animation:v3RightLeg .38s infinite alternate ease-in-out;
+}
+
+.agent.real-walking-v3 .arm.left{
+  animation:v3RightLeg .38s infinite alternate ease-in-out;
+}
+
+.agent.real-walking-v3 .arm.right{
+  animation:v3LeftLeg .38s infinite alternate ease-in-out;
+}
+
+.agent.real-walking-v3{
+  animation:v3BodyWalk .38s infinite alternate ease-in-out;
+}
+
+
+@keyframes v3LeftLeg{
+  from{
+    transform:translateY(0);
+  }
+
+  to{
+    transform:translateY(-2px);
+  }
+}
+
+
+@keyframes v3RightLeg{
+  from{
+    transform:translateY(-2px);
+  }
+
+  to{
+    transform:translateY(0);
+  }
+}
+
+
+@keyframes v3BodyWalk{
+  from{
+    margin-top:0;
+  }
+
+  to{
+    margin-top:-1px;
+  }
+}
+
+</style>
+
+
+<script>
+(function(){
+
+  if(window.CHARACTER_OVERHAUL_V3){
+    return;
+  }
+
+  window.CHARACTER_OVERHAUL_V3 = true;
+
+
+  /* =======================================================
+     ADD CHARACTER DETAIL
+  ======================================================= */
+
+  const characterIds = [
+    "max",
+    "rico",
+    "trent",
+    "calvin",
+    "draymond",
+    "axel",
+    "adam",
+    "jared"
+  ];
+
+
+  function part(
+    parent,
+    className
+  ){
+
+    const el =
+      document.createElement("div");
+
+    el.className =
+      className;
+
+    parent.appendChild(el);
+
+    return el;
+  }
+
+
+  characterIds.forEach(id=>{
+
+    const agent =
+      document.getElementById(id);
+
+    if(!agent){
+      return;
+    }
+
+
+    part(
+      agent,
+      "character-shadow-v3"
+    );
+
+
+    const head =
+      agent.querySelector(".head");
+
+    if(head){
+
+      part(
+        head,
+        "face-shade-v3"
+      );
+
+    }
+
+
+    part(
+      agent,
+      "ear-v3 left"
+    );
+
+    part(
+      agent,
+      "ear-v3 right"
+    );
+
+    part(
+      agent,
+      "brow-v3 left"
+    );
+
+    part(
+      agent,
+      "brow-v3 right"
+    );
+
+    part(
+      agent,
+      "mouth-v3"
+    );
+
+    part(
+      agent,
+      "chin-v3"
+    );
+
+    part(
+      agent,
+      "neck-v3"
+    );
+
+    part(
+      agent,
+      "collar-v3"
+    );
+
+    part(
+      agent,
+      "torso-light-v3"
+    );
+
+  });
+
+
+  const axel =
+    document.getElementById("axel");
+
+  if(axel){
+
+    part(
+      axel,
+      "beard-v3"
+    );
+
+  }
+
+
+  const jared =
+    document.getElementById("jared");
+
+  if(jared){
+
+    part(
+      jared,
+      "reflective-v3"
+    );
+
+  }
+
+
+  /* =======================================================
+     REAL MOVEMENT SYSTEM
+
+     Uses safe corridor waypoints.
+
+     This does NOT replace Jared's janitor patrol.
+  ======================================================= */
+
+
+  const agents = {
+
+    max:
+      document.getElementById("max"),
+
+    rico:
+      document.getElementById("rico"),
+
+    trent:
+      document.getElementById("trent"),
+
+    calvin:
+      document.getElementById("calvin"),
+
+    draymond:
+      document.getElementById("draymond"),
+
+    axel:
+      document.getElementById("axel"),
+
+    adam:
+      document.getElementById("adam")
+
+  };
+
+
+  /*
+     These are known walkable centres based on the office map.
+
+     Routes intentionally go through actual doors/corridors,
+     never diagonally through black void.
+  */
+
+  const P = {
+
+    research:{
+      x:141,
+      y:282
+    },
+
+    researchDoor:{
+      x:190,
+      y:364
+    },
+
+
+    manager:{
+      x:381,
+      y:183
+    },
+
+    managerDoor:{
+      x:381,
+      y:384
+    },
+
+
+    test:{
+      x:630,
+      y:274
+    },
+
+    testDoor:{
+      x:570,
+      y:366
+    },
+
+
+    topHallLeft:{
+      x:226,
+      y:415
+    },
+
+    topHallCentre:{
+      x:381,
+      y:415
+    },
+
+    topHallRight:{
+      x:535,
+      y:415
+    },
+
+
+    canteenTop:{
+      x:381,
+      y:477
+    },
+
+    canteen:{
+      x:379,
+      y:668
+    },
+
+    canteenLeft:{
+      x:245,
+      y:668
+    },
+
+    canteenRight:{
+      x:515,
+      y:668
+    },
+
+    canteenBottom:{
+      x:381,
+      y:824
+    },
+
+
+    designDoor:{
+      x:185,
+      y:850
+    },
+
+    design:{
+      x:111,
+      y:840
+    },
+
+
+    analyticsDoor:{
+      x:575,
+      y:850
+    },
+
+    analytics:{
+      x:656,
+      y:842
+    },
+
+
+    archiveDoor:{
+      x:381,
+      y:920
+    },
+
+    archives:{
+      x:381,
+      y:1070
+    }
+
+  };
+
+
+  const homes = {
+
+    max:"manager",
+
+    rico:"research",
+
+    trent:"test",
+
+    calvin:"canteen",
+
+    draymond:"design",
+
+    axel:"analytics",
+
+    adam:"archives"
+
+  };
+
+
+  function wait(ms){
+
+    return new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          ms
+        )
+    );
+
+  }
+
+
+  function currentPosition(agent){
+
+    return {
+
+      x:
+        parseFloat(
+          agent.style.left
+        ) || 0,
+
+      y:
+        parseFloat(
+          agent.style.top
+        ) || 0
+
+    };
+
+  }
+
+
+  async function moveSegment(
+    agent,
+    point
+  ){
+
+    if(
+      !agent ||
+      !point
+    ){
+      return;
+    }
+
+
+    const current =
+      currentPosition(agent);
+
+
+    const dx =
+      point.x - current.x;
+
+    const dy =
+      point.y - current.y;
+
+
+    const distance =
+      Math.sqrt(
+        dx*dx +
+        dy*dy
+      );
+
+
+    /*
+      roughly 30px/sec.
+      Deliberately not fast.
+    */
+
+    const duration =
+      Math.max(
+        500,
+        distance / 30 * 1000
+      );
+
+
+    agent.classList.add(
+      "real-walking-v3"
+    );
+
+
+    agent.style.transition =
+      `left ${duration}ms linear,
+       top ${duration}ms linear`;
+
+
+    agent.style.left =
+      point.x + "px";
+
+    agent.style.top =
+      point.y + "px";
+
+
+    await wait(duration);
+
+
+    agent.classList.remove(
+      "real-walking-v3"
+    );
+
+  }
+
+
+  async function travel(
+    agent,
+    route
+  ){
+
+    if(
+      !agent ||
+      agent.dataset.v3Moving === "yes"
+    ){
+      return;
+    }
+
+
+    /*
+      Don't interrupt task animations.
+    */
+
+    if(
+      agent.classList.contains("walking")
+    ){
+      return;
+    }
+
+
+    agent.dataset.v3Moving =
+      "yes";
+
+
+    for(
+      const pointName
+      of route
+    ){
+
+      await moveSegment(
+        agent,
+        P[pointName]
+      );
+
+    }
+
+
+    agent.style.transition =
+      "";
+
+
+    delete agent.dataset.v3Moving;
+
+  }
+
+
+  /* =======================================================
+     ROUTES FROM EACH HOME TO CANTEEN
+  ======================================================= */
+
+  const toCanteen = {
+
+    max:[
+      "managerDoor",
+      "topHallCentre",
+      "canteenTop",
+      "canteen"
+    ],
+
+    rico:[
+      "researchDoor",
+      "topHallLeft",
+      "topHallCentre",
+      "canteenTop",
+      "canteen"
+    ],
+
+    trent:[
+      "testDoor",
+      "topHallRight",
+      "topHallCentre",
+      "canteenTop",
+      "canteen"
+    ],
+
+    draymond:[
+      "designDoor",
+      "canteenLeft",
+      "canteen"
+    ],
+
+    axel:[
+      "analyticsDoor",
+      "canteenRight",
+      "canteen"
+    ],
+
+    adam:[
+      "archiveDoor",
+      "canteenBottom",
+      "canteen"
+    ]
+
+  };
+
+
+  const fromCanteen = {
+
+    max:[
+      "canteenTop",
+      "topHallCentre",
+      "managerDoor",
+      "manager"
+    ],
+
+    rico:[
+      "canteenTop",
+      "topHallCentre",
+      "topHallLeft",
+      "researchDoor",
+      "research"
+    ],
+
+    trent:[
+      "canteenTop",
+      "topHallCentre",
+      "topHallRight",
+      "testDoor",
+      "test"
+    ],
+
+    draymond:[
+      "canteenLeft",
+      "designDoor",
+      "design"
+    ],
+
+    axel:[
+      "canteenRight",
+      "analyticsDoor",
+      "analytics"
+    ],
+
+    adam:[
+      "canteenBottom",
+      "archiveDoor",
+      "archives"
+    ]
+
+  };
+
+
+  /* =======================================================
+     CROSS-OFFICE VISITS
+  ======================================================= */
+
+  const visits = {
+
+    max:[
+      [
+        "managerDoor",
+        "topHallCentre",
+        "canteenTop",
+        "canteen"
+      ]
+    ],
+
+
+    rico:[
+      [
+        "researchDoor",
+        "topHallLeft",
+        "topHallCentre",
+        "managerDoor",
+        "manager"
+      ],
+
+      toCanteen.rico
+    ],
+
+
+    trent:[
+      [
+        "testDoor",
+        "topHallRight",
+        "topHallCentre",
+        "managerDoor",
+        "manager"
+      ],
+
+      toCanteen.trent
+    ],
+
+
+    draymond:[
+      toCanteen.draymond,
+
+      [
+        "designDoor",
+        "canteenLeft",
+        "canteen",
+        "canteenTop",
+        "topHallCentre",
+        "managerDoor",
+        "manager"
+      ]
+    ],
+
+
+    axel:[
+      toCanteen.axel,
+
+      [
+        "analyticsDoor",
+        "canteenRight",
+        "canteen",
+        "canteenTop",
+        "topHallCentre",
+        "managerDoor",
+        "manager"
+      ]
+    ],
+
+
+    adam:[
+      toCanteen.adam,
+
+      [
+        "archiveDoor",
+        "canteenBottom",
+        "canteen",
+        "canteenTop",
+        "topHallCentre",
+        "managerDoor",
+        "manager"
+      ]
+    ]
+
+  };
+
+
+  /* =======================================================
+     RETURN HOME FROM MANAGER
+  ======================================================= */
+
+  const managerReturn = {
+
+    rico:[
+      "managerDoor",
+      "topHallCentre",
+      "topHallLeft",
+      "researchDoor",
+      "research"
+    ],
+
+    trent:[
+      "managerDoor",
+      "topHallCentre",
+      "topHallRight",
+      "testDoor",
+      "test"
+    ],
+
+    draymond:[
+      "managerDoor",
+      "topHallCentre",
+      "canteenTop",
+      "canteen",
+      "canteenLeft",
+      "designDoor",
+      "design"
+    ],
+
+    axel:[
+      "managerDoor",
+      "topHallCentre",
+      "canteenTop",
+      "canteen",
+      "canteenRight",
+      "analyticsDoor",
+      "analytics"
+    ],
+
+    adam:[
+      "managerDoor",
+      "topHallCentre",
+      "canteenTop",
+      "canteen",
+      "canteenBottom",
+      "archiveDoor",
+      "archives"
+    ]
+
+  };
+
+
+  /* =======================================================
+     AGENT TRIP
+  ======================================================= */
+
+  async function agentTrip(
+    id
+  ){
+
+    const agent =
+      agents[id];
+
+
+    if(
+      !agent ||
+      agent.dataset.v3Moving === "yes" ||
+      agent.classList.contains("walking")
+    ){
+      return;
+    }
+
+
+    /*
+      Calvin already lives in the canteen.
+
+      Give him shorter social movements rather than making
+      him repeatedly "travel to" the room he's already in.
+    */
+
+    if(
+      id === "calvin"
+    ){
+
+      const points = [
+
+        "canteenLeft",
+        "canteenRight",
+        "canteenTop",
+        "canteenBottom",
+        "canteen"
+
+      ];
+
+
+      const destination =
+        points[
+          Math.floor(
+            Math.random() *
+            points.length
+          )
+        ];
+
+
+      await travel(
+        agent,
+        [
+          destination
+        ]
+      );
+
+
+      await wait(
+        2500 +
+        Math.random()*3500
+      );
+
+
+      await travel(
+        agent,
+        [
+          "canteen"
+        ]
+      );
+
+
+      return;
+    }
+
+
+    const available =
+      visits[id];
+
+
+    if(
+      !available
+    ){
+      return;
+    }
+
+
+    const chosen =
+      available[
+        Math.floor(
+          Math.random() *
+          available.length
+        )
+      ];
+
+
+    await travel(
+      agent,
+      chosen
+    );
+
+
+    /*
+      stand/socialise/work for a moment
+    */
+
+    await wait(
+      4000 +
+      Math.random()*6000
+    );
+
+
+    const endedAtManager =
+      chosen[
+        chosen.length - 1
+      ] === "manager";
+
+
+    if(
+      endedAtManager &&
+      managerReturn[id]
+    ){
+
+      await travel(
+        agent,
+        managerReturn[id]
+      );
+
+    }
+
+    else if(
+      fromCanteen[id]
+    ){
+
+      await travel(
+        agent,
+        fromCanteen[id]
+      );
+
+    }
+
+  }
+
+
+  /* =======================================================
+     SCHEDULER
+
+     Someone should visibly go somewhere roughly every
+     12–20 seconds.
+
+     Only one is intentionally launched at once so the
+     office looks alive rather than chaotic.
+  ======================================================= */
+
+  const roamingAgents = [
+    "max",
+    "rico",
+    "trent",
+    "calvin",
+    "draymond",
+    "axel",
+    "adam"
+  ];
+
+
+  function scheduleTrip(){
+
+    const delay =
+      12000 +
+      Math.random()*8000;
+
+
+    setTimeout(
+      async ()=>{
+
+        const candidates =
+          roamingAgents.filter(
+            id => {
+
+              const a =
+                agents[id];
+
+              return (
+                a &&
+                a.dataset.v3Moving !== "yes" &&
+                !a.classList.contains("walking")
+              );
+
+            }
+          );
+
+
+        if(
+          candidates.length
+        ){
+
+          const chosen =
+            candidates[
+              Math.floor(
+                Math.random() *
+                candidates.length
+              )
+            ];
+
+
+          await agentTrip(
+            chosen
+          );
+
+        }
+
+
+        scheduleTrip();
+
+      },
+
+      delay
+    );
+
+  }
+
+
+  /*
+     First movement starts quickly so you're not sitting
+     there wondering whether the bastard works.
+  */
+
+  setTimeout(
+    ()=>{
+
+      const firstAgents = [
+        "rico",
+        "trent",
+        "draymond",
+        "axel",
+        "adam"
+      ];
+
+
+      const first =
+        firstAgents[
+          Math.floor(
+            Math.random() *
+            firstAgents.length
+          )
+        ];
+
+
+      agentTrip(first);
+
+    },
+
+    4000
+  );
+
+
+  scheduleTrip();
+
+})();
+</script>
 </body>
 </html>
