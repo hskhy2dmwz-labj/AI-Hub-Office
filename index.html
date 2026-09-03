@@ -2,2406 +2,3357 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AI Office</title>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
 :root{
-  --void:#000000;
-  --wall:#526173;
-  --wallDark:#202a35;
-  --wallEdge:#748397;
-  --corridor:#7a756c;
-  --green:#4be39c;
+  --void:#020305;
+  --wall0:#10161d;
+  --wall1:#202b35;
+  --wall2:#3a4854;
+  --wall3:#64717b;
+  --line:#080b0e;
+  --corridor:#1d252c;
 }
 
 html,body{
-  width:100%;
-  min-height:100%;
-  background:#000;
+  margin:0;
+  background:
+    radial-gradient(circle at 50% 30%,#080b10 0,#030406 42%,#000 100%);
   color:#fff;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100%;
 }
 
 body{
   overflow-x:hidden;
+  padding-top:env(safe-area-inset-top);
 }
 
-.app{
-  min-height:100vh;
-  padding:16px 8px 116px;
-  background:#000;
-}
+/* =========================================================
+   TOP
+========================================================= */
 
 .topbar{
-  width:min(100%,650px);
-  margin:0 auto 8px;
-  padding:4px 7px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  width:min(100%,780px);
+  margin:auto;
+  padding:22px 26px 9px;
 }
 
-.logo{
-  font-size:23px;
-  font-weight:850;
-  letter-spacing:-.7px;
+.title{
+  font-size:38px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-1.5px;
 }
 
 .online{
-  font-size:12px;
-  color:#96edc4;
+  margin-top:10px;
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
+  color:#2fd267;
+  font-size:14px;
 }
 
 .online-dot{
-  width:8px;
-  height:8px;
+  width:11px;
+  height:11px;
+  background:#2fd267;
   border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 9px rgba(75,227,156,.7);
+  box-shadow:0 0 12px rgba(47,210,103,.6);
 }
 
-/* ============================================================
-   MAP
-============================================================ */
+/* =========================================================
+   MAP SHELL
+========================================================= */
 
 .map-shell{
+  width:100%;
   display:flex;
   justify-content:center;
-  width:100%;
+  overflow:hidden;
 }
 
-.map{
+.office{
   position:relative;
-  width:100%;
-  max-width:630px;
-  height:880px;
-  background:#000;
+  width:760px;
+  height:1240px;
+  flex:0 0 760px;
+  transform-origin:top center;
+  background:transparent;
 }
 
-/*
-IMPORTANT:
-There is intentionally NOTHING behind the rooms.
+/* Black void is literally the office background. */
 
-Anything black between rooms/corridors is actual void.
-*/
+.room,
+.corridor{
+  position:absolute;
+}
+
+/* =========================================================
+   WALL SYSTEM
+========================================================= */
 
 .room{
-  position:absolute;
-  overflow:hidden;
-  z-index:5;
-  border:4px solid var(--wallDark);
-  outline:2px solid var(--wallEdge);
+  border:8px solid var(--wall1);
+  outline:2px solid #050709;
   box-shadow:
-    inset 0 0 0 2px rgba(255,255,255,.05),
-    inset 0 0 25px rgba(0,0,0,.18);
+    inset 0 0 0 2px var(--wall3),
+    inset 0 0 0 5px #141b21,
+    0 8px 18px #000;
+  overflow:hidden;
 }
-
-/* visible floor tiles */
 
 .room::before{
   content:"";
   position:absolute;
-  inset:0;
-  z-index:0;
-  opacity:.38;
+  inset:6px;
+  border:1px solid rgba(255,255,255,.08);
   pointer-events:none;
-  background:
-    linear-gradient(rgba(255,255,255,.075) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.075) 1px,transparent 1px);
-  background-size:14px 14px;
+  z-index:10;
 }
 
-.room-title{
+.room::after{
+  content:"";
   position:absolute;
+  left:10px;
+  right:10px;
   top:7px;
+  height:3px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.3),
+    transparent
+  );
+  opacity:.55;
+  pointer-events:none;
+  z-index:11;
+}
+
+.room-label{
+  position:absolute;
+  z-index:30;
+  top:15px;
   left:50%;
   transform:translateX(-50%);
-  z-index:20;
-  padding:3px 7px;
-  background:rgba(5,7,10,.85);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:2px;
-  font-size:6px;
-  font-weight:900;
-  letter-spacing:.5px;
+  background:#0a0d11;
+  border:1px solid #46515b;
+  box-shadow:0 2px 4px #000;
+  padding:5px 10px;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.3px;
   white-space:nowrap;
 }
 
-/* ============================================================
-   ROOMS — INTENTIONALLY NOT SYMMETRICAL
-============================================================ */
-
-.research{
-  left:3%;
-  top:4%;
-  width:29%;
-  height:22%;
-  background:#16433e;
-  clip-path:polygon(
-    8% 0,
-    100% 0,
-    100% 72%,
-    89% 72%,
-    89% 100%,
-    0 100%,
-    0 15%
-  );
-}
-
-.manager{
-  left:39%;
-  top:2%;
-  width:27%;
-  height:22%;
-  background:#684329;
-  clip-path:polygon(
-    7% 0,
-    100% 0,
-    100% 87%,
-    86% 87%,
-    86% 100%,
-    8% 100%,
-    8% 91%,
-    0 91%,
-    0 10%
-  );
-}
-
-.testing{
-  right:2%;
-  top:6%;
-  width:29%;
-  height:23%;
-  background:#34404c;
-  clip-path:polygon(
-    7% 0,
-    94% 0,
-    100% 10%,
-    100% 100%,
-    4% 100%,
-    4% 86%,
-    0 86%,
-    0 13%
-  );
-}
-
-.storage{
-  left:3%;
-  top:31%;
-  width:21%;
-  height:16%;
-  background:#584630;
-  clip-path:polygon(
-    0 0,
-    90% 0,
-    100% 13%,
-    100% 90%,
-    89% 100%,
-    0 100%
-  );
-}
-
-.server-room{
-  right:3%;
-  top:33%;
-  width:21%;
-  height:17%;
-  background:#17353d;
-  clip-path:polygon(
-    10% 0,
-    100% 0,
-    100% 100%,
-    7% 100%,
-    0 88%,
-    0 10%
-  );
-}
-
-.canteen{
-  left:30%;
-  top:34%;
-  width:42%;
-  height:29%;
-  background:#79573a;
-  clip-path:polygon(
-    7% 0,
-    94% 0,
-    100% 7%,
-    100% 88%,
-    92% 100%,
-    12% 100%,
-    0 88%,
-    0 10%
-  );
-}
-
-.design{
-  left:2%;
-  top:52%;
-  width:27%;
-  height:20%;
-  background:#6b2946;
-  clip-path:polygon(
-    8% 0,
-    91% 0,
-    100% 12%,
-    100% 89%,
-    88% 100%,
-    6% 100%,
-    0 91%,
-    0 11%
-  );
-}
-
-.analytics{
-  right:2%;
-  top:54%;
-  width:26%;
-  height:20%;
-  background:#164c67;
-  clip-path:polygon(
-    10% 0,
-    92% 0,
-    100% 13%,
-    100% 88%,
-    91% 100%,
-    4% 100%,
-    0 91%,
-    0 12%
-  );
-}
-
-.archives{
-  left:32%;
-  top:69%;
-  width:40%;
-  height:23%;
-  background:#314a31;
-  clip-path:polygon(
-    7% 0,
-    89% 0,
-    100% 12%,
-    100% 92%,
-    92% 100%,
-    7% 100%,
-    0 90%,
-    0 10%
-  );
-}
-
-/* UNCONNECTED */
-.utility{
-  left:6%;
-  top:76%;
-  width:17%;
-  height:16%;
-  background:#303841;
-  clip-path:polygon(
-    7% 0,
-    91% 0,
-    100% 10%,
-    100% 91%,
-    91% 100%,
-    0 100%,
-    0 9%
-  );
-}
-
-/* COMPLETELY UNCONNECTED */
-.restroom{
-  right:5%;
-  top:79%;
-  width:17%;
-  height:14%;
-  background:#294764;
-  clip-path:polygon(
-    10% 0,
-    91% 0,
-    100% 10%,
-    100% 89%,
-    88% 100%,
-    0 100%,
-    0 10%
-  );
-}
-
-/* ============================================================
+/* =========================================================
    CORRIDORS
-============================================================ */
+========================================================= */
 
 .corridor{
-  position:absolute;
-  z-index:3;
+  z-index:2;
   background:
-    repeating-linear-gradient(
-      90deg,
-      #8d8980 0 9px,
-      #a09b91 9px 18px
-    );
-  border:4px solid var(--wallDark);
-  outline:2px solid var(--wallEdge);
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    var(--corridor);
+  background-size:18px 18px;
+  border:6px solid var(--wall1);
+  outline:2px solid #050709;
+  box-shadow:
+    inset 0 0 0 2px #53606a,
+    inset 0 0 14px #070a0d,
+    0 4px 12px #000;
 }
 
-/* top research -> centre */
-.cor-r1{
-  left:27%;
-  top:20%;
-  width:17%;
-  height:5%;
+/* Corridor positions */
+
+.c-top-left{
+  left:201px;
+  top:101px;
+  width:90px;
+  height:50px;
 }
 
-/* manager down */
-.cor-m1{
-  left:47%;
-  top:22%;
-  width:7%;
-  height:10%;
+.c-top-right{
+  left:468px;
+  top:101px;
+  width:92px;
+  height:50px;
 }
 
-/* test towards centre */
-.cor-t1{
-  right:25%;
-  top:24%;
-  width:18%;
-  height:5%;
+.c-left-down{
+  left:187px;
+  top:291px;
+  width:64px;
+  height:184px;
 }
 
-/* top horizontal connector */
-.cor-top{
-  left:30%;
-  top:27%;
-  width:47%;
-  height:6%;
+.c-right-down{
+  left:509px;
+  top:291px;
+  width:64px;
+  height:184px;
 }
 
-/* storage */
-.cor-storage{
-  left:21%;
-  top:40%;
-  width:11%;
-  height:5%;
+.c-middle-top{
+  left:222px;
+  top:386px;
+  width:316px;
+  height:72px;
 }
 
-/* server */
-.cor-server{
-  right:21%;
-  top:42%;
-  width:10%;
-  height:5%;
+.c-storage{
+  left:127px;
+  top:429px;
+  width:104px;
+  height:55px;
 }
 
-/* design <- canteen */
-/* THIS is the corridor you asked for */
-.cor-design{
-  left:24%;
-  top:57%;
-  width:10%;
-  height:6%;
+.c-server{
+  left:530px;
+  top:429px;
+  width:104px;
+  height:55px;
 }
 
-/* canteen -> archives */
-.cor-archive{
-  left:47%;
-  top:62%;
-  width:7%;
-  height:9%;
+.c-design{
+  left:132px;
+  top:655px;
+  width:115px;
+  height:54px;
 }
 
-/* analytics connector */
-.cor-analytics{
-  right:24%;
-  top:63%;
-  width:9%;
-  height:5%;
+.c-analytics{
+  left:514px;
+  top:655px;
+  width:116px;
+  height:54px;
 }
 
-/*
-NO CORRIDORS TO:
-.utility
-.restroom
-*/
+.c-canteen-archives{
+  left:346px;
+  top:817px;
+  width:68px;
+  height:102px;
+}
 
-/* ============================================================
-   DECOR
-============================================================ */
+.c-archive-left{
+  left:160px;
+  top:902px;
+  width:208px;
+  height:54px;
+}
+
+.c-archive-right{
+  left:392px;
+  top:902px;
+  width:209px;
+  height:54px;
+}
+
+/* Utility access — reachable but still isolated visually */
+
+.c-utility-a{
+  left:127px;
+  top:932px;
+  width:55px;
+  height:160px;
+}
+
+.c-utility-b{
+  left:88px;
+  top:1061px;
+  width:90px;
+  height:50px;
+}
+
+/* Restroom access */
+
+.c-restroom-a{
+  left:579px;
+  top:932px;
+  width:55px;
+  height:160px;
+}
+
+.c-restroom-b{
+  left:584px;
+  top:1061px;
+  width:91px;
+  height:50px;
+}
+
+/* =========================================================
+   FLOOR TEXTURES
+========================================================= */
+
+.research-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #18352a;
+  background-size:18px 18px;
+}
+
+.manager-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #49301e;
+  background-size:16px 16px;
+}
+
+.test-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    #27313b;
+  background-size:20px 20px;
+}
+
+.storage-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #4a3720;
+  background-size:18px 18px;
+}
+
+.canteen-floor{
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.12) 1px,transparent 1px),
+    linear-gradient(rgba(0,0,0,.12) 1px,transparent 1px),
+    #684b2e;
+  background-size:15px 15px;
+}
+
+.server-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #17322f;
+  background-size:18px 18px;
+}
+
+.design-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #4b1837;
+  background-size:17px 17px;
+}
+
+.analytics-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #12384a;
+  background-size:18px 18px;
+}
+
+.archives-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    #1c3d2b;
+  background-size:18px 18px;
+}
+
+.utility-floor{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    #253038;
+  background-size:16px 16px;
+}
+
+.restroom-floor{
+  background:
+    linear-gradient(45deg,#31536a 25%,transparent 25%),
+    linear-gradient(-45deg,#31536a 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#31536a 75%),
+    linear-gradient(-45deg,transparent 75%,#31536a 75%),
+    #28465a;
+  background-size:24px 24px;
+  background-position:0 0,0 12px,12px -12px,-12px 0;
+}
+
+/* =========================================================
+   ROOMS — IRREGULAR REFERENCE-LIKE PLACEMENT
+========================================================= */
+
+#research{
+  left:18px;
+  top:82px;
+  width:200px;
+  height:300px;
+  clip-path:polygon(
+    0 0,95% 0,95% 15%,
+    100% 15%,100% 77%,
+    88% 77%,88% 100%,
+    0 100%
+  );
+  z-index:5;
+}
+
+#manager{
+  left:274px;
+  top:53px;
+  width:214px;
+  height:337px;
+  clip-path:polygon(
+    8% 0,92% 0,
+    92% 9%,100% 9%,
+    100% 88%,88% 88%,
+    88% 100%,12% 100%,
+    12% 88%,0 88%,
+    0 9%,8% 9%
+  );
+  z-index:6;
+}
+
+#test{
+  left:543px;
+  top:75px;
+  width:198px;
+  height:310px;
+  clip-path:polygon(
+    5% 0,100% 0,
+    100% 100%,12% 100%,
+    12% 80%,0 80%,
+    0 15%,5% 15%
+  );
+  z-index:5;
+}
+
+#storage{
+  left:17px;
+  top:410px;
+  width:151px;
+  height:245px;
+  clip-path:polygon(
+    0 0,100% 0,
+    100% 88%,88% 88%,
+    88% 100%,0 100%
+  );
+  z-index:5;
+}
+
+#canteen{
+  left:216px;
+  top:450px;
+  width:329px;
+  height:385px;
+  clip-path:polygon(
+    9% 0,91% 0,
+    100% 9%,100% 91%,
+    92% 100%,8% 100%,
+    0 91%,0 9%
+  );
+  z-index:6;
+}
+
+#server{
+  left:590px;
+  top:409px;
+  width:151px;
+  height:246px;
+  clip-path:polygon(
+    0 0,100% 0,
+    100% 100%,12% 100%,
+    12% 88%,0 88%
+  );
+  z-index:5;
+}
+
+#design{
+  left:7px;
+  top:683px;
+  width:177px;
+  height:279px;
+  clip-path:polygon(
+    9% 0,100% 0,
+    100% 92%,88% 92%,
+    88% 100%,0 100%,
+    0 11%
+  );
+  z-index:5;
+}
+
+#analytics{
+  left:575px;
+  top:681px;
+  width:177px;
+  height:282px;
+  clip-path:polygon(
+    0 0,91% 0,
+    100% 11%,100% 100%,
+    12% 100%,12% 92%,
+    0 92%
+  );
+  z-index:5;
+}
+
+#archives{
+  left:207px;
+  top:911px;
+  width:347px;
+  height:284px;
+  clip-path:polygon(
+    12% 0,88% 0,
+    100% 12%,100% 90%,
+    90% 100%,10% 100%,
+    0 90%,0 12%
+  );
+  z-index:6;
+}
+
+#utility{
+  left:15px;
+  top:1029px;
+  width:156px;
+  height:191px;
+  clip-path:polygon(
+    10% 0,100% 0,
+    100% 90%,90% 100%,
+    0 100%,0 10%
+  );
+  z-index:5;
+}
+
+#restroom{
+  left:588px;
+  top:1032px;
+  width:155px;
+  height:188px;
+  clip-path:polygon(
+    0 0,90% 0,
+    100% 10%,100% 100%,
+    10% 100%,0 90%
+  );
+  z-index:5;
+}
+
+/* =========================================================
+   DECORATION PRIMITIVES
+========================================================= */
+
+.object{
+  position:absolute;
+  z-index:15;
+  filter:drop-shadow(2px 3px 1px rgba(0,0,0,.6));
+}
+
+.screen{
+  background:#102331;
+  border:3px solid #111820;
+  box-shadow:
+    inset 0 0 0 2px #53616c,
+    inset 0 0 9px #00a7ff,
+    2px 3px 2px #000;
+}
+
+.screen::after{
+  content:"";
+  position:absolute;
+  inset:5px;
+  background:
+    linear-gradient(#44c8ff 0 0) 3px 3px/55% 2px no-repeat,
+    linear-gradient(#ffcf47 0 0) 3px 9px/35% 2px no-repeat,
+    linear-gradient(#6cff9a 0 0) 3px 15px/65% 2px no-repeat;
+  opacity:.8;
+}
 
 .desk{
-  position:absolute;
-  z-index:10;
-  width:33px;
-  height:14px;
-  border-radius:2px;
-  background:#754f35;
-  border:2px solid #a27650;
-  box-shadow:0 2px 0 rgba(0,0,0,.35);
-}
-
-.desk.dark{
-  background:#3f5367;
-  border-color:#6f879d;
-}
-
-.monitor{
-  position:absolute;
-  z-index:12;
-  width:14px;
-  height:11px;
-  background:#071a31;
-  border:2px solid #647d9c;
-}
-
-.monitor::before{
-  content:"";
-  position:absolute;
-  left:2px;
-  top:2px;
-  width:7px;
-  height:2px;
-  background:#4dd9ff;
+  background:
+    linear-gradient(#745238,#4c321f);
+  border:3px solid #25170f;
   box-shadow:
-    2px 3px #7f6bff,
-    -1px 6px #4fd497;
+    inset 0 2px #9a7655,
+    2px 4px #080503;
 }
 
-.keyboard{
-  position:absolute;
-  z-index:12;
-  width:12px;
-  height:5px;
-  border:1px solid #a6b3bf;
-  background:#687a8c;
-}
-
-.chair{
-  position:absolute;
-  z-index:9;
-  width:10px;
-  height:10px;
-  border-radius:3px;
-  border:2px solid #62788f;
-  background:#34465b;
-}
-
-.server{
-  position:absolute;
-  z-index:10;
-  width:14px;
-  height:42px;
-  border:2px solid #596c80;
-  background:#0c1823;
-}
-
-.server::before{
-  content:"";
-  position:absolute;
-  left:2px;
-  top:4px;
-  width:3px;
-  height:3px;
-  background:#4de49a;
-  box-shadow:
-    6px 0 #7089ff,
-    0 6px #e3ac50,
-    6px 6px #4de49a,
-    0 12px #6e8cff,
-    6px 12px #e15f66,
-    0 18px #4de49a,
-    6px 18px #6e8cff,
-    0 24px #dfa54a,
-    6px 24px #4de49a,
-    0 30px #738cff,
-    6px 30px #e45e68;
+.cabinet{
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #46564b 0,
+      #46564b 18px,
+      #17231d 19px,
+      #17231d 22px
+    );
+  border:3px solid #101713;
+  box-shadow:inset 2px 0 #66786b;
 }
 
 .shelf{
-  position:absolute;
-  z-index:10;
-  width:15px;
-  height:46px;
-  background:#503c2d;
-  border:2px solid #7a5d43;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #332519 0,
+      #332519 12px,
+      #120d09 13px,
+      #120d09 16px
+    );
+  border:3px solid #15100c;
 }
 
-.shelf::before{
+.server-rack{
+  background:#111820;
+  border:3px solid #06090c;
+  box-shadow:inset 2px 0 #3f4c55;
+}
+
+.server-rack::after{
   content:"";
   position:absolute;
-  left:2px;
-  top:4px;
-  width:9px;
-  height:5px;
-  background:#d1904c;
-  box-shadow:
-    0 8px #758ecc,
-    0 16px #7da36d,
-    0 24px #ad6f9a,
-    0 32px #d3ae56;
-}
-
-.board{
-  position:absolute;
-  z-index:10;
-  width:47px;
-  height:25px;
-  border:3px solid #adb9c5;
-  background:#e5e7df;
-}
-
-.board::after{
-  content:"";
-  position:absolute;
-  left:5px;
-  top:5px;
-  width:22px;
-  height:2px;
-  background:#dc5961;
-  box-shadow:
-    8px 5px #527db6,
-    -1px 10px #4c9b6d,
-    12px 15px #e0a64c;
+  inset:7px;
+  background:
+    radial-gradient(circle,#27e77c 0 2px,transparent 3px) 0 0/15px 16px,
+    radial-gradient(circle,#42bfff 0 2px,transparent 3px) 7px 7px/17px 17px;
 }
 
 .plant{
-  position:absolute;
-  z-index:11;
-  width:15px;
-  height:21px;
+  width:26px;
+  height:38px;
 }
 
 .plant::before{
   content:"";
   position:absolute;
+  width:22px;
+  height:25px;
+  left:2px;
   top:0;
-  left:3px;
-  width:9px;
-  height:12px;
-  border-radius:70% 30% 70% 40%;
-  background:#52bd7d;
-  box-shadow:
-    -5px 3px #347c59,
-    5px 2px #4eaa72,
-    0 -3px #428e62;
+  background:
+    radial-gradient(ellipse at 25% 55%,#3d9b46 0 24%,transparent 27%),
+    radial-gradient(ellipse at 70% 35%,#55b856 0 23%,transparent 26%),
+    radial-gradient(ellipse at 55% 75%,#236e31 0 25%,transparent 28%),
+    radial-gradient(ellipse at 35% 25%,#327f38 0 23%,transparent 26%);
 }
 
 .plant::after{
   content:"";
   position:absolute;
-  left:3px;
+  left:6px;
   bottom:0;
-  width:9px;
-  height:7px;
-  border-radius:1px 1px 3px 3px;
-  background:#8b5739;
-}
-
-.paper{
-  position:absolute;
-  z-index:13;
-  width:9px;
-  height:7px;
-  background:#eee7d3;
-  border:1px solid #a49e91;
-  transform:rotate(-13deg);
-}
-
-.cup{
-  position:absolute;
-  z-index:13;
-  width:6px;
-  height:7px;
-  background:#e3e7eb;
-  border:1px solid #9ea9b2;
-}
-
-.box{
-  position:absolute;
-  z-index:9;
   width:15px;
-  height:12px;
-  background:#9a6840;
-  border:2px solid #c48a57;
+  height:14px;
+  background:#75442a;
+  border:2px solid #321d13;
+  border-radius:2px 2px 6px 6px;
 }
 
-.cabinet{
-  position:absolute;
-  z-index:10;
-  width:15px;
-  height:38px;
-  background:#556373;
-  border:2px solid #8090a0;
+.crate{
+  background:#72502a;
+  border:3px solid #2c1c0d;
+  box-shadow:inset 0 0 0 2px #9a7541;
 }
 
-.cabinet::after{
+.crate::before,
+.crate::after{
   content:"";
   position:absolute;
-  left:2px;
-  top:8px;
-  width:8px;
-  height:1px;
-  background:#c1c9d1;
-  box-shadow:
-    0 9px #c1c9d1,
-    0 18px #c1c9d1;
+  background:#35210f;
+}
+
+.crate::before{
+  width:3px;
+  height:100%;
+  left:50%;
+}
+
+.crate::after{
+  height:3px;
+  width:100%;
+  top:50%;
 }
 
 .rug{
-  position:absolute;
-  z-index:3;
-  border:2px solid rgba(230,210,160,.22);
-}
-
-.table{
-  position:absolute;
-  z-index:8;
-  width:34px;
-  height:24px;
-  border-radius:50%;
-  background:#8d6042;
-  border:3px solid #b27c53;
-}
-
-.sofa{
-  position:absolute;
-  z-index:8;
-  width:42px;
-  height:18px;
-  border-radius:6px;
-  background:#423e57;
-  border:3px solid #625b7b;
-}
-
-.fridge{
-  position:absolute;
-  z-index:10;
-  width:18px;
-  height:42px;
-  background:#a6afb7;
-  border:3px solid #c3c9ce;
-}
-
-.vending{
-  position:absolute;
-  z-index:10;
-  width:19px;
-  height:43px;
-  background:#253f5c;
-  border:3px solid #527194;
-}
-
-.vending::before{
-  content:"";
-  position:absolute;
-  left:3px;
-  top:4px;
-  width:9px;
-  height:25px;
   background:
-    linear-gradient(
-      #df5661 0 20%,
-      #607bea 20% 40%,
-      #51b77b 40% 60%,
-      #e8b447 60% 80%,
-      #a66bcc 80%
-    );
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,204,80,.08) 0 6px,
+      rgba(0,0,0,.08) 6px 12px
+    ),
+    #6c2330;
+  border:5px solid #321018;
+  box-shadow:inset 0 0 0 3px #b36c49;
+}
+
+.table-round{
+  border-radius:50%;
+  background:#70472a;
+  border:4px solid #2a180e;
+  box-shadow:inset 0 3px #a77b52,3px 4px #120a06;
+}
+
+.chair{
+  background:#34251e;
+  border:2px solid #120d0a;
+  border-radius:3px;
 }
 
 .pipe{
+  background:
+    linear-gradient(90deg,#10171b,#53616a 30%,#7b8990 50%,#303a40 75%,#0d1215);
+  border:2px solid #080b0d;
+}
+
+.paper{
+  background:#d9d0aa;
+  border:1px solid #665f49;
+  box-shadow:1px 1px #111;
+}
+
+.warning{
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #d6aa25 0 7px,
+      #181818 7px 14px
+    );
+  border:2px solid #111;
+}
+
+/* =========================================================
+   RESEARCH DECOR
+========================================================= */
+
+.research-board{
+  left:51px;
+  top:53px;
+  width:103px;
+  height:67px;
+  background:#d7cba4;
+  border:5px solid #4a3422;
+  box-shadow:0 3px #111;
+}
+
+.research-board::after{
+  content:"";
   position:absolute;
-  z-index:10;
-  width:9px;
-  background:#6d7378;
-  border:2px solid #90979d;
+  inset:7px;
+  background:
+    linear-gradient(25deg,transparent 45%,#a84444 46% 48%,transparent 49%),
+    linear-gradient(-25deg,transparent 45%,#456f99 46% 48%,transparent 49%),
+    radial-gradient(circle,#b43d32 0 2px,transparent 3px) 10px 10px/23px 19px;
+}
+
+.research-desk{
+  left:27px;
+  bottom:29px;
+  width:114px;
+  height:44px;
+}
+
+.research-monitor{
+  left:42px;
+  bottom:61px;
+  width:34px;
+  height:27px;
+}
+
+.research-shelf{
+  left:12px;
+  top:42px;
+  width:25px;
+  height:122px;
+}
+
+.research-side{
+  right:12px;
+  top:45px;
+  width:27px;
+  height:129px;
+}
+
+.research-plant{
+  left:7px;
+  top:13px;
+}
+
+/* =========================================================
+   MANAGER DECOR
+========================================================= */
+
+.manager-rug{
+  left:33px;
+  top:126px;
+  width:137px;
+  height:145px;
+}
+
+.manager-desk{
+  left:50px;
+  top:163px;
+  width:107px;
+  height:53px;
+}
+
+.manager-monitor{
+  left:87px;
+  top:147px;
+  width:36px;
+  height:29px;
+}
+
+.manager-shelf-a{
+  left:14px;
+  top:53px;
+  width:31px;
+  height:67px;
+}
+
+.manager-shelf-b{
+  right:14px;
+  top:53px;
+  width:31px;
+  height:67px;
+}
+
+.manager-plant{
+  right:5px;
+  top:78px;
+}
+
+.manager-paper1{
+  width:18px;
+  height:13px;
+  left:60px;
+  top:180px;
+  transform:rotate(-12deg);
+}
+
+.manager-paper2{
+  width:17px;
+  height:12px;
+  right:53px;
+  top:187px;
+  transform:rotate(8deg);
+}
+
+/* =========================================================
+   TEST LAB
+========================================================= */
+
+.test-board{
+  left:51px;
+  top:55px;
+  width:95px;
+  height:66px;
+  background:#c9d2ce;
+  border:5px solid #36434c;
+}
+
+.test-board::after{
+  content:"";
+  position:absolute;
+  inset:7px;
+  background:
+    linear-gradient(20deg,transparent 45%,#c64c4c 46% 48%,transparent 49%),
+    linear-gradient(-15deg,transparent 45%,#427ac4 46% 48%,transparent 49%),
+    radial-gradient(circle,#dc604c 0 2px,transparent 3px) 0 0/19px 19px;
+}
+
+.test-rack1{
+  left:13px;
+  top:53px;
+  width:27px;
+  height:118px;
+}
+
+.test-rack2{
+  right:12px;
+  top:53px;
+  width:27px;
+  height:118px;
+}
+
+.test-desk{
+  right:16px;
+  bottom:28px;
+  width:67px;
+  height:42px;
+}
+
+.test-screen1{
+  right:24px;
+  bottom:63px;
+  width:31px;
+  height:27px;
+}
+
+.test-chair{
+  right:79px;
+  bottom:52px;
+  width:24px;
+  height:31px;
+  background:#163b6e;
+}
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+.storage-crate1{left:14px;top:51px;width:39px;height:39px;}
+.storage-crate2{left:58px;top:51px;width:39px;height:39px;}
+.storage-crate3{left:99px;top:57px;width:34px;height:34px;}
+.storage-crate4{left:16px;top:97px;width:46px;height:35px;}
+.storage-crate5{left:83px;top:111px;width:45px;height:38px;}
+.storage-crate6{left:14px;top:159px;width:38px;height:39px;}
+.storage-crate7{left:58px;top:159px;width:38px;height:39px;}
+
+.cart{
+  left:75px;
+  bottom:18px;
+  width:35px;
+  height:53px;
+  background:#16191c;
+  border:3px solid #07090a;
+  box-shadow:inset 0 0 0 3px #d49c21;
+}
+
+/* =========================================================
+   SERVER
+========================================================= */
+
+.server1{left:18px;top:53px;width:31px;height:101px;}
+.server2{left:53px;top:53px;width:31px;height:101px;}
+.server3{left:88px;top:53px;width:31px;height:101px;}
+
+.server-desk{
+  left:37px;
+  bottom:27px;
+  width:86px;
+  height:45px;
+}
+
+.server-monitor{
+  left:76px;
+  bottom:63px;
+  width:32px;
+  height:25px;
+}
+
+.extinguisher{
+  left:8px;
+  bottom:62px;
+  width:12px;
+  height:28px;
+  background:#b52920;
+  border:2px solid #52100c;
+  border-radius:5px;
+}
+
+/* =========================================================
+   CANTEEN
+========================================================= */
+
+.kitchen-counter{
+  left:67px;
+  top:25px;
+  width:184px;
+  height:51px;
+  background:
+    linear-gradient(#62523f 0 9px,#33271c 10px);
+  border:4px solid #1a130d;
+  box-shadow:inset 0 2px #9a8970;
+}
+
+.fridge{
+  right:28px;
+  top:25px;
+  width:43px;
+  height:68px;
+  background:#8c9390;
+  border:4px solid #343b3c;
+  box-shadow:inset 3px 0 #b8c0bc;
+}
+
+.fridge::after{
+  content:"";
+  position:absolute;
+  left:5px;
+  right:5px;
+  top:32px;
+  height:3px;
+  background:#343b3c;
+}
+
+.vending{
+  left:19px;
+  top:27px;
+  width:36px;
+  height:74px;
+  background:
+    linear-gradient(#b82928 0 18px,#142434 19px);
+  border:4px solid #351313;
+  box-shadow:inset 2px 0 #e84b3f;
+}
+
+.canteen-plant1{left:53px;top:70px;}
+.canteen-plant2{right:6px;top:105px;}
+
+.table1{
+  left:32px;
+  top:143px;
+  width:82px;
+  height:70px;
+}
+
+.table2{
+  left:90px;
+  bottom:47px;
+  width:76px;
+  height:63px;
+}
+
+.chair1{left:24px;top:164px;width:18px;height:25px;}
+.chair2{left:108px;top:163px;width:18px;height:25px;}
+.chair3{left:61px;top:204px;width:22px;height:18px;}
+.chair4{left:77px;bottom:65px;width:18px;height:25px;}
+.chair5{left:158px;bottom:65px;width:18px;height:25px;}
+
+.lounge-rug{
+  right:24px;
+  top:174px;
+  width:110px;
+  height:142px;
+}
+
+.sofa{
+  right:27px;
+  top:186px;
+  width:31px;
+  height:111px;
+  background:#39263e;
+  border:4px solid #1d101f;
+  box-shadow:inset 3px 0 #65446b;
+}
+
+.coffee-table{
+  right:64px;
+  top:208px;
+  width:46px;
+  height:75px;
+  background:#57371f;
+  border:4px solid #28170c;
+}
+
+.coffee-table::after{
+  content:"";
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#6f9b54;
+  left:16px;
+  top:27px;
+  box-shadow:
+    -9px 12px 0 #3e753b,
+    8px 17px 0 #80a955;
+}
+
+/* =========================================================
+   DESIGN
+========================================================= */
+
+.design-desk{
+  left:17px;
+  top:82px;
+  width:60px;
+  height:92px;
+}
+
+.design-monitor{
+  left:25px;
+  top:69px;
+  width:46px;
+  height:35px;
+  transform:rotate(-8deg);
+}
+
+.design-table{
+  left:20px;
+  bottom:28px;
+  width:103px;
+  height:48px;
+}
+
+.design-shelf{
+  right:11px;
+  top:79px;
+  width:28px;
+  height:127px;
+}
+
+.design-plant{
+  right:26px;
+  top:47px;
 }
 
 .poster{
+  width:25px;
+  height:35px;
+  background:
+    linear-gradient(135deg,#4cb7d9,#b54e9e 55%,#e7b64a);
+  border:3px solid #28212a;
+}
+
+.poster1{left:17px;top:15px;}
+.poster2{left:47px;top:15px;}
+.poster3{left:77px;top:15px;}
+
+/* =========================================================
+   ANALYTICS
+========================================================= */
+
+.analytics-board{
+  left:48px;
+  top:52px;
+  width:89px;
+  height:62px;
+  background:#b7c8c6;
+  border:5px solid #31444a;
+}
+
+.analytics-board::after{
+  content:"";
   position:absolute;
-  z-index:11;
-  width:14px;
-  height:20px;
-  background:#31517b;
-  border:2px solid #6885aa;
+  inset:8px;
+  background:
+    linear-gradient(to top,#4bb9e5 0 45%,transparent 46%) 5px bottom/9px 65% no-repeat,
+    linear-gradient(to top,#e6a544 0 45%,transparent 46%) 22px bottom/9px 45% no-repeat,
+    linear-gradient(to top,#de5656 0 45%,transparent 46%) 39px bottom/9px 75% no-repeat,
+    linear-gradient(to top,#70b65d 0 45%,transparent 46%) 56px bottom/9px 55% no-repeat;
 }
 
-.poster::before{
-  content:"★";
+.analytics-desk{
+  right:16px;
+  bottom:24px;
+  width:92px;
+  height:48px;
+}
+
+.analytics-screen{
+  right:27px;
+  bottom:65px;
+  width:38px;
+  height:29px;
+}
+
+.analytics-shelf{
+  left:10px;
+  top:84px;
+  width:27px;
+  height:111px;
+}
+
+/* =========================================================
+   ARCHIVES
+========================================================= */
+
+.archive-cab1{left:27px;top:61px;width:48px;height:112px;}
+.archive-cab2{left:79px;top:61px;width:48px;height:112px;}
+.archive-cab3{right:25px;top:60px;width:43px;height:106px;}
+
+.archive-desk{
+  left:101px;
+  bottom:45px;
+  width:141px;
+  height:62px;
+}
+
+.archive-monitor{
+  left:157px;
+  bottom:99px;
+  width:41px;
+  height:29px;
+}
+
+.archive-board{
+  right:77px;
+  top:55px;
+  width:75px;
+  height:64px;
+  background:#c4baa0;
+  border:4px solid #493522;
+}
+
+.archive-board::after{
+  content:"";
   position:absolute;
-  left:3px;
-  top:2px;
-  font-size:7px;
-  color:#e6eeff;
+  inset:7px;
+  background:
+    radial-gradient(circle,#b43b32 0 2px,transparent 3px) 0 0/18px 17px,
+    linear-gradient(25deg,transparent 48%,#765443 49% 51%,transparent 52%);
 }
 
-/* ============================================================
-   LOTS OF ROOM-SPECIFIC DECOR
-============================================================ */
+.archive-plant1{left:11px;bottom:20px;}
+.archive-plant2{right:9px;bottom:22px;}
 
-/* Research */
-.research .rug{
-  left:21%;
-  top:31%;
-  width:53%;
-  height:51%;
-  background:#183f35;
+/* =========================================================
+   UTILITY
+========================================================= */
+
+.utility-pipe1{left:15px;top:48px;width:18px;height:105px;}
+.utility-pipe2{left:38px;top:48px;width:18px;height:105px;}
+.utility-pipe3{left:61px;top:48px;width:18px;height:105px;}
+
+.utility-box{
+  left:86px;
+  top:65px;
+  width:31px;
+  height:45px;
+  background:#6b7477;
+  border:3px solid #262e31;
 }
 
-.research .r-d1{left:7%;bottom:9%;width:52px}
-.research .r-m1{left:12%;bottom:13%}
-.research .r-m2{left:30%;bottom:13%}
-.research .r-k1{left:21%;bottom:11%}
-
-.research .r-board{
-  left:29%;
-  top:10%;
-}
-
-.research .r-s1{left:5%;top:12%}
-.research .r-s2{left:11%;top:12%}
-.research .r-s3{right:5%;top:14%}
-
-.research .r-p1{right:7%;bottom:7%}
-.research .r-p2{left:5%;bottom:7%}
-
-.research .r-paper1{left:55%;bottom:12%}
-.research .r-paper2{left:62%;bottom:13%;transform:rotate(18deg)}
-
-/* Manager */
-.manager .m-rug{
-  left:18%;
-  top:37%;
-  width:63%;
-  height:51%;
-  background:#6a2933;
-}
-
-.manager .m-desk{
-  left:34%;
-  top:49%;
-  width:48px;
-  height:16px;
-}
-
-.manager .m-monitor{left:46%;top:41%}
-.manager .m-key{left:47%;top:52%}
-.manager .m-chair{left:49%;top:61%}
-
-.manager .m-s1{left:6%;top:13%}
-.manager .m-s2{left:13%;top:13%}
-.manager .m-s3{right:6%;top:16%}
-
-.manager .m-board{right:25%;top:10%}
-.manager .m-p1{right:6%;bottom:8%}
-.manager .m-p2{left:6%;bottom:8%}
-
-/* Test */
-.testing .t-board{left:35%;top:11%}
-.testing .t-s1{left:5%;top:14%}
-.testing .t-s2{left:11%;top:14%}
-.testing .t-s3{right:5%;top:13%}
-.testing .t-s4{right:11%;top:13%}
-
-.testing .t-d1{
-  right:8%;
-  bottom:10%;
-  width:46px;
-}
-
-.testing .t-m1{right:11%;bottom:15%}
-.testing .t-m2{right:28%;bottom:15%}
-.testing .t-chair{right:22%;bottom:6%}
-
-.testing .t-paper{left:8%;bottom:12%}
-
-/* Storage */
-.storage .box:nth-of-type(2){left:8%;top:23%}
-.storage .box:nth-of-type(3){left:20%;top:23%}
-.storage .box:nth-of-type(4){left:32%;top:23%}
-.storage .box:nth-of-type(5){left:12%;top:37%}
-.storage .box:nth-of-type(6){left:25%;top:37%}
-
-.storage .st-s1{right:7%;top:17%}
-.storage .st-s2{right:16%;top:17%}
-.storage .st-cab{left:7%;bottom:8%}
-
-/* Server */
-.server-room .sv1{left:8%;top:17%}
-.server-room .sv2{left:20%;top:17%}
-.server-room .sv3{left:32%;top:17%}
-.server-room .sv4{left:44%;top:17%}
-.server-room .sv5{left:56%;top:17%}
-
-.server-room .sv-desk{
-  right:7%;
-  bottom:10%;
-  width:44px;
-}
-
-.server-room .sv-monitor{
-  right:15%;
-  bottom:16%;
-}
-
-.server-room .sv-chair{
-  right:19%;
-  bottom:5%;
-}
-
-/* Canteen */
-.canteen .kitchen{
-  position:absolute;
-  z-index:7;
-  left:23%;
-  top:9%;
-  width:51%;
-  height:17%;
-  border:3px solid #67503c;
-  background:#3e342b;
-}
-
-.canteen .c-fridge{right:8%;top:8%}
-.canteen .c-vending{left:7%;top:10%}
-
-.canteen .c-t1{left:18%;top:40%}
-.canteen .c-t2{left:23%;top:68%}
-
-.canteen .c-sofa{right:8%;bottom:16%}
-
-.canteen .c-rug{
-  right:9%;
-  bottom:13%;
-  width:34%;
-  height:43%;
-  background:#26334d;
-}
-
-.canteen .c-p1{right:5%;top:31%}
-.canteen .c-p2{left:6%;bottom:6%}
-
-/* Design */
-.design .d-rug{
-  left:15%;
-  top:22%;
-  width:64%;
-  height:62%;
-  background:#662945;
-}
-
-.design .d-desk{
-  left:8%;
-  top:37%;
-  width:45px;
-}
-
-.design .d-monitor1{left:12%;top:29%}
-.design .d-monitor2{left:29%;top:29%}
-.design .d-chair{left:21%;top:48%}
-
-.design .d-board{right:7%;top:12%}
-.design .d-shelf{right:6%;bottom:7%}
-.design .d-plant{left:6%;bottom:7%}
-.design .d-poster{right:21%;bottom:7%}
-
-/* Analytics */
-.analytics .a-board{left:27%;top:10%}
-
-.analytics .a-desk{
-  right:7%;
-  bottom:10%;
-  width:45px;
-}
-
-.analytics .a-monitor1{right:10%;bottom:16%}
-.analytics .a-monitor2{right:27%;bottom:16%}
-.analytics .a-chair{right:21%;bottom:5%}
-
-.analytics .a-s1{left:6%;top:22%}
-.analytics .a-s2{left:13%;top:22%}
-.analytics .a-p1{left:6%;bottom:6%}
-
-/* Archives */
-.archives .ar-rug{
-  left:26%;
-  bottom:8%;
-  width:48%;
-  height:43%;
-  background:#314c3b;
-}
-
-.archives .ar-desk{
-  left:38%;
-  bottom:18%;
-  width:48px;
-  height:15px;
-}
-
-.archives .ar-monitor{left:48%;bottom:27%}
-.archives .ar-chair{left:50%;bottom:9%}
-
-.archives .ar-c1{left:6%;top:21%}
-.archives .ar-c2{left:12%;top:21%}
-.archives .ar-c3{left:18%;top:21%}
-
-.archives .ar-s1{right:7%;top:18%}
-.archives .ar-s2{right:14%;top:18%}
-
-.archives .ar-board{right:30%;top:18%}
-.archives .ar-plant{right:7%;bottom:7%}
-
-/* Utility */
-.utility .u-p1{
-  left:14%;
-  top:19%;
-  height:64%;
-}
-
-.utility .u-p2{
-  left:29%;
-  top:19%;
-  height:64%;
-}
-
-.utility .u-p3{
-  left:44%;
-  top:19%;
-  height:64%;
-}
-
-.utility .u-cab{right:10%;top:28%}
-.utility .u-box{right:10%;bottom:7%}
-
-/* WC */
-.toilet{
-  position:absolute;
-  z-index:10;
-  width:17px;
-  height:23px;
-  background:#dce4ea;
-  border:3px solid #aebac4;
-  border-radius:8px 8px 3px 3px;
-}
-
-.sink{
-  position:absolute;
-  z-index:10;
-  width:22px;
-  height:11px;
-  background:#dae4ea;
-  border:3px solid #aebac4;
+.bucket{
+  left:86px;
+  bottom:20px;
+  width:24px;
+  height:22px;
+  background:#a52c23;
+  border:3px solid #46120f;
   border-radius:2px 2px 8px 8px;
 }
 
-.restroom .wc1{right:9%;top:27%}
-.restroom .wc2{right:9%;top:53%}
-.restroom .sink{left:10%;top:27%}
+.wet-sign{
+  left:116px;
+  bottom:18px;
+  width:20px;
+  height:33px;
+  background:#d5b21f;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+}
 
-/* ============================================================
-   CHARACTER SPRITES
-============================================================ */
+/* =========================================================
+   RESTROOM
+========================================================= */
+
+.sink{
+  left:52px;
+  top:55px;
+  width:43px;
+  height:27px;
+  background:#a9b6b7;
+  border:3px solid #354145;
+  border-radius:4px 4px 10px 10px;
+}
+
+.toilet{
+  right:17px;
+  width:28px;
+  height:39px;
+}
+
+.toilet::before{
+  content:"";
+  position:absolute;
+  left:3px;
+  top:0;
+  width:22px;
+  height:15px;
+  background:#bfc8c6;
+  border:3px solid #485253;
+}
+
+.toilet::after{
+  content:"";
+  position:absolute;
+  left:1px;
+  bottom:0;
+  width:26px;
+  height:25px;
+  border-radius:50%;
+  background:#c7cfcd;
+  border:3px solid #485253;
+  box-shadow:inset 0 0 0 5px #53656c;
+}
+
+.toilet1{top:51px;}
+.toilet2{top:100px;}
+.toilet3{top:149px;}
+
+.restroom-bin{
+  left:16px;
+  bottom:18px;
+  width:21px;
+  height:31px;
+  background:#284d68;
+  border:3px solid #102735;
+}
+
+/* =========================================================
+   WALL DETAILS
+========================================================= */
+
+.vent{
+  position:absolute;
+  z-index:19;
+  width:32px;
+  height:26px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #111 0 3px,
+      #59636a 4px 6px
+    );
+  border:3px solid #0b0e10;
+  box-shadow:inset 0 0 0 2px #7b858b;
+}
+
+.wall-panel{
+  position:absolute;
+  z-index:20;
+  width:25px;
+  height:31px;
+  background:#172027;
+  border:3px solid #080b0d;
+  box-shadow:inset 0 0 0 2px #495861;
+}
+
+.wall-panel::after{
+  content:"";
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#3bdc73;
+  left:7px;
+  top:8px;
+  box-shadow:8px 8px #e1b83b;
+}
+
+/* =========================================================
+   DOORS
+========================================================= */
+
+.door{
+  position:absolute;
+  z-index:35;
+  width:42px;
+  height:13px;
+  background:
+    linear-gradient(90deg,#3c2819 0 45%,#21150e 46% 54%,#3c2819 55%);
+  border:2px solid #0e0906;
+  box-shadow:inset 0 2px #7a593c,0 2px 3px #000;
+}
+
+.door.vertical{
+  width:13px;
+  height:42px;
+  background:
+    linear-gradient(#3c2819 0 45%,#21150e 46% 54%,#3c2819 55%);
+  box-shadow:inset 2px 0 #7a593c,2px 0 3px #000;
+}
+
+/* =========================================================
+   CHARACTERS
+========================================================= */
 
 .agent{
   position:absolute;
+  width:34px;
+  height:49px;
   z-index:100;
-  width:16px;
-  height:25px;
+  transform:translate(-50%,-50%);
+  transition-property:left,top;
+  transition-timing-function:linear;
   pointer-events:none;
-
-  /*
-    SLOW.
-    One corridor node takes about 4.5 seconds.
-  */
-  transition:
-    left 4.5s linear,
-    top 4.5s linear;
+  filter:drop-shadow(0 4px 2px rgba(0,0,0,.65));
 }
 
 .agent-name{
   position:absolute;
-  bottom:29px;
+  top:-18px;
   left:50%;
   transform:translateX(-50%);
-  white-space:nowrap;
-  font-size:5.5px;
-  font-weight:900;
+  font-size:10px;
+  font-weight:800;
   color:#fff;
   text-shadow:
-    0 1px 2px #000,
-    1px 0 2px #000,
-    -1px 0 2px #000;
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     0 2px 3px #000;
+  white-space:nowrap;
 }
 
-.head{
+/* shadow */
+
+.agent .shadow{
   position:absolute;
-  top:5px;
-  left:4px;
-  width:8px;
+  width:27px;
   height:8px;
-  border-radius:2px;
-  background:#efb270;
+  left:4px;
+  bottom:0;
+  background:rgba(0,0,0,.42);
+  border-radius:50%;
 }
 
-.hair{
+/* head */
+
+.agent .head{
   position:absolute;
-  z-index:3;
-  top:1px;
-  left:3px;
-  width:10px;
-  height:6px;
-  background:#31231e;
+  width:20px;
+  height:19px;
+  left:7px;
+  top:6px;
+  background:var(--skin);
+  border-radius:7px 7px 6px 6px;
+  box-shadow:
+    inset -3px -3px rgba(69,31,20,.18),
+    inset 2px 2px rgba(255,255,255,.14);
 }
 
-.eye{
+/* ears */
+
+.agent .head::before,
+.agent .head::after{
+  content:"";
   position:absolute;
-  z-index:5;
   top:8px;
-  left:6px;
-  width:1px;
-  height:1px;
-  background:#131313;
-  box-shadow:4px 0 #131313;
+  width:4px;
+  height:7px;
+  background:var(--skin);
+  border-radius:50%;
 }
 
-.body{
+.agent .head::before{left:-3px;}
+.agent .head::after{right:-3px;}
+
+/* hair */
+
+.agent .hair{
+  position:absolute;
+  left:6px;
+  top:2px;
+  width:22px;
+  height:12px;
+  background:var(--hair);
+  border-radius:9px 9px 4px 4px;
+  box-shadow:
+    inset 3px 2px rgba(255,255,255,.09),
+    inset -3px -2px rgba(0,0,0,.3);
+}
+
+.agent .hair::after{
+  content:"";
+  position:absolute;
+  left:1px;
+  bottom:-4px;
+  width:5px;
+  height:8px;
+  background:var(--hair);
+  border-radius:0 0 4px 4px;
+}
+
+/* face */
+
+.agent .eyes{
   position:absolute;
   top:13px;
-  left:3px;
-  width:10px;
-  height:8px;
-  border-radius:1px;
-}
-
-.arm{
-  position:absolute;
-  top:14px;
-  width:2px;
-  height:7px;
-  background:#d89a62;
-}
-
-.arm.left{left:1px}
-.arm.right{right:1px}
-
-.leg{
-  position:absolute;
-  top:20px;
+  left:11px;
   width:3px;
-  height:4px;
-  background:#354258;
+  height:3px;
+  background:#17120f;
+  border-radius:50%;
+  box-shadow:9px 0 #17120f;
 }
 
-.leg.left{left:3px}
-.leg.right{right:2px}
-
-.shoe{
+.agent .nose{
   position:absolute;
-  top:23px;
-  width:4px;
+  left:16px;
+  top:16px;
+  width:2px;
+  height:3px;
+  background:rgba(80,35,22,.35);
+}
+
+/* torso */
+
+.agent .body{
+  position:absolute;
+  left:7px;
+  top:24px;
+  width:20px;
+  height:16px;
+  background:var(--shirt);
+  border-radius:5px 5px 3px 3px;
+  box-shadow:
+    inset -4px 0 rgba(0,0,0,.25),
+    inset 3px 2px rgba(255,255,255,.13);
+}
+
+.agent .body::after{
+  content:"";
+  position:absolute;
+  left:3px;
+  right:3px;
+  top:5px;
   height:2px;
-  background:#11161c;
+  background:rgba(255,255,255,.16);
 }
 
-.shoe.left{left:2px}
-.shoe.right{right:1px}
+/* arms */
 
-.walking .leg.left{
-  animation:legA .4s infinite alternate;
+.agent .arm{
+  position:absolute;
+  top:26px;
+  width:6px;
+  height:15px;
+  background:var(--shirt);
+  border-radius:4px;
+  transform-origin:top center;
+  box-shadow:inset -2px 0 rgba(0,0,0,.2);
 }
 
-.walking .leg.right{
-  animation:legB .4s infinite alternate;
+.agent .arm::after{
+  content:"";
+  position:absolute;
+  left:1px;
+  bottom:-3px;
+  width:5px;
+  height:5px;
+  background:var(--skin);
+  border-radius:50%;
 }
 
-@keyframes legA{
-  to{transform:translateY(-2px)}
+.agent .arm.left{
+  left:3px;
+  transform:rotate(7deg);
 }
 
-@keyframes legB{
-  to{transform:translateY(2px)}
+.agent .arm.right{
+  right:3px;
+  transform:rotate(-7deg);
 }
 
-.working{
-  animation:working .8s infinite alternate;
+/* legs */
+
+.agent .leg{
+  position:absolute;
+  top:38px;
+  width:7px;
+  height:9px;
+  background:var(--pants);
+  box-shadow:inset -2px 0 rgba(0,0,0,.3);
+  transform-origin:top center;
 }
 
-@keyframes working{
-  to{transform:translateY(-1px)}
+.agent .leg.left{left:9px;}
+.agent .leg.right{right:9px;}
+
+.agent .leg::after{
+  content:"";
+  position:absolute;
+  bottom:-3px;
+  width:9px;
+  height:4px;
+  background:var(--shoe);
+  border-radius:3px 3px 2px 2px;
 }
 
-/* unique characters */
+/* walk animation */
 
-.max .body{background:#db4f82}
-.max .hair{border-radius:5px 5px 0 0}
-
-.calvin .body{background:#367ddd}
-.calvin .hair{
-  background:#ad692e;
-  clip-path:polygon(0 100%,9% 30%,35% 0,60% 25%,100% 5%,100% 100%);
+.agent.walking .leg.left,
+.agent.walking .arm.right{
+  animation:limbA .55s infinite alternate ease-in-out;
 }
 
-.rico .body{background:#3fb18a}
-.rico .hair{
-  background:#131719;
-  border-radius:5px 5px 0 0;
+.agent.walking .leg.right,
+.agent.walking .arm.left{
+  animation:limbB .55s infinite alternate ease-in-out;
 }
 
-.trent .body{background:#df5f59}
-.trent .hair{
-  background:#d39142;
-  clip-path:polygon(0 100%,0 30%,25% 0,50% 30%,73% 0,100% 30%,100% 100%);
+.agent.walking{
+  animation:bob .55s infinite alternate ease-in-out;
 }
 
-.draymond .head,
-.draymond .arm{
-  background:#75482e;
+@keyframes limbA{
+  from{transform:rotate(-13deg)}
+  to{transform:rotate(13deg)}
 }
 
-.draymond .body{background:#985ce4}
-.draymond .hair{
-  background:#0d1012;
-  border-radius:5px 5px 1px 1px;
+@keyframes limbB{
+  from{transform:rotate(13deg)}
+  to{transform:rotate(-13deg)}
 }
 
-.axel .body{background:#e1a73b}
-.axel .hair{
-  background:#c7772f;
-  clip-path:polygon(0 100%,10% 20%,35% 0,57% 22%,100% 0,100% 100%);
+@keyframes bob{
+  from{margin-top:0}
+  to{margin-top:-2px}
 }
 
-.adam .body{background:#3284cc}
-.adam .hair{background:#332920}
+/* unique people */
 
-/* ============================================================
-   CARRIED OUTPUTS
-============================================================ */
+#max{
+  --skin:#d89465;
+  --hair:#17110e;
+  --shirt:#8b2830;
+  --pants:#191d25;
+  --shoe:#0b0c0e;
+}
+
+#rico{
+  --skin:#c98755;
+  --hair:#15100c;
+  --shirt:#1e918c;
+  --pants:#25313a;
+  --shoe:#101216;
+}
+
+#trent{
+  --skin:#e1a173;
+  --hair:#7b2f1d;
+  --shirt:#d64d35;
+  --pants:#242934;
+  --shoe:#101216;
+}
+
+#calvin{
+  --skin:#e0a16d;
+  --hair:#302015;
+  --shirt:#347ec1;
+  --pants:#1e2834;
+  --shoe:#0d1014;
+}
+
+#draymond{
+  --skin:#74452f;
+  --hair:#17110f;
+  --shirt:#7134ad;
+  --pants:#23232c;
+  --shoe:#0b0c0f;
+}
+
+#axel{
+  --skin:#d9955d;
+  --hair:#a75b22;
+  --shirt:#d68d31;
+  --pants:#202733;
+  --shoe:#0c0f13;
+}
+
+#adam{
+  --skin:#e0a06c;
+  --hair:#50301d;
+  --shirt:#3183cf;
+  --pants:#222833;
+  --shoe:#0b0d10;
+}
+
+/* =========================================================
+   JARED
+========================================================= */
+
+#jared{
+  --skin:#c98760;
+  --hair:#33261e;
+  --shirt:#3c6b55;
+  --pants:#28353a;
+  --shoe:#161a1c;
+  z-index:105;
+}
+
+#jared .cap{
+  position:absolute;
+  left:6px;
+  top:1px;
+  width:22px;
+  height:7px;
+  background:#2b4d3e;
+  border-radius:7px 7px 2px 2px;
+  box-shadow:inset 2px 1px rgba(255,255,255,.12);
+}
+
+#jared .cap::after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:3px;
+  right:-5px;
+  bottom:0;
+  background:#203c30;
+}
+
+#jared .body::before{
+  content:"";
+  position:absolute;
+  left:9px;
+  top:1px;
+  width:2px;
+  height:14px;
+  background:#b5c1b7;
+  opacity:.5;
+}
+
+.mop{
+  position:absolute;
+  left:30px;
+  top:20px;
+  width:4px;
+  height:31px;
+  background:linear-gradient(90deg,#9a7445,#d1aa68,#74532f);
+  transform:rotate(13deg);
+  transform-origin:top;
+}
+
+.mop::after{
+  content:"";
+  position:absolute;
+  left:-7px;
+  bottom:-5px;
+  width:18px;
+  height:8px;
+  border-radius:50%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #aab3ad 0 3px,
+      #727d79 3px 5px
+    );
+  border:1px solid #3c4542;
+}
+
+#jared.cleaning .mop{
+  animation:mopClean .7s infinite alternate ease-in-out;
+}
+
+@keyframes mopClean{
+  from{transform:rotate(-18deg)}
+  to{transform:rotate(28deg)}
+}
+
+/* =========================================================
+   CARRIED OUTPUT
+========================================================= */
 
 .carry-item{
   display:none;
   position:absolute;
-  z-index:150;
-  right:-8px;
-  top:11px;
-  width:8px;
-  height:7px;
-  border:1px solid #fff;
-  background:#fff;
-  box-shadow:0 1px 2px #000;
+  left:25px;
+  top:24px;
+  width:18px;
+  height:14px;
+  z-index:200;
+  background:#e6d8b5;
+  border:2px solid #2b2118;
+  box-shadow:2px 2px #000;
+}
+
+.carry-item.visual{
+  background:
+    linear-gradient(135deg,#46a7d5,#ba4f9a 55%,#e6ba4a);
+}
+
+.carry-item.code{
+  background:#172a32;
+}
+
+.carry-item.code::after{
+  content:"</>";
+  position:absolute;
+  font-size:6px;
+  color:#55d4a2;
+  left:2px;
+  top:2px;
+}
+
+.carry-item.report::after{
+  content:"≡";
+  position:absolute;
+  color:#333;
+  left:4px;
+  top:-2px;
+  font-size:13px;
 }
 
 .carrying .carry-item{
   display:block;
 }
 
-.draymond .carry-item{
+/* =========================================================
+   AGENT POSITIONS
+========================================================= */
+
+#rico{left:141px;top:282px;}
+#max{left:381px;top:183px;}
+#trent{left:630px;top:274px;}
+#calvin{left:379px;top:668px;}
+#draymond{left:111px;top:840px;}
+#axel{left:656px;top:842px;}
+#adam{left:381px;top:1070px;}
+#jared{left:115px;top:1135px;}
+
+/* =========================================================
+   STATUS + INPUT
+========================================================= */
+
+.office-status{
+  text-align:center;
+  color:#7f8b9e;
+  font-size:14px;
+  padding:8px 0 14px;
+}
+
+.command-wrap{
+  position:sticky;
+  bottom:0;
+  z-index:500;
+  width:100%;
+  padding:
+    0 20px
+    calc(15px + env(safe-area-inset-bottom));
   background:
-    linear-gradient(135deg,#db5b87 0 33%,#6d7cff 33% 66%,#53bc86 66%);
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.86) 27%,
+      #000 72%
+    );
 }
 
-.rico .carry-item{
-  background:#efe9d6;
-}
-
-.trent .carry-item{
-  background:
-    linear-gradient(#eee 0 30%,#63b97b 30% 40%,#eee 40% 60%,#df6969 60% 70%,#eee 70%);
-}
-
-.axel .carry-item{
-  background:
-    linear-gradient(90deg,#6793df 0 25%,#e8bd4c 25% 50%,#6bc17e 50% 75%,#d46672 75%);
-}
-
-.adam .carry-item{
-  width:10px;
-  height:8px;
-  background:#d8b05f;
-  border-color:#f0cc78;
-}
-
-.calvin .carry-item{
-  background:#172d50;
-  border-color:#8ca5db;
-}
-
-/* ============================================================
-   UI
-============================================================ */
-
-.status{
-  position:fixed;
-  left:50%;
-  bottom:80px;
-  transform:translateX(-50%);
-  color:#929daf;
-  font-size:10px;
-  z-index:200;
-}
-
-.taskbar{
-  position:fixed;
-  left:50%;
-  bottom:12px;
-  transform:translateX(-50%);
-  z-index:200;
-  width:calc(100% - 24px);
-  max-width:630px;
-  height:58px;
+.command{
+  width:min(100%,700px);
+  height:78px;
+  margin:auto;
+  border:1px solid #252b3c;
+  border-radius:27px;
   display:flex;
-  gap:6px;
-  padding:6px;
-  background:rgba(5,8,14,.97);
-  border:1px solid #273141;
-  border-radius:20px;
+  align-items:center;
+  padding:10px 12px 10px 24px;
+  background:rgba(7,8,13,.94);
+  box-shadow:
+    inset 0 0 25px rgba(62,71,120,.07),
+    0 8px 30px #000;
 }
 
-.taskbar input{
+.command input{
   flex:1;
   min-width:0;
   border:0;
   outline:0;
-  background:none;
+  background:transparent;
   color:#fff;
-  padding:0 12px;
-  font-size:14px;
+  font-size:19px;
 }
 
-.taskbar button{
-  width:47px;
-  height:47px;
+.command input::placeholder{
+  color:#888b94;
+}
+
+.send{
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
   border:0;
-  border-radius:14px;
-  background:#6c63ff;
+  border-radius:19px;
+  background:linear-gradient(145deg,#7458ff,#5141ee);
   color:#fff;
-  font-size:22px;
+  font-size:33px;
+  line-height:1;
+  box-shadow:
+    inset 0 2px rgba(255,255,255,.2),
+    0 4px 16px rgba(91,70,255,.3);
 }
 
-@media(max-width:430px){
-  .map{
-    height:850px;
+/* =========================================================
+   RESPONSIVE SCALE
+========================================================= */
+
+@media(max-width:760px){
+  .office{
+    transform:scale(calc(100vw / 760));
+    margin-bottom:calc(-1240px * (1 - (100vw / 760)));
+  }
+
+  .topbar{
+    padding-left:27px;
+    padding-right:27px;
   }
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<div class="topbar">
-  <div class="logo">AI Office</div>
+<header class="topbar">
+  <div class="title">AI Office</div>
   <div class="online">
     <span class="online-dot"></span>
-    Online
+    <span>Online</span>
   </div>
-</div>
+</header>
 
 <div class="map-shell">
-<div class="map">
 
-<!-- =========================================================
-CORRIDORS
-========================================================= -->
+<div class="office" id="office">
 
-<div class="corridor cor-r1"></div>
-<div class="corridor cor-m1"></div>
-<div class="corridor cor-t1"></div>
-<div class="corridor cor-top"></div>
-<div class="corridor cor-storage"></div>
-<div class="corridor cor-server"></div>
-<div class="corridor cor-design"></div>
-<div class="corridor cor-archive"></div>
-<div class="corridor cor-analytics"></div>
+<!-- =======================================================
+     CORRIDOR NETWORK
+======================================================= -->
 
-<!-- =========================================================
-RESEARCH
-========================================================= -->
+<div class="corridor c-top-left"></div>
+<div class="corridor c-top-right"></div>
+<div class="corridor c-left-down"></div>
+<div class="corridor c-right-down"></div>
+<div class="corridor c-middle-top"></div>
 
-<div class="room research">
+<div class="corridor c-storage"></div>
+<div class="corridor c-server"></div>
 
-<div class="room-title">RESEARCH LAB</div>
+<!-- IMPORTANT: canteen → design -->
+<div class="corridor c-design"></div>
 
-<div class="rug r-rug"></div>
+<div class="corridor c-analytics"></div>
 
-<div class="board r-board"></div>
+<div class="corridor c-canteen-archives"></div>
+<div class="corridor c-archive-left"></div>
+<div class="corridor c-archive-right"></div>
 
-<div class="shelf r-s1"></div>
-<div class="shelf r-s2"></div>
-<div class="shelf r-s3"></div>
+<!-- Utility is reachable -->
+<div class="corridor c-utility-a"></div>
+<div class="corridor c-utility-b"></div>
 
-<div class="desk r-d1"></div>
+<!-- Restroom is reachable -->
+<div class="corridor c-restroom-a"></div>
+<div class="corridor c-restroom-b"></div>
 
-<div class="monitor r-m1"></div>
-<div class="monitor r-m2"></div>
-<div class="keyboard r-k1"></div>
 
-<div class="paper r-paper1"></div>
-<div class="paper r-paper2"></div>
+<!-- =======================================================
+     RESEARCH
+======================================================= -->
 
-<div class="plant r-p1"></div>
-<div class="plant r-p2"></div>
+<section class="room research-floor" id="research">
 
-<div class="poster" style="right:16%;top:14%"></div>
+  <div class="room-label">RESEARCH LAB</div>
 
-<div class="cabinet" style="left:5%;top:46%"></div>
+  <div class="object shelf research-shelf"></div>
+  <div class="object shelf research-side"></div>
 
-<div class="box" style="right:5%;bottom:22%"></div>
+  <div class="object plant research-plant"></div>
 
+  <div class="object research-board"></div>
+
+  <div class="object desk research-desk"></div>
+  <div class="object screen research-monitor"></div>
+
+  <div class="object paper"
+       style="left:93px;bottom:43px;width:17px;height:13px;transform:rotate(10deg)">
+  </div>
+
+  <div class="object paper"
+       style="left:118px;bottom:48px;width:15px;height:11px;transform:rotate(-7deg)">
+  </div>
+
+  <div class="wall-panel" style="right:10px;bottom:54px"></div>
+
+  <div class="door vertical"
+       style="right:1px;bottom:58px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     MANAGER
+======================================================= -->
+
+<section class="room manager-floor" id="manager">
+
+  <div class="room-label">MANAGER OFFICE</div>
+
+  <div class="object shelf manager-shelf-a"></div>
+  <div class="object shelf manager-shelf-b"></div>
+
+  <div class="object plant manager-plant"></div>
+
+  <div class="object rug manager-rug"></div>
+  <div class="object desk manager-desk"></div>
+  <div class="object screen manager-monitor"></div>
+
+  <div class="object paper manager-paper1"></div>
+  <div class="object paper manager-paper2"></div>
+
+  <div class="wall-panel" style="left:8px;bottom:38px"></div>
+  <div class="wall-panel" style="right:8px;bottom:38px"></div>
+
+  <div class="door"
+       style="left:84px;bottom:0"></div>
+
+</section>
+
+
+<!-- =======================================================
+     TEST
+======================================================= -->
+
+<section class="room test-floor" id="test">
+
+  <div class="room-label">TEST LAB</div>
+
+  <div class="object test-board"></div>
+
+  <div class="object server-rack test-rack1"></div>
+  <div class="object server-rack test-rack2"></div>
+
+  <div class="object desk test-desk"></div>
+  <div class="object screen test-screen1"></div>
+
+  <div class="object chair test-chair"></div>
+
+  <div class="vent" style="left:15px;bottom:20px"></div>
+
+  <div class="door vertical"
+       style="left:0;bottom:58px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     STORAGE
+======================================================= -->
+
+<section class="room storage-floor" id="storage">
+
+  <div class="room-label">STORAGE</div>
+
+  <div class="object crate storage-crate1"></div>
+  <div class="object crate storage-crate2"></div>
+  <div class="object crate storage-crate3"></div>
+  <div class="object crate storage-crate4"></div>
+  <div class="object crate storage-crate5"></div>
+  <div class="object crate storage-crate6"></div>
+  <div class="object crate storage-crate7"></div>
+
+  <div class="object cart"></div>
+
+  <div class="door vertical"
+       style="right:0;top:25px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     SERVER
+======================================================= -->
+
+<section class="room server-floor" id="server">
+
+  <div class="room-label">SERVER ROOM</div>
+
+  <div class="object server-rack server1"></div>
+  <div class="object server-rack server2"></div>
+  <div class="object server-rack server3"></div>
+
+  <div class="object desk server-desk"></div>
+  <div class="object screen server-monitor"></div>
+
+  <div class="object extinguisher"></div>
+
+  <div class="wall-panel" style="right:7px;bottom:22px"></div>
+
+  <div class="door vertical"
+       style="left:0;top:25px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     CANTEEN
+======================================================= -->
+
+<section class="room canteen-floor" id="canteen">
+
+  <div class="room-label"
+       style="top:123px">
+       CANTEEN + LOUNGE
+  </div>
+
+  <div class="object vending"></div>
+  <div class="object kitchen-counter"></div>
+  <div class="object fridge"></div>
+
+  <div class="object plant canteen-plant1"></div>
+  <div class="object plant canteen-plant2"></div>
+
+  <div class="object table-round table1"></div>
+  <div class="object chair chair1"></div>
+  <div class="object chair chair2"></div>
+  <div class="object chair chair3"></div>
+
+  <div class="object table-round table2"></div>
+  <div class="object chair chair4"></div>
+  <div class="object chair chair5"></div>
+
+  <div class="object rug lounge-rug"></div>
+  <div class="object sofa"></div>
+  <div class="object coffee-table"></div>
+
+  <div class="vent" style="left:151px;bottom:7px"></div>
+
+  <div class="wall-panel" style="left:17px;bottom:22px"></div>
+  <div class="wall-panel" style="right:17px;bottom:22px"></div>
+
+  <!-- Canteen doors -->
+  <div class="door"
+       style="left:143px;top:0"></div>
+
+  <div class="door vertical"
+       style="left:0;top:200px"></div>
+
+  <div class="door vertical"
+       style="right:0;top:200px"></div>
+
+  <div class="door"
+       style="left:143px;bottom:0"></div>
+
+</section>
+
+
+<!-- =======================================================
+     DESIGN
+======================================================= -->
+
+<section class="room design-floor" id="design">
+
+  <div class="room-label">DESIGN STUDIO</div>
+
+  <div class="object poster poster1"></div>
+  <div class="object poster poster2"></div>
+  <div class="object poster poster3"></div>
+
+  <div class="object desk design-desk"></div>
+  <div class="object screen design-monitor"></div>
+
+  <div class="object desk design-table"></div>
+  <div class="object shelf design-shelf"></div>
+
+  <div class="object plant design-plant"></div>
+
+  <div class="object paper"
+       style="left:38px;bottom:45px;width:18px;height:14px;transform:rotate(-8deg)">
+  </div>
+
+  <div class="object paper"
+       style="left:66px;bottom:40px;width:16px;height:12px;transform:rotate(13deg)">
+  </div>
+
+  <!-- direct canteen/design access -->
+  <div class="door vertical"
+       style="right:0;top:20px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     ANALYTICS
+======================================================= -->
+
+<section class="room analytics-floor" id="analytics">
+
+  <div class="room-label">ANALYTICS</div>
+
+  <div class="object analytics-board"></div>
+  <div class="object shelf analytics-shelf"></div>
+
+  <div class="object desk analytics-desk"></div>
+  <div class="object screen analytics-screen"></div>
+
+  <div class="wall-panel" style="right:9px;top:125px"></div>
+
+  <div class="door vertical"
+       style="left:0;top:20px"></div>
+
+</section>
+
+
+<!-- =======================================================
+     ARCHIVES
+======================================================= -->
+
+<section class="room archives-floor" id="archives">
+
+  <div class="room-label">ARCHIVES + WORKSPACE</div>
+
+  <div class="object cabinet archive-cab1"></div>
+  <div class="object cabinet archive-cab2"></div>
+  <div class="object cabinet archive-cab3"></div>
+
+  <div class="object archive-board"></div>
+
+  <div class="object desk archive-desk"></div>
+  <div class="object screen archive-monitor"></div>
+
+  <div class="object plant archive-plant1"></div>
+  <div class="object plant archive-plant2"></div>
+
+  <div class="object paper"
+       style="left:120px;bottom:62px;width:20px;height:14px;transform:rotate(-11deg)">
+  </div>
+
+  <div class="object paper"
+       style="left:207px;bottom:67px;width:17px;height:13px;transform:rotate(7deg)">
+  </div>
+
+  <div class="door"
+       style="left:147px;top:0"></div>
+
+</section>
+
+
+<!-- =======================================================
+     UTILITY
+======================================================= -->
+
+<section class="room utility-floor" id="utility">
+
+  <div class="room-label">UTILITY</div>
+
+  <div class="object pipe utility-pipe1"></div>
+  <div class="object pipe utility-pipe2"></div>
+  <div class="object pipe utility-pipe3"></div>
+
+  <div class="object utility-box"></div>
+  <div class="object bucket"></div>
+  <div class="object wet-sign"></div>
+
+  <div class="wall-panel" style="right:9px;top:111px"></div>
+
+  <div class="door"
+       style="right:5px;top:0"></div>
+
+</section>
+
+
+<!-- =======================================================
+     RESTROOM
+======================================================= -->
+
+<section class="room restroom-floor" id="restroom">
+
+  <div class="room-label">RESTROOM</div>
+
+  <div class="object sink"></div>
+
+  <div class="object toilet toilet1"></div>
+  <div class="object toilet toilet2"></div>
+  <div class="object toilet toilet3"></div>
+
+  <div class="object restroom-bin"></div>
+
+  <div class="object pipe"
+       style="left:15px;top:48px;width:12px;height:93px"></div>
+
+  <div class="door"
+       style="left:8px;top:0"></div>
+
+</section>
+
+
+<!-- =======================================================
+     EXTRA CORRIDOR DETAIL
+======================================================= -->
+
+<div class="vent" style="left:229px;top:405px"></div>
+<div class="vent" style="left:494px;top:405px"></div>
+
+<div class="vent" style="left:183px;top:875px"></div>
+<div class="vent" style="left:547px;top:875px"></div>
+
+<div class="wall-panel" style="left:244px;top:405px"></div>
+<div class="wall-panel" style="left:486px;top:405px"></div>
+
+<div class="warning"
+     style="position:absolute;z-index:25;left:340px;top:411px;width:80px;height:7px">
 </div>
 
-<!-- =========================================================
-MANAGER
-========================================================= -->
 
-<div class="room manager">
+<!-- =======================================================
+     PEOPLE
+======================================================= -->
 
-<div class="room-title">MANAGER OFFICE</div>
-
-<div class="rug m-rug"></div>
-
-<div class="desk m-desk"></div>
-<div class="monitor m-monitor"></div>
-<div class="keyboard m-key"></div>
-<div class="chair m-chair"></div>
-
-<div class="shelf m-s1"></div>
-<div class="shelf m-s2"></div>
-<div class="shelf m-s3"></div>
-
-<div class="board m-board"></div>
-
-<div class="plant m-p1"></div>
-<div class="plant m-p2"></div>
-
-<div class="paper" style="left:38%;top:53%"></div>
-<div class="paper" style="left:60%;top:53%;transform:rotate(17deg)"></div>
-
-<div class="cup" style="left:66%;top:52%"></div>
-
+<div class="agent" id="rico">
+  <div class="agent-name">Rico</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item report"></div>
 </div>
 
-<!-- =========================================================
-TEST
-========================================================= -->
-
-<div class="room testing">
-
-<div class="room-title">TEST LAB</div>
-
-<div class="board t-board"></div>
-
-<div class="server t-s1"></div>
-<div class="server t-s2"></div>
-<div class="server t-s3"></div>
-<div class="server t-s4"></div>
-
-<div class="desk t-d1"></div>
-<div class="monitor t-m1"></div>
-<div class="monitor t-m2"></div>
-<div class="chair t-chair"></div>
-
-<div class="paper t-paper"></div>
-
-<div class="cabinet" style="left:6%;bottom:8%"></div>
-
-<div class="plant" style="right:5%;bottom:6%"></div>
-
+<div class="agent" id="max">
+  <div class="agent-name">Max</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
 </div>
 
-<!-- =========================================================
-STORAGE
-========================================================= -->
-
-<div class="room storage">
-
-<div class="room-title">STORAGE</div>
-
-<div class="box"></div>
-<div class="box"></div>
-<div class="box"></div>
-<div class="box"></div>
-<div class="box"></div>
-
-<div class="shelf st-s1"></div>
-<div class="shelf st-s2"></div>
-
-<div class="cabinet st-cab"></div>
-
-<div class="box" style="right:7%;bottom:8%"></div>
-<div class="box" style="right:20%;bottom:8%"></div>
-
+<div class="agent" id="trent">
+  <div class="agent-name">Trent</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item report"></div>
 </div>
 
-<!-- =========================================================
-SERVER ROOM
-========================================================= -->
-
-<div class="room server-room">
-
-<div class="room-title">SERVER ROOM</div>
-
-<div class="server sv1"></div>
-<div class="server sv2"></div>
-<div class="server sv3"></div>
-<div class="server sv4"></div>
-<div class="server sv5"></div>
-
-<div class="desk sv-desk"></div>
-<div class="monitor sv-monitor"></div>
-<div class="chair sv-chair"></div>
-
-<div class="plant" style="right:6%;bottom:6%"></div>
-
+<div class="agent" id="calvin">
+  <div class="agent-name">Calvin</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item code"></div>
 </div>
 
-<!-- =========================================================
-CANTEEN
-========================================================= -->
-
-<div class="room canteen">
-
-<div class="room-title">CANTEEN + LOUNGE</div>
-
-<div class="kitchen"></div>
-
-<div class="fridge c-fridge"></div>
-<div class="vending c-vending"></div>
-
-<div class="rug c-rug"></div>
-
-<div class="table c-t1"></div>
-<div class="table c-t2"></div>
-
-<div class="chair" style="left:15%;top:40%"></div>
-<div class="chair" style="left:27%;top:40%"></div>
-<div class="chair" style="left:19%;top:52%"></div>
-
-<div class="chair" style="left:20%;top:68%"></div>
-<div class="chair" style="left:32%;top:68%"></div>
-<div class="chair" style="left:25%;top:79%"></div>
-
-<div class="sofa c-sofa"></div>
-
-<div class="plant c-p1"></div>
-<div class="plant c-p2"></div>
-
-<div class="cup" style="left:22%;top:44%"></div>
-<div class="cup" style="left:29%;top:46%"></div>
-<div class="cup" style="left:27%;top:72%"></div>
-
-<div class="paper" style="right:18%;bottom:20%"></div>
-
+<div class="agent" id="draymond">
+  <div class="agent-name">Draymond</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item visual"></div>
 </div>
 
-<!-- =========================================================
-DESIGN
-========================================================= -->
-
-<div class="room design">
-
-<div class="room-title">DESIGN STUDIO</div>
-
-<div class="rug d-rug"></div>
-
-<div class="desk d-desk"></div>
-
-<div class="monitor d-monitor1"></div>
-<div class="monitor d-monitor2"></div>
-
-<div class="chair d-chair"></div>
-
-<div class="board d-board"></div>
-
-<div class="shelf d-shelf"></div>
-
-<div class="plant d-plant"></div>
-
-<div class="poster d-poster"></div>
-
-<div class="paper" style="left:47%;bottom:9%"></div>
-
+<div class="agent" id="axel">
+  <div class="agent-name">Axel</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item report"></div>
 </div>
 
-<!-- =========================================================
-ANALYTICS
-========================================================= -->
-
-<div class="room analytics">
-
-<div class="room-title">ANALYTICS</div>
-
-<div class="board a-board"></div>
-
-<div class="desk a-desk"></div>
-
-<div class="monitor a-monitor1"></div>
-<div class="monitor a-monitor2"></div>
-
-<div class="chair a-chair"></div>
-
-<div class="shelf a-s1"></div>
-<div class="shelf a-s2"></div>
-
-<div class="plant a-p1"></div>
-
-<div class="paper" style="left:50%;bottom:13%"></div>
-
+<div class="agent" id="adam">
+  <div class="agent-name">Adam</div>
+  <div class="shadow"></div>
+  <div class="hair"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
+  <div class="body"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
+  <div class="carry-item report"></div>
 </div>
 
-<!-- =========================================================
-ARCHIVES
-========================================================= -->
+<!-- JARED -->
 
-<div class="room archives">
+<div class="agent" id="jared">
+  <div class="agent-name">Jared</div>
+  <div class="shadow"></div>
 
-<div class="room-title">ARCHIVES + WORKSPACE</div>
+  <div class="hair"></div>
+  <div class="cap"></div>
 
-<div class="rug ar-rug"></div>
+  <div class="head"></div>
+  <div class="eyes"></div>
+  <div class="nose"></div>
 
-<div class="desk ar-desk"></div>
+  <div class="body"></div>
 
-<div class="monitor ar-monitor"></div>
+  <div class="arm left"></div>
+  <div class="arm right"></div>
 
-<div class="chair ar-chair"></div>
+  <div class="leg left"></div>
+  <div class="leg right"></div>
 
-<div class="cabinet ar-c1"></div>
-<div class="cabinet ar-c2"></div>
-<div class="cabinet ar-c3"></div>
-
-<div class="shelf ar-s1"></div>
-<div class="shelf ar-s2"></div>
-
-<div class="board ar-board"></div>
-
-<div class="plant ar-plant"></div>
-
-<div class="paper" style="left:39%;bottom:21%"></div>
-
-<div class="cup" style="left:63%;bottom:21%"></div>
-
-</div>
-
-<!-- =========================================================
-UTILITY — DISCONNECTED
-========================================================= -->
-
-<div class="room utility">
-
-<div class="room-title">UTILITY</div>
-
-<div class="pipe u-p1"></div>
-<div class="pipe u-p2"></div>
-<div class="pipe u-p3"></div>
-
-<div class="cabinet u-cab"></div>
-
-<div class="box u-box"></div>
-
-<div class="poster" style="right:9%;bottom:28%"></div>
-
-</div>
-
-<!-- =========================================================
-RESTROOM — COMPLETELY DISCONNECTED
-========================================================= -->
-
-<div class="room restroom">
-
-<div class="room-title">RESTROOM</div>
-
-<div class="sink"></div>
-
-<div class="toilet wc1"></div>
-<div class="toilet wc2"></div>
-
-<div class="cabinet" style="left:10%;bottom:8%"></div>
-
-</div>
-
-<!-- =========================================================
-AGENTS
-========================================================= -->
-
-<div class="agent max" id="max">
-<div class="agent-name">Max</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent calvin" id="calvin">
-<div class="agent-name">Calvin</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent rico" id="rico">
-<div class="agent-name">Rico</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent trent" id="trent">
-<div class="agent-name">Trent</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent draymond" id="draymond">
-<div class="agent-name">Draymond</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent axel" id="axel">
-<div class="agent-name">Axel</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
-</div>
-
-<div class="agent adam" id="adam">
-<div class="agent-name">Adam</div>
-<div class="hair"></div>
-<div class="head"></div>
-<div class="eye"></div>
-<div class="body"></div>
-<div class="arm left"></div>
-<div class="arm right"></div>
-<div class="leg left"></div>
-<div class="leg right"></div>
-<div class="shoe left"></div>
-<div class="shoe right"></div>
-<div class="carry-item"></div>
+  <div class="mop"></div>
 </div>
 
 </div>
 </div>
+
+<div class="office-status" id="status">
+  Office idle
 </div>
 
-<div class="status" id="status">
-Office idle
-</div>
-
-<div class="taskbar">
-<input
-id="task"
-placeholder="Give Max a task..."
-autocomplete="off"
->
-<button id="send">↑</button>
+<div class="command-wrap">
+  <div class="command">
+    <input
+      id="taskInput"
+      placeholder="Give Max a task..."
+      autocomplete="off"
+    >
+    <button class="send" id="sendButton">↑</button>
+  </div>
 </div>
 
 <script>
 
-/* ============================================================
-   AGENTS
-============================================================ */
+/* =========================================================
+   AI OFFICE MOVEMENT SYSTEM
 
-const agents = {
-  max:document.getElementById("max"),
-  calvin:document.getElementById("calvin"),
-  rico:document.getElementById("rico"),
-  trent:document.getElementById("trent"),
-  draymond:document.getElementById("draymond"),
-  axel:document.getElementById("axel"),
-  adam:document.getElementById("adam")
-};
+   IMPORTANT:
+   Characters DO NOT choose arbitrary X/Y coordinates.
 
-const sleep = ms =>
-  new Promise(resolve=>setTimeout(resolve,ms));
+   Every movement uses these nodes.
+   Nodes follow rooms, doors and corridors.
 
-/* ============================================================
-   WALKABLE MAP
+   That means nobody should walk straight through a wall
+   or across the black void.
+========================================================= */
 
-ONLY THESE POINTS ARE WALKABLE.
+const nodes = {
 
-There are deliberately NO points through the black void,
-Utility, or Restroom.
+  /* research */
+  researchDesk: {x:120,y:295},
+  researchDoor: {x:205,y:300},
 
-Walls therefore act as boundaries.
-============================================================ */
+  /* manager */
+  managerDesk: {x:381,y:205},
+  managerDoor: {x:381,y:374},
 
-const node = {
+  /* test */
+  testDesk: {x:635,y:290},
+  testDoor: {x:552,y:302},
 
-  /* Research */
-  rDesk:[17,17],
-  rDoor:[29,23],
+  /* upper corridor */
+  upperLeft: {x:242,y:126},
+  upperCentre: {x:381,y:416},
+  upperRight: {x:518,y:126},
 
-  /* Manager */
-  mDesk:[52,15],
-  mDoor:[52,23],
+  leftHallTop: {x:219,y:323},
+  leftHallBottom: {x:219,y:420},
 
-  /* Test */
-  tDesk:[86,19],
-  tDoor:[75,27],
-
-  /* upper corridors */
-  topL1:[31,24],
-  topL2:[31,29],
-
-  topCentreL:[40,30],
-  topCentre:[51,30],
-  topCentreR:[63,30],
-
-  topR2:[73,30],
+  rightHallTop: {x:541,y:323},
+  rightHallBottom: {x:541,y:420},
 
   /* storage */
-  storeDoor:[24,42],
-  storageInside:[13,39],
-
-  /* central */
-  canteenNorth:[51,35],
-  canteenKitchen:[51,40],
-  canteenMiddle:[50,48],
-  canteenTable1:[40,48],
-  canteenTable2:[42,57],
-  canteenSofa:[63,54],
+  storageDoor: {x:158,y:456},
+  storageInside: {x:105,y:535},
 
   /* server */
-  serverDoor:[77,44],
-  serverInside:[88,42],
+  serverDoor: {x:600,y:456},
+  serverInside: {x:650,y:535},
+
+  /* canteen */
+  canteenTop: {x:381,y:465},
+  canteenCentre: {x:381,y:640},
+  canteenLeft: {x:232,y:680},
+  canteenRight: {x:529,y:680},
+  canteenBottom: {x:381,y:817},
+
+  canteenTable: {x:285,y:660},
+  canteenLounge: {x:455,y:700},
 
   /* design */
-  canteenDesignDoor:[31,59],
-  designHall1:[27,59],
-  designDoor:[26,62],
-  designInside:[15,62],
+  designDoor: {x:173,y:705},
+  designDesk: {x:105,y:835},
 
   /* analytics */
-  canteenAnalytics:[69,62],
-  analyticsHall:[75,64],
-  analyticsDoor:[77,64],
-  analyticsInside:[88,63],
+  analyticsDoor: {x:586,y:705},
+  analyticsDesk: {x:655,y:840},
 
-  /* archive */
-  canteenSouth:[51,62],
-  archiveHall1:[51,67],
-  archiveDoor:[51,70],
-  archiveDesk:[52,83]
+  /* archives */
+  archiveTop: {x:381,y:929},
+  archiveDesk: {x:381,y:1075},
+
+  /* lower corridor */
+  lowerLeft: {x:177,y:930},
+  lowerRight: {x:584,y:930},
+
+  /* utility */
+  utilityHallTop: {x:154,y:950},
+  utilityHallBottom: {x:154,y:1083},
+  utilityDoor: {x:120,y:1085},
+  utilityInside: {x:105,y:1140},
+
+  /* restroom */
+  restroomHallTop: {x:607,y:950},
+  restroomHallBottom: {x:607,y:1084},
+  restroomDoor: {x:630,y:1085},
+  restroomInside: {x:660,y:1140}
 };
+
+
+/* =========================================================
+   WALKABLE GRAPH
+
+   An edge means the two points are joined by a legal
+   straight walking route.
+
+   Turns require separate nodes.
+
+   No wall crossing.
+========================================================= */
 
 const graph = {
 
-  rDesk:["rDoor"],
+  researchDesk:["researchDoor"],
+  researchDoor:["researchDesk","leftHallTop"],
 
-  rDoor:[
-    "rDesk",
-    "topL1"
+  managerDesk:["managerDoor"],
+  managerDoor:["managerDesk","upperCentre"],
+
+  testDesk:["testDoor"],
+  testDoor:["testDesk","rightHallTop"],
+
+  upperLeft:["leftHallTop"],
+  upperRight:["rightHallTop"],
+
+  leftHallTop:[
+    "researchDoor",
+    "upperLeft",
+    "leftHallBottom"
   ],
 
-  topL1:[
-    "rDoor",
-    "topL2"
+  leftHallBottom:[
+    "leftHallTop",
+    "storageDoor",
+    "upperCentre",
+    "canteenTop"
   ],
 
-  topL2:[
-    "topL1",
-    "topCentreL"
+  rightHallTop:[
+    "testDoor",
+    "upperRight",
+    "rightHallBottom"
   ],
 
-  mDesk:[
-    "mDoor"
+  rightHallBottom:[
+    "rightHallTop",
+    "serverDoor",
+    "upperCentre",
+    "canteenTop"
   ],
 
-  mDoor:[
-    "mDesk",
-    "topCentre"
+  upperCentre:[
+    "managerDoor",
+    "leftHallBottom",
+    "rightHallBottom",
+    "canteenTop"
   ],
 
-  tDesk:[
-    "tDoor"
+  storageDoor:[
+    "leftHallBottom",
+    "storageInside"
   ],
 
-  tDoor:[
-    "tDesk",
-    "topR2"
-  ],
-
-  topR2:[
-    "tDoor",
-    "topCentreR"
-  ],
-
-  topCentreL:[
-    "topL2",
-    "topCentre"
-  ],
-
-  topCentre:[
-    "topCentreL",
-    "topCentreR",
-    "mDoor",
-    "canteenNorth"
-  ],
-
-  topCentreR:[
-    "topCentre",
-    "topR2"
-  ],
-
-  storeDoor:[
-    "storageInside",
-    "canteenNorth"
-  ],
-
-  storageInside:[
-    "storeDoor"
-  ],
-
-  canteenNorth:[
-    "topCentre",
-    "storeDoor",
-    "canteenKitchen",
-    "serverDoor"
-  ],
-
-  canteenKitchen:[
-    "canteenNorth",
-    "canteenMiddle"
-  ],
-
-  canteenMiddle:[
-    "canteenKitchen",
-    "canteenTable1",
-    "canteenTable2",
-    "canteenSofa",
-    "canteenSouth",
-    "canteenDesignDoor",
-    "canteenAnalytics"
-  ],
-
-  canteenTable1:[
-    "canteenMiddle"
-  ],
-
-  canteenTable2:[
-    "canteenMiddle"
-  ],
-
-  canteenSofa:[
-    "canteenMiddle"
-  ],
+  storageInside:["storageDoor"],
 
   serverDoor:[
-    "canteenNorth",
+    "rightHallBottom",
     "serverInside"
   ],
 
-  serverInside:[
-    "serverDoor"
+  serverInside:["serverDoor"],
+
+  canteenTop:[
+    "upperCentre",
+    "leftHallBottom",
+    "rightHallBottom",
+    "canteenCentre"
   ],
 
-  canteenDesignDoor:[
-    "canteenMiddle",
-    "designHall1"
+  canteenCentre:[
+    "canteenTop",
+    "canteenTable",
+    "canteenLounge",
+    "canteenLeft",
+    "canteenRight",
+    "canteenBottom"
   ],
 
-  designHall1:[
-    "canteenDesignDoor",
+  canteenTable:["canteenCentre"],
+
+  canteenLounge:["canteenCentre"],
+
+  canteenLeft:[
+    "canteenCentre",
     "designDoor"
+  ],
+
+  canteenRight:[
+    "canteenCentre",
+    "analyticsDoor"
   ],
 
   designDoor:[
-    "designHall1",
-    "designInside"
+    "canteenLeft",
+    "designDesk",
+    "lowerLeft"
   ],
 
-  designInside:[
-    "designDoor"
-  ],
-
-  canteenAnalytics:[
-    "canteenMiddle",
-    "analyticsHall"
-  ],
-
-  analyticsHall:[
-    "canteenAnalytics",
-    "analyticsDoor"
-  ],
+  designDesk:["designDoor"],
 
   analyticsDoor:[
-    "analyticsHall",
-    "analyticsInside"
+    "canteenRight",
+    "analyticsDesk",
+    "lowerRight"
   ],
 
-  analyticsInside:[
-    "analyticsDoor"
+  analyticsDesk:["analyticsDoor"],
+
+  canteenBottom:[
+    "canteenCentre",
+    "archiveTop"
   ],
 
-  canteenSouth:[
-    "canteenMiddle",
-    "archiveHall1"
+  archiveTop:[
+    "canteenBottom",
+    "archiveDesk",
+    "lowerLeft",
+    "lowerRight"
   ],
 
-  archiveHall1:[
-    "canteenSouth",
-    "archiveDoor"
+  archiveDesk:["archiveTop"],
+
+  lowerLeft:[
+    "designDoor",
+    "archiveTop",
+    "utilityHallTop"
   ],
 
-  archiveDoor:[
-    "archiveHall1",
-    "archiveDesk"
+  lowerRight:[
+    "analyticsDoor",
+    "archiveTop",
+    "restroomHallTop"
   ],
 
-  archiveDesk:[
-    "archiveDoor"
-  ]
+  utilityHallTop:[
+    "lowerLeft",
+    "utilityHallBottom"
+  ],
+
+  utilityHallBottom:[
+    "utilityHallTop",
+    "utilityDoor"
+  ],
+
+  utilityDoor:[
+    "utilityHallBottom",
+    "utilityInside"
+  ],
+
+  utilityInside:["utilityDoor"],
+
+  restroomHallTop:[
+    "lowerRight",
+    "restroomHallBottom"
+  ],
+
+  restroomHallBottom:[
+    "restroomHallTop",
+    "restroomDoor"
+  ],
+
+  restroomDoor:[
+    "restroomHallBottom",
+    "restroomInside"
+  ],
+
+  restroomInside:["restroomDoor"]
 };
 
-/*
-NO NODES FOR:
-UTILITY
-RESTROOM
 
-They are genuinely unreachable.
-*/
+/* =========================================================
+   HOME LOCATIONS
+========================================================= */
 
-const state = {
+const homes = {
+  rico:"researchDesk",
+  max:"managerDesk",
+  trent:"testDesk",
+  calvin:"canteenCentre",
+  draymond:"designDesk",
+  axel:"analyticsDesk",
+  adam:"archiveDesk",
+  jared:"utilityInside"
+};
 
-  max:{
-    at:"mDesk",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
 
-  calvin:{
-    at:"canteenMiddle",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
+/* Current logical node for every person */
 
-  rico:{
-    at:"rDesk",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
+const currentNode = {
+  rico:"researchDesk",
+  max:"managerDesk",
+  trent:"testDesk",
+  calvin:"canteenCentre",
+  draymond:"designDesk",
+  axel:"analyticsDesk",
+  adam:"archiveDesk",
+  jared:"utilityInside"
+};
 
-  trent:{
-    at:"tDesk",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
 
-  draymond:{
-    at:"designInside",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
+/* =========================================================
+   PATHFINDING — BFS
+========================================================= */
 
-  axel:{
-    at:"analyticsInside",
-    busy:false,
-    moving:false,
-    interrupted:false
-  },
+function findPath(start,end){
 
-  adam:{
-    at:"archiveDesk",
-    busy:false,
-    moving:false,
-    interrupted:false
+  if(start === end){
+    return [start];
   }
 
-};
-
-const home = {
-  max:"mDesk",
-  calvin:"canteenMiddle",
-  rico:"rDesk",
-  trent:"tDesk",
-  draymond:"designInside",
-  axel:"analyticsInside",
-  adam:"archiveDesk"
-};
-
-function positionAgent(name,where){
-
-  const p=node[where];
-
-  agents[name].style.left=p[0]+"%";
-  agents[name].style.top=p[1]+"%";
-}
-
-Object.keys(state).forEach(name=>{
-  positionAgent(name,state[name].at);
-});
-
-/* ============================================================
-   PATHFINDING
-============================================================ */
-
-function route(start,end){
-
-  if(start===end){
-    return[start];
-  }
-
-  const queue=[[start]];
-  const seen=new Set([start]);
+  const queue = [[start]];
+  const visited = new Set([start]);
 
   while(queue.length){
 
-    const path=queue.shift();
+    const path = queue.shift();
+    const last = path[path.length - 1];
 
-    const current=
-      path[path.length-1];
+    for(const next of graph[last] || []){
 
-    for(const next of graph[current]||[]){
-
-      if(seen.has(next)){
+      if(visited.has(next)){
         continue;
       }
 
-      const newPath=[
-        ...path,
-        next
-      ];
+      const newPath = [...path,next];
 
-      if(next===end){
+      if(next === end){
         return newPath;
       }
 
-      seen.add(next);
-
+      visited.add(next);
       queue.push(newPath);
     }
   }
 
-  return[start];
+  return [];
 }
 
-/* ============================================================
-   WALKING
 
-4.5 seconds PER node section.
+/* =========================================================
+   UTILITY
+========================================================= */
 
-A whole journey across the office can therefore take
-15–30 seconds depending on distance.
-============================================================ */
+function sleep(ms){
+  return new Promise(resolve => setTimeout(resolve,ms));
+}
 
-async function walk(name,destination){
+function distance(a,b){
 
-  if(state[name].moving){
+  const dx = b.x-a.x;
+  const dy = b.y-a.y;
+
+  return Math.sqrt(
+    dx*dx +
+    dy*dy
+  );
+}
+
+
+/* =========================================================
+   WALK SPEED
+
+   Lower number = slower.
+
+   28 pixels/second means a long journey across the office
+   actually takes a while.
+
+   Minimum duration prevents tiny corridor steps from
+   snapping instantly.
+========================================================= */
+
+const WALK_SPEED = 28;
+
+async function moveOneStep(person,nodeName){
+
+  const el = document.getElementById(person);
+
+  if(!el || !nodes[nodeName]){
     return;
   }
 
-  const person=agents[name];
+  const oldName = currentNode[person];
 
-  const path=
-    route(
-      state[name].at,
+  const oldPos =
+    nodes[oldName] ||
+    nodes[nodeName];
+
+  const newPos =
+    nodes[nodeName];
+
+  const dist =
+    distance(oldPos,newPos);
+
+  let duration =
+    (dist / WALK_SPEED) * 1000;
+
+  duration =
+    Math.max(850,duration);
+
+  el.style.transitionDuration =
+    duration + "ms";
+
+  el.classList.add("walking");
+
+  el.style.left =
+    newPos.x + "px";
+
+  el.style.top =
+    newPos.y + "px";
+
+  await sleep(duration);
+
+  el.classList.remove("walking");
+
+  currentNode[person] =
+    nodeName;
+}
+
+
+/* =========================================================
+   WALK PERSON TO DESTINATION
+========================================================= */
+
+async function walkTo(person,destination){
+
+  const start =
+    currentNode[person];
+
+  const path =
+    findPath(start,destination);
+
+  if(!path.length){
+    console.warn(
+      "No legal path:",
+      person,
+      start,
       destination
     );
-
-  state[name].moving=true;
-
-  person.classList.add("walking");
+    return;
+  }
 
   for(let i=1;i<path.length;i++){
 
-    if(state[name].interrupted){
-      break;
-    }
-
-    const next=path[i];
-
-    positionAgent(
-      name,
-      next
+    await moveOneStep(
+      person,
+      path[i]
     );
-
-    await sleep(4600);
-
-    state[name].at=next;
-  }
-
-  person.classList.remove("walking");
-
-  state[name].moving=false;
-}
-
-/* ============================================================
-   IDLE OFFICE LIFE
-============================================================ */
-
-const leisure=[
-
-  "canteenTable1",
-  "canteenTable2",
-  "canteenSofa",
-  "canteenKitchen"
-
-];
-
-async function idle(name){
-
-  while(true){
-
-    /*
-    People spend most of their time stationary.
-    */
-
-    await sleep(
-      18000+
-      Math.random()*28000
-    );
-
-    if(state[name].busy){
-      continue;
-    }
-
-    /*
-    Only 25% chance they decide to go somewhere.
-    */
-
-    if(Math.random()>.25){
-      continue;
-    }
-
-    const target=
-      leisure[
-        Math.floor(
-          Math.random()*leisure.length
-        )
-      ];
-
-    await walk(
-      name,
-      target
-    );
-
-    await sleep(
-      18000+
-      Math.random()*26000
-    );
-
-    if(!state[name].busy){
-
-      await walk(
-        name,
-        home[name]
-      );
-
-    }
   }
 }
 
-Object.keys(state).forEach(idle);
 
-/* ============================================================
-   CARRY COMPLETED WORK TO MAX
-============================================================ */
+/* =========================================================
+   STATUS
+========================================================= */
 
-async function deliver(name){
+function setStatus(text){
 
-  /*
-  Visual delivery happens AFTER work is finished.
-  */
-
-  agents[name].classList.add(
-    "carrying"
-  );
-
-  await walk(
-    name,
-    "mDoor"
-  );
-
-  await walk(
-    name,
-    "mDesk"
-  );
-
-  /*
-  Pause beside Max as if handing it over.
-  */
-
-  await sleep(1800);
-
-  agents[name].classList.remove(
-    "carrying"
-  );
-
-  /*
-  Return home.
-  */
-
-  await walk(
-    name,
-    home[name]
-  );
+  document.getElementById("status")
+    .textContent = text;
 }
 
-/* ============================================================
-   DEMO TASK FLOW
-============================================================ */
 
-const input=
-  document.getElementById("task");
+/* =========================================================
+   DELIVERY SYSTEM
 
-const send=
-  document.getElementById("send");
+   Agent finishes work BEFORE delivery animation.
 
-const status=
-  document.getElementById("status");
+   The animation NEVER needs to represent actual backend
+   processing time.
+========================================================= */
 
-async function runTask(){
+async function deliverToMax(person){
 
-  const text=
-    input.value.trim();
-
-  if(!text){
-
-    status.textContent=
-      "Give Max a task first";
-
+  if(person === "max"){
     return;
   }
 
-  send.disabled=true;
+  const el =
+    document.getElementById(person);
 
-  state.max.busy=true;
+  el.classList.add("carrying");
 
-  status.textContent=
-    "Max is planning...";
-
-  await walk(
-    "max",
-    "mDesk"
+  setStatus(
+    capitalize(person) +
+    " is delivering work to Max"
   );
 
-  await sleep(1800);
-
-  /*
-  DEMO:
-  Draymond creates a visual.
-  */
-
-  state.draymond.busy=true;
-
-  status.textContent=
-    "Draymond is creating a visual...";
-
-  await walk(
-    "draymond",
-    "designInside"
+  await walkTo(
+    person,
+    "managerDoor"
   );
 
-  agents.draymond.classList.add(
-    "working"
+  await sleep(1100);
+
+  /* Hand-off */
+  el.classList.remove("carrying");
+
+  setStatus(
+    capitalize(person) +
+    " delivered the work"
   );
 
-  /*
-  Visual representation only.
-  Later the real backend starts work immediately.
-  */
+  await sleep(900);
 
-  await sleep(5000);
-
-  agents.draymond.classList.remove(
-    "working"
+  await walkTo(
+    person,
+    homes[person]
   );
 
-  status.textContent=
-    "Draymond finished — delivering to Max...";
-
-  await deliver(
-    "draymond"
-  );
-
-  state.draymond.busy=false;
-  state.max.busy=false;
-
-  status.textContent=
-    "Task delivered to Max";
-
-  await sleep(2500);
-
-  status.textContent=
-    "Office idle";
-
-  send.disabled=false;
+  setStatus("Office idle");
 }
+
+
+/* =========================================================
+   JARED
+
+   Jared is NOT an AI agent.
+
+   He is an office NPC.
+
+   He walks legal routes and periodically cleans different
+   parts of the office.
+========================================================= */
+
+const jaredStops = [
+  "utilityInside",
+  "archiveTop",
+  "canteenBottom",
+  "canteenCentre",
+  "leftHallBottom",
+  "rightHallBottom",
+  "storageDoor",
+  "serverDoor",
+  "designDoor",
+  "analyticsDoor",
+  "restroomInside"
+];
+
+let jaredBusy = false;
+
+async function jaredClean(){
+
+  if(jaredBusy){
+    return;
+  }
+
+  jaredBusy = true;
+
+  const target =
+    jaredStops[
+      Math.floor(
+        Math.random() *
+        jaredStops.length
+      )
+    ];
+
+  await walkTo(
+    "jared",
+    target
+  );
+
+  const jared =
+    document.getElementById("jared");
+
+  jared.classList.add("cleaning");
+
+  await sleep(
+    3500 +
+    Math.random()*3500
+  );
+
+  jared.classList.remove("cleaning");
+
+  jaredBusy = false;
+}
+
+
+/* Jared doesn't sprint around constantly. */
+
+function scheduleJared(){
+
+  const delay =
+    18000 +
+    Math.random()*24000;
+
+  setTimeout(async()=>{
+
+    await jaredClean();
+
+    scheduleJared();
+
+  },delay);
+}
+
+scheduleJared();
+
+
+/* =========================================================
+   NORMAL IDLE BEHAVIOUR
+
+   Agents mostly stay where they belong.
+
+   Occasionally someone goes to the canteen or another
+   sensible office location.
+
+   They do NOT wander every few seconds.
+========================================================= */
+
+const leisureTargets = {
+  rico:[
+    "canteenTable",
+    "canteenCentre"
+  ],
+
+  trent:[
+    "canteenLounge",
+    "canteenCentre"
+  ],
+
+  calvin:[
+    "canteenTable",
+    "canteenLounge"
+  ],
+
+  draymond:[
+    "canteenTable",
+    "canteenLounge"
+  ],
+
+  axel:[
+    "canteenCentre",
+    "canteenLounge"
+  ],
+
+  adam:[
+    "canteenTable",
+    "canteenCentre"
+  ]
+};
+
+const busy = new Set();
+
+async function idleTrip(person){
+
+  if(busy.has(person)){
+    return;
+  }
+
+  /* Only a small chance */
+  if(Math.random() > .28){
+    return;
+  }
+
+  busy.add(person);
+
+  const choices =
+    leisureTargets[person];
+
+  if(!choices){
+    busy.delete(person);
+    return;
+  }
+
+  const destination =
+    choices[
+      Math.floor(
+        Math.random()*choices.length
+      )
+    ];
+
+  await walkTo(
+    person,
+    destination
+  );
+
+  /* actually stay there for a bit */
+
+  await sleep(
+    10000 +
+    Math.random()*18000
+  );
+
+  await walkTo(
+    person,
+    homes[person]
+  );
+
+  busy.delete(person);
+}
+
+
+/* One idle decision every 30–55 seconds */
+
+function scheduleIdle(){
+
+  const delay =
+    30000 +
+    Math.random()*25000;
+
+  setTimeout(async()=>{
+
+    const candidates = [
+      "rico",
+      "trent",
+      "calvin",
+      "draymond",
+      "axel",
+      "adam"
+    ];
+
+    const person =
+      candidates[
+        Math.floor(
+          Math.random() *
+          candidates.length
+        )
+      ];
+
+    idleTrip(person);
+
+    scheduleIdle();
+
+  },delay);
+}
+
+scheduleIdle();
+
+
+/* =========================================================
+   DEMO TASK ROUTING
+
+   This is currently the visual layer.
+
+   Later /api/task can replace this logic with the REAL
+   Manager/backend AI response.
+
+   The UI animation should start independently of the real
+   AI request — never hold up actual work waiting for a
+   character to walk somewhere.
+========================================================= */
+
+const input =
+  document.getElementById("taskInput");
+
+const send =
+  document.getElementById("sendButton");
+
+
+function detectAgent(task){
+
+  const t =
+    task.toLowerCase();
+
+  if(
+    t.includes("design") ||
+    t.includes("image") ||
+    t.includes("visual") ||
+    t.includes("logo") ||
+    t.includes("ui")
+  ){
+    return "draymond";
+  }
+
+  if(
+    t.includes("research") ||
+    t.includes("find") ||
+    t.includes("search") ||
+    t.includes("compare")
+  ){
+    return "rico";
+  }
+
+  if(
+    t.includes("code") ||
+    t.includes("app") ||
+    t.includes("website") ||
+    t.includes("program")
+  ){
+    return "calvin";
+  }
+
+  if(
+    t.includes("test") ||
+    t.includes("bug") ||
+    t.includes("check") ||
+    t.includes("validate")
+  ){
+    return "trent";
+  }
+
+  if(
+    t.includes("analyse") ||
+    t.includes("analyze") ||
+    t.includes("data") ||
+    t.includes("numbers") ||
+    t.includes("spreadsheet")
+  ){
+    return "axel";
+  }
+
+  if(
+    t.includes("save") ||
+    t.includes("organise") ||
+    t.includes("organize") ||
+    t.includes("archive")
+  ){
+    return "adam";
+  }
+
+  return "rico";
+}
+
+
+async function runVisualTask(task){
+
+  const person =
+    detectAgent(task);
+
+  if(busy.has(person)){
+    setStatus(
+      capitalize(person) +
+      " is already working"
+    );
+    return;
+  }
+
+  busy.add(person);
+
+  setStatus(
+    "Max assigned work to " +
+    capitalize(person)
+  );
+
+  /*
+    This short pause is ONLY visual.
+
+    Once real AI is wired in, actual processing should
+    already be running server-side.
+  */
+
+  await sleep(1000);
+
+  setStatus(
+    capitalize(person) +
+    " is working"
+  );
+
+  /*
+    Placeholder visual work period.
+    Do NOT use this as the backend delay later.
+  */
+
+  await sleep(2800);
+
+  setStatus(
+    capitalize(person) +
+    " finished"
+  );
+
+  await deliverToMax(person);
+
+  busy.delete(person);
+}
+
+
+async function submitTask(){
+
+  const task =
+    input.value.trim();
+
+  if(!task){
+    return;
+  }
+
+  input.value = "";
+
+  runVisualTask(task);
+}
+
 
 send.addEventListener(
   "click",
-  runTask
+  submitTask
 );
 
 input.addEventListener(
   "keydown",
-  e=>{
+  e => {
 
-    if(e.key==="Enter"){
-      runTask();
+    if(e.key === "Enter"){
+      submitTask();
     }
 
   }
 );
+
+
+function capitalize(str){
+
+  return (
+    str.charAt(0).toUpperCase() +
+    str.slice(1)
+  );
+}
+
+
+/* =========================================================
+   OPTIONAL DEBUG
+
+   Uncomment this to watch Draymond make a delivery
+   automatically five seconds after page load.
+
+   DO NOT leave it enabled permanently.
+
+========================================================= */
+
+/*
+
+setTimeout(()=>{
+
+  deliverToMax("draymond");
+
+},5000);
+
+*/
 
 </script>
 
