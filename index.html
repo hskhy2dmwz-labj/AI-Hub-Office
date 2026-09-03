@@ -9656,5 +9656,57 @@ setTimeout(()=>{
 
 })();
 </script>
+  <script>
+const taskInput =
+  document.querySelector('input[placeholder="Give Max a task..."]');
+
+const sendButton =
+  document.querySelector(".send");
+
+async function sendTaskToMax() {
+  const goal = taskInput?.value.trim();
+
+  if (!goal) return;
+
+  const oldPlaceholder = taskInput.placeholder;
+  taskInput.disabled = true;
+  sendButton.disabled = true;
+  taskInput.placeholder = "Max is working...";
+
+  try {
+    const response = await fetch("/api/task", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ goal })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Task failed");
+    }
+
+    alert(data.answer);
+
+    taskInput.value = "";
+  } catch (error) {
+    alert("AI Office error: " + error.message);
+  } finally {
+    taskInput.disabled = false;
+    sendButton.disabled = false;
+    taskInput.placeholder = oldPlaceholder;
+  }
+}
+
+sendButton?.addEventListener("click", sendTaskToMax);
+
+taskInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    sendTaskToMax();
+  }
+});
+</script>
 </body>
 </html>
